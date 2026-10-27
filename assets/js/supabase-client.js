@@ -75,15 +75,13 @@ export async function deleteMultiVote(widgetId, voteValue) {
   await supabase.from('votes').delete()
     .eq('participant_id', pid).eq('widget_id', widgetId).eq('vote_value', voteValue);
 }
-export async function submitOrEditVotes(widgetId, values, pointsIfNew = 5) {
+export async function submitStatementVote(widgetId, statementId, value, isCorrect, points) {
   const pid = getPid();
   if (!pid) throw new Error('no_participant');
-  const { data, error } = await supabase.rpc('submit_or_edit_votes', {
-    p_pid: pid,
-    p_session: SESSION_CODE,
-    p_widget: widgetId,
-    p_values: values,
-    p_points_if_new: pointsIfNew
+  const { data, error } = await supabase.rpc('submit_statement_vote', {
+    p_pid: pid, p_session: SESSION_CODE, p_widget: widgetId,
+    p_statement: statementId, p_value: value,
+    p_is_correct: isCorrect, p_points: points
   });
   if (error) throw error;
   return data;
