@@ -1,0 +1,21 @@
+{
+  "name": "کارگاه هوش مصنوعی",
+  "short_name": "کارگاه AI",
+  "description": "کارگاه تعاملی هوش مصنوعی برای کارشناسان بانک",
+  "start_url": "./join.html?session=G1-1405-05-05",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080c17",
+  "theme_color": "#fbbf24",
+  "dir": "rtl",
+  "lang": "fa",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
