@@ -325,27 +325,87 @@ function renderQuiz(wid, meta) {
     const wrap = document.createElement('div');
     wrap.className = 'quiz-item';
     wrap.innerHTML = `<div class="quiz-q">${esc(st.text)}</div>`;
+
     const votedVal = myVotes.find(v => v.widget_id === wid && v.statement_id === st.id)?.vote_value;
     let tempSelected = votedVal || null;
-    const locked = !!votedVal;
+    let locked = !!votedVal;
+
     const grid = document.createElement('div');
     grid.className = 'opt-grid g2';
+
     const submitBtn = document.createElement('button');
     submitBtn.className = 'btn';
-    submitBtn.style.cssText = 'margin-top:.6rem;font-size:.85rem;padding:.65rem';
+    submitBtn.style.cssText = 'margin-top:.6rem;font-size:.85rem;padding:.7rem';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn btn-sec';
+    editBtn.style.cssText = 'margin-top:.5rem;font-size:.82rem;padding:.65rem;display:none';
+    editBtn.textContent = '✎ ویرایش پاسخ';
+
+    const errEl = document.createElement('div');
+    errEl.style.cssText = 'display:none;margin-top:.5rem;padding:.6rem;background:var(--rose-soft);border:1px solid rgba(251,113,133,.4);border-radius:8px;color:var(--rose);font-size:.75rem;line-height:1.6;word-break:break-word';
+
     function draw() {
       grid.innerHTML = '';
       [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
         const btn = document.createElement('button');
         btn.className = 'opt';
         if (tempSelected === k) btn.classList.add('voted');
-        btn.innerHTML = `<span>${l}</span>`;
+        btn.innerHTML = `<span>${l}</span>` + (tempSelected === k ? '<span style="font-weight:800">✓</span>' : '');
         if (locked) btn.disabled = true;
-        else btn.onclick = () => { tempSelected = k; draw(); updateSubmit(); };
+        else btn.onclick = () => { tempSelected = k; draw(); };
         grid.appendChild(btn);
       });
-      updateSubmit();
+
+      if (locked) {
+        const label = votedVal === 't' ? 'واقعیت' : votedVal === 'f' ? 'افسانه' : 'مطمئن نیستم';
+        submitBtn.textContent = '✓ ثبت شد: ' + label;
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '.65';
+        editBtn.style.display = 'block';
+      } else {
+        submitBtn.textContent = tempSelected ? 'ثبت پاسخ' : 'یک گزینه انتخاب کنید';
+        submitBtn.disabled = !tempSelected;
+        submitBtn.style.opacity = '1';
+        editBtn.style.display = 'none';
+      }
+      errEl.style.display = 'none';
     }
+
+    editBtn.onclick = () => {
+      locked = false;
+      tempSelected = votedVal;
+      draw();
+    };
+
+    submitBtn.onclick = async () => {
+      if (locked || !tempSelected) return;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'در حال ثبت…';
+      errEl.style.display = 'none';
+      const isCorrect = (tempSelected === 't' && st.correct) || (tempSelected === 'f' && !st.correct);
+      try {
+        await rpcStatement(wid, st.id, tempSelected, isCorrect, isCorrect ? 15 : 3);
+        await refreshScore();
+        await refreshMyVotes();
+        renderWidget(wid);
+      } catch(e) {
+        console.error('quiz submit failed:', e);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'دوباره تلاش کنید';
+        errEl.textContent = '⚠ ' + (e.message || e.code || e.toString());
+        errEl.style.display = 'block';
+      }
+    };
+
+    draw();
+    wrap.appendChild(grid);
+    wrap.appendChild(submitBtn);
+    wrap.appendChild(editBtn);
+    wrap.appendChild(errEl);
+    widgetArea.appendChild(wrap);
+  });
+}
     function updateSubmit() {
       if (locked) {
         submitBtn.textContent = `✓ ثبت شد (${votedVal === 't' ? 'واقعیت' : votedVal === 'f' ? 'افسانه' : 'مطمئن نیستم'})`;
