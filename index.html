@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080c17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>کارگاه هوش مصنوعی · گروه اول · G1-1405-05-05</title>
+<script>
+(function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.3/Vazirmatn-font-face.css">
+<style>
+:root[data-theme="dark"]{
+  --bg-a:#080c17;--bg-b:#0c1120;--bg-c:#05080e;
+  --surface:rgba(255,255,255,.045);
+  --surface-hi:rgba(255,255,255,.085);
+  --surface-glow:rgba(251,191,36,.08);
+  --line:rgba(255,255,255,.08);
+  --line-hi:rgba(255,255,255,.2);
+  --text:#f1f5f9;--text-2:#c9d4e2;--muted:#8b96a8;
+  --amber:#fbbf24;--amber-2:#f59e0b;
+  --orange:#f97316;
+  --amber-soft:rgba(251,191,36,.14);
+  --amber-glow:rgba(251,191,36,.35);
+  --mint:#34d399;--mint-soft:rgba(52,211,153,.15);
+  --rose:#fb7185;--rose-soft:rgba(251,113,133,.15);
+  --violet:#a78bfa;
+  --shadow-sm:0 4px 14px rgba(0,0,0,.35);
+  --shadow-md:0 14px 40px rgba(0,0,0,.4);
+  --shadow-lg:0 24px 60px rgba(0,0,0,.5);
+  --shadow-glow:0 12px 40px var(--amber-glow);
+}
+:root[data-theme="light"]{
+  --bg-a:#fdfcfa;--bg-b:#faf5ff;--bg-c:#fef5f0;
+  --surface:rgba(255,255,255,.72);
+  --surface-hi:rgba(255,255,255,.9);
+  --surface-glow:rgba(180,83,9,.06);
+  --line:rgba(15,23,42,.09);
+  --line-hi:rgba(15,23,42,.2);
+  --text:#0f172a;--text-2:#1e293b;--muted:#64748b;
+  --amber:#b45309;--amber-2:#d97706;
+  --orange:#c2410c;
+  --amber-soft:rgba(180,83,9,.12);
+  --amber-glow:rgba(180,83,9,.25);
+  --mint:#059669;--mint-soft:rgba(5,150,105,.12);
+  --rose:#e11d48;--rose-soft:rgba(225,29,72,.12);
+  --violet:#7c3aed;
+  --shadow-sm:0 4px 14px rgba(15,23,42,.08);
+  --shadow-md:0 14px 40px rgba(15,23,42,.12);
+  --shadow-lg:0 24px 60px rgba(15,23,42,.15);
+  --shadow-glow:0 12px 40px var(--amber-glow);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Vazirmatn',Tahoma,system-ui,sans-serif;
+  color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased;
+  min-height:100vh;min-height:100svh;min-height:100dvh;
+  overscroll-behavior-y:none;
+  background:
+    radial-gradient(ellipse 65% 40% at 82% 8%, rgba(251,191,36,.09), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 8% 92%, rgba(45,212,191,.055), transparent 60%),
+    radial-gradient(ellipse 40% 40% at 30% 30%, rgba(167,139,250,.04), transparent 60%),
+    linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+  transition:background .6s,color .6s;
+}
+:root[data-theme="light"] body{
+  background:
+    radial-gradient(ellipse 60% 40% at 82% 8%, rgba(180,83,9,.06), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 8% 92%, rgba(5,150,105,.045), transparent 60%),
+    linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+}
+button,.opt,.icon-btn,.theme-morph,.nav-item,.nav-toggle,.nav-reopen,
+.widget-results,.prompt-card,.btn-primary,.btn-ghost{touch-action:manipulation}
+input,textarea{font-size:16px}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.02) 1px, transparent 0);
+  background-size:3px 3px;opacity:.5;
+}
+
+button,.opt,.chip,.nav-item,.prompt-card,.widget-results,.nav-toggle,.nav-reopen,.icon-btn,.theme-morph,.close-btn,.menu-item{
+  position:relative;overflow:hidden;
+}
+.ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:rgba(251,191,36,.4);
+  transform:scale(0);
+  animation:rippleAnim .7s cubic-bezier(.2,.7,.2,1);
+  z-index:1;
+}
+:root[data-theme="light"] .ripple{background:rgba(180,83,9,.22)}
+@keyframes rippleAnim{
+  0%{transform:scale(0);opacity:.8}
+  100%{transform:scale(1);opacity:0}
+}
+button:active,.opt:active,.chip:active,.nav-item:active,.prompt-card:active{
+  transform:scale(.97)!important;
+  transition:transform .08s!important;
+}
+
+/* ===== Topbar ===== */
+.topbar{
+  position:fixed;inset-inline:0;top:0;height:64px;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:max(0px,env(safe-area-inset-top)) 18px 0;
+  background:linear-gradient(180deg, var(--bg-a) 60%, transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:transform .3s,opacity .3s;
+}
+.brand{display:flex;align-items:center;gap:.7rem}
+.mark{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(140deg,#1c2a4a,#0e1729);
+  border:1px solid var(--line-hi);
+  color:var(--amber);font-weight:800;font-size:1.05rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 4px 14px rgba(0,0,0,.4);
+}
+.brand-title{font-size:.86rem;font-weight:700;letter-spacing:-.1px}
+.brand-sub{font-size:.68rem;color:var(--muted);margin-top:.1rem}
+
+.status-pill{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.35rem .35rem .35rem 1rem;
+  border-radius:999px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transition:border-color .3s,box-shadow .3s;
+}
+.status-pill.behind{border-color:rgba(251,113,133,.4);box-shadow:0 0 24px rgba(251,113,133,.15)}
+.status-pill.on-track{border-color:rgba(52,211,153,.35);box-shadow:0 0 24px rgba(52,211,153,.12)}
+.status-pill.ahead{border-color:rgba(251,191,36,.4);box-shadow:0 0 24px rgba(251,191,36,.15)}
+
+.status-ring{
+  position:relative;width:44px;height:44px;
+  cursor:pointer;transition:transform .2s;
+}
+.status-ring:hover{transform:scale(1.05)}
+.status-ring:active{transform:scale(.95);transition-duration:.08s}
+.status-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{
+  fill:none;stroke:var(--line-hi);stroke-width:3;
+}
+.ring-fill{
+  fill:none;stroke:var(--mint);stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:100.5;
+  stroke-dashoffset:100.5;
+  transition:stroke-dashoffset .8s cubic-bezier(.2,.7,.2,1), stroke .4s, filter .4s;
+  filter:drop-shadow(0 0 6px currentColor);
+}
+.ring-icon{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:.72rem;color:var(--mint);font-weight:700;
+  transition:color .3s;
+  pointer-events:none;
+}
+.status-pill.behind .ring-icon{color:var(--rose)}
+.status-pill.on-track .ring-icon{color:var(--mint)}
+.status-pill.ahead .ring-icon{color:var(--amber)}
+.status-pill.behind .ring-fill{stroke:var(--rose);filter:drop-shadow(0 0 8px var(--rose))}
+
+@keyframes ringPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+.status-ring.pulse{animation:ringPulse 1.4s ease-in-out infinite}
+
+.status-info{display:flex;flex-direction:column;gap:.1rem;min-width:80px}
+.status-label{font-size:.72rem;color:var(--muted);font-weight:600;line-height:1.2}
+.status-delta{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.2}
+.status-delta.on-track{color:var(--mint)}
+.status-delta.ahead{color:var(--amber)}
+.status-delta.behind{color:var(--rose)}
+
+.schedule-strip{
+  position:fixed;top:64px;left:0;right:0;height:3px;z-index:41;
+  background:var(--line);
+  overflow:visible;
+}
+.schedule-fill{
+  position:absolute;top:0;bottom:0;left:0;width:0;
+  background:linear-gradient(90deg, var(--mint), var(--amber));
+  transition:width .8s cubic-bezier(.2,.7,.2,1), background .4s;
+  box-shadow:0 0 10px var(--mint);
+  border-radius:0 2px 2px 0;
+}
+.schedule-fill.behind{
+  background:linear-gradient(90deg, var(--rose), var(--orange));
+  box-shadow:0 0 10px var(--rose);
+}
+.schedule-expected{
+  position:absolute;top:-3px;bottom:-3px;left:0;width:2px;
+  background:var(--amber);
+  box-shadow:0 0 8px var(--amber), 0 0 16px var(--amber-glow);
+  border-radius:2px;
+  transition:left .8s cubic-bezier(.2,.7,.2,1);
+  z-index:2;
+}
+.schedule-expected::after{
+  content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--amber);
+  box-shadow:0 0 10px var(--amber);
+}
+
+.top-actions{display:flex;align-items:center;gap:.5rem}
+.icon-btn{
+  width:40px;height:40px;border-radius:11px;
+  background:var(--surface);border:1px solid var(--line);
+  color:var(--text-2);cursor:pointer;display:grid;place-items:center;
+  font-family:inherit;font-weight:700;font-size:.78rem;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),
+             background-color .25s,border-color .25s,color .25s,box-shadow .25s;
+}
+.icon-btn:hover{
+  background:var(--surface-hi);border-color:var(--line-hi);color:var(--text);
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 16px var(--amber-soft);
+}
+.icon-btn:active{transform:translateY(0) scale(.92);transition-duration:.08s}
+
+/* Test mode: orange test button */
+body.test-mode #testBtn{
+  background:linear-gradient(135deg, var(--amber), var(--orange));
+  color:#1a1206;border-color:transparent;
+  box-shadow:0 6px 18px var(--amber-glow);
+}
+body.test-mode #testBtn:hover{
+  box-shadow:0 10px 28px var(--amber-glow);
+}
+
+/* Theme morph */
+.theme-morph{
+  position:relative;width:44px;height:44px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--line);
+  cursor:pointer;overflow:hidden;padding:0;
+  transition:background .5s,border-color .5s,box-shadow .3s,transform .25s;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.theme-morph:hover{
+  border-color:var(--line-hi);box-shadow:0 0 0 5px var(--amber-soft);
+  transform:translateY(-2px);
+}
+.theme-morph:active{transform:translateY(0) scale(.92);transition-duration:.08s}
+.theme-morph .tm-sun,.theme-morph .tm-moon{
+  position:absolute;inset:0;display:grid;place-items:center;
+  transition:opacity .55s,transform .7s cubic-bezier(.5,1.5,.5,1),color .4s;
+}
+:root[data-theme="dark"] .tm-sun{opacity:0;transform:rotate(-140deg) scale(.25)}
+:root[data-theme="dark"] .tm-moon{opacity:1;transform:rotate(0) scale(1);color:var(--amber)}
+:root[data-theme="light"] .tm-sun{opacity:1;transform:rotate(0) scale(1);color:#f59e0b}
+:root[data-theme="light"] .tm-moon{opacity:0;transform:rotate(140deg) scale(.25)}
+
+.test-banner{
+  position:fixed;top:67px;inset-inline:0;height:38px;z-index:39;
+  display:none;align-items:center;justify-content:center;gap:1rem;
+  background:linear-gradient(90deg,var(--amber-2),var(--orange));
+  color:#1a1206;font-size:.82rem;font-weight:700;padding:0 1rem;
+  box-shadow:0 6px 24px var(--amber-glow);
+}
+.test-banner.show{display:flex;animation:slideDown .4s}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.test-banner button{
+  font-family:inherit;font-size:.74rem;padding:.35rem .9rem;border-radius:999px;
+  background:rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.3);color:#1a1206;
+  cursor:pointer;font-weight:700;transition:.2s;
+}
+.test-banner button:hover{background:rgba(0,0,0,.4)}
+body.test-mode .topbar{transform:translateY(38px)}
+body.test-mode .schedule-strip{top:102px}
+body.test-mode .nav{top:105px}
+body.test-mode .deck{inset-block-start:105px}
+
+.nav{
+  position:fixed;top:67px;inset-inline-start:0;bottom:0;width:240px;z-index:30;
+  background:linear-gradient(90deg, var(--bg-a) 82%, transparent);
+  padding:14px 10px 20px 14px;overflow-y:auto;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .3s;
+  border-inline-end:1px solid var(--line);
+  -webkit-overflow-scrolling:touch;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.nav.collapsed{transform:translateX(100%);opacity:0;pointer-events:none}
+.nav-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 6px}
+.nav-title{font-size:.68rem;letter-spacing:2.5px;color:var(--amber);font-weight:700}
+.nav-toggle{
+  width:26px;height:26px;border-radius:8px;
+  background:var(--surface);border:1px solid var(--line);color:var(--muted);
+  cursor:pointer;display:grid;place-items:center;
+  transition:transform .25s,background-color .2s,color .2s,border-color .2s;
+}
+.nav-toggle:hover{background:var(--surface-hi);color:var(--text);border-color:var(--line-hi);transform:rotate(90deg)}
+.nav-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.nav-item{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.5rem;
+  padding:.4rem .6rem;border-radius:10px;cursor:pointer;
+  font-size:.72rem;color:var(--text-2);border:1px solid transparent;
+  transition:background-color .2s,border-color .2s,padding .2s;
+  line-height:1.4;
+}
+.nav-item:hover{background:var(--surface);border-color:var(--line);padding-inline-start:.85rem}
+.nav-item.active{background:var(--amber-soft);border-color:rgba(251,191,36,.4);color:var(--text)}
+.nav-item.station-nav{
+  background:linear-gradient(90deg,var(--amber-soft),transparent);
+  border-inline-start:2px solid var(--amber);
+}
+.nav-num{font-size:.68rem;color:var(--amber);font-weight:700;min-width:1.6rem;text-align:center}
+.nav-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-status{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--line-hi);
+  transition:background-color .4s,box-shadow .4s;
+}
+.nav-status.in-progress{
+  background:var(--amber);
+  box-shadow:0 0 8px var(--amber);
+  animation:pulseDot 1.6s ease-in-out infinite;
+}
+.nav-status.done-ok{background:var(--mint);box-shadow:0 0 6px var(--mint)}
+.nav-status.done-over{background:var(--rose);box-shadow:0 0 6px var(--rose)}
+@keyframes pulseDot{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.3);opacity:.7}
+}
+
+.nav-reopen{
+  position:fixed;top:78px;inset-inline-start:12px;z-index:38;
+  width:42px;height:42px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line-hi);color:var(--text-2);
+  cursor:pointer;display:none;place-items:center;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:transform .25s,background-color .2s,color .2s,border-color .2s,box-shadow .2s;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.nav-reopen:hover{
+  background:var(--surface-hi);color:var(--amber);border-color:rgba(251,191,36,.5);
+  transform:translateY(-2px);box-shadow:0 10px 28px var(--amber-glow);
+}
+.nav-reopen.show{display:grid;animation:popIn .3s}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+.deck{
+  position:fixed;inset:67px 0 0 0;inset-inline-start:240px;
+  overflow-y:auto;scroll-snap-type:y proximity;scroll-behavior:smooth;
+  z-index:10;transition:inset-inline-start .35s cubic-bezier(.2,.7,.2,1);
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+}
+.deck::-webkit-scrollbar{width:8px}
+.deck::-webkit-scrollbar-thumb{background:var(--line-hi);border-radius:8px}
+
+.sec{
+  min-height:100vh;min-height:100svh;min-height:100dvh;
+  scroll-snap-align:start;scroll-snap-stop:always;
+  padding:44px clamp(22px,4vw,66px) 64px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.sec-inner{
+  max-width:1400px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;gap:clamp(14px,1.7vw,24px);
+  position:relative;z-index:2;
+}
+.sec-inner > *{
+  opacity:0;transform:translateY(28px);
+  transition:opacity .7s cubic-bezier(.2,.7,.2,1),
+             transform .7s cubic-bezier(.2,.7,.2,1);
+}
+.sec.visible .sec-inner > *{opacity:1;transform:translateY(0)}
+.sec.visible .sec-inner > *:nth-child(1){transition-delay:.05s}
+.sec.visible .sec-inner > *:nth-child(2){transition-delay:.12s}
+.sec.visible .sec-inner > *:nth-child(3){transition-delay:.19s}
+.sec.visible .sec-inner > *:nth-child(4){transition-delay:.26s}
+.sec.visible .sec-inner > *:nth-child(5){transition-delay:.33s}
+.sec.visible .sec-inner > *:nth-child(6){transition-delay:.40s}
+.sec.visible .sec-inner > *:nth-child(n+7){transition-delay:.47s}
+
+#cover::before{
+  content:'';position:absolute;top:-15%;inset-inline-end:-15%;
+  width:60vw;height:60vw;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle, rgba(251,191,36,.22), transparent 60%);
+  filter:blur(80px);animation:float1 22s ease-in-out infinite;
+}
+#cover::after{
+  content:'';position:absolute;bottom:-20%;inset-inline-start:-10%;
+  width:50vw;height:50vw;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle, rgba(45,212,191,.15), transparent 60%);
+  filter:blur(80px);animation:float2 26s ease-in-out infinite;
+}
+@keyframes float1{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-60px,40px) scale(1.15)}
+}
+@keyframes float2{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(60px,-50px) scale(1.2)}
+}
+#end::before{
+  content:'';position:absolute;bottom:-15%;inset-inline-start:-15%;
+  width:50vw;height:50vw;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle, rgba(167,139,250,.13), transparent 60%);
+  filter:blur(80px);
+}
+
+h1,h2,h3,h4{margin:0;line-height:1.28;font-weight:800;letter-spacing:-.5px}
+h2{
+  font-size:clamp(1.55rem,2.6vw,2.45rem);
+  position:relative;padding-bottom:.6rem;
+  background:linear-gradient(95deg,var(--text) 0%,var(--text) 60%,var(--amber) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+h2::after{
+  content:'';position:absolute;bottom:0;inset-inline-start:0;
+  width:72px;height:3px;
+  background:linear-gradient(90deg,var(--amber),var(--orange),transparent);
+  border-radius:2px;
+  box-shadow:0 0 14px var(--amber-glow);
+  -webkit-text-fill-color:initial;
+}
+h2.grad{
+  background:linear-gradient(95deg,#fde68a,var(--amber) 45%,var(--orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+h3{font-size:clamp(1rem,1.2vw,1.16rem);color:var(--text);letter-spacing:-.2px}
+p{
+  margin:0;line-height:1.95;color:var(--text-2);
+  font-size:clamp(.9rem,.98vw,1.02rem);
+}
+.lead{font-size:clamp(.98rem,1.13vw,1.13rem);color:var(--text-2)}
+.muted{color:var(--muted)}
+.eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:2.5px;color:var(--amber);
+  display:flex;align-items:center;gap:.6rem;
+}
+.eyebrow::before{
+  content:'';width:28px;height:1.5px;
+  background:linear-gradient(90deg,var(--amber),transparent);
+}
+.grad-text{
+  background:linear-gradient(95deg,#fde68a,var(--amber) 45%,var(--orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.grid{display:grid;gap:clamp(12px,1.3vw,18px)}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+
+.card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,var(--surface),rgba(255,255,255,.005));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:clamp(16px,1.5vw,24px);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),
+             box-shadow .35s,border-color .35s,background .3s;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,transparent 40%,rgba(251,191,36,.03));
+}
+@media(hover:hover){
+  .card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(251,191,36,.3);
+    box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 0 1px rgba(251,191,36,.15);
+  }
+}
+.card .idx{
+  width:34px;height:34px;border-radius:11px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--amber-soft),rgba(251,191,36,.05));
+  color:var(--amber);
+  border:1px solid rgba(251,191,36,.3);
+  font-weight:800;font-size:.82rem;margin-bottom:.7rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+  transition:transform .35s;
+}
+.card:hover .idx{transform:scale(1.1) rotate(-6deg)}
+.card h3{margin-bottom:.4rem}
+.card p{font-size:clamp(.82rem,.9vw,.94rem);line-height:1.72}
+
+.card.accent{
+  border-color:rgba(251,191,36,.4);
+  background:linear-gradient(160deg,var(--amber-soft),rgba(251,191,36,.02));
+  box-shadow:0 0 0 1px rgba(251,191,36,.08),0 12px 30px rgba(251,191,36,.08);
+}
+.card.green{border-color:rgba(52,211,153,.35)}
+.card.green .idx{
+  background:var(--mint-soft);color:var(--mint);
+  border-color:rgba(52,211,153,.4);
+}
+.card.red{border-color:rgba(251,113,133,.35)}
+.card.red .idx{
+  background:var(--rose-soft);color:var(--rose);
+  border-color:rgba(251,113,133,.4);
+}
+.card.cyan{border-color:rgba(45,212,191,.35)}
+.card.cyan .idx{
+  background:rgba(45,212,191,.15);color:#2dd4bf;
+  border-color:rgba(45,212,191,.4);
+}
+
+.callout{
+  border-inline-start:3px solid var(--amber);
+  background:linear-gradient(90deg,var(--amber-soft),transparent 80%);
+  border-radius:14px;padding:18px 24px;
+  color:var(--text);font-weight:600;
+  font-size:clamp(.9rem,1vw,1.02rem);line-height:1.85;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.callout.red{
+  border-color:var(--rose);
+  background:linear-gradient(90deg,var(--rose-soft),transparent 80%);
+}
+.callout.cyan{
+  border-color:#2dd4bf;
+  background:linear-gradient(90deg,rgba(45,212,191,.12),transparent 80%);
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{
+  padding:.4rem .85rem;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);
+  font-size:.76rem;color:var(--text-2);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:transform .2s,background-color .2s,border-color .2s;
+}
+.chip:hover{background:var(--surface-hi);border-color:var(--line-hi);transform:translateY(-1px)}
+.chip.gold{border-color:rgba(251,191,36,.4);color:var(--amber)}
+
+ul.clean{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}
+ul.clean li{
+  display:flex;gap:.7rem;align-items:flex-start;
+  color:var(--text-2);font-size:clamp(.86rem,.94vw,.98rem);line-height:1.82;
+}
+ul.clean li::before{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:var(--amber);margin-top:.62rem;flex:0 0 auto;
+  box-shadow:0 0 10px var(--amber);
+}
+
+.cover-title{
+  font-size:clamp(1.9rem,4vw,3.9rem);
+  line-height:1.25;letter-spacing:-1.5px;
+}
+.cover-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.5rem 1.15rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--amber-soft),rgba(251,191,36,.03));
+  border:1px solid rgba(251,191,36,.4);
+  color:var(--amber);font-size:.82rem;font-weight:600;width:fit-content;
+  box-shadow:0 4px 18px rgba(251,191,36,.15), inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.cover-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.5rem}
+.btn-primary,.btn-ghost{
+  font-family:inherit;font-size:.94rem;font-weight:700;
+  padding:.85rem 1.6rem;border-radius:13px;cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),
+             box-shadow .3s,background .25s,border-color .25s,color .25s;
+  letter-spacing:-.1px;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#fde68a,var(--amber) 45%,var(--orange));
+  color:#1a1206;
+  box-shadow:0 8px 24px var(--amber-glow), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 40px var(--amber-glow),0 0 0 1px rgba(255,255,255,.15), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.btn-ghost{
+  background:var(--surface);border-color:var(--line);color:var(--text-2);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.btn-ghost:hover{
+  background:var(--surface-hi);border-color:var(--line-hi);color:var(--text);
+  transform:translateY(-2px);box-shadow:var(--shadow-sm);
+}
+.cover-stats{display:flex;gap:.8rem;margin-top:1rem;flex-wrap:wrap}
+.stat{
+  display:flex;flex-direction:column;gap:.2rem;
+  padding:.85rem 1.3rem;border-radius:14px;
+  background:var(--surface);border:1px solid var(--line);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.stat:hover{transform:translateY(-3px);border-color:var(--line-hi);box-shadow:var(--shadow-sm)}
+.stat b{font-size:1.4rem;color:var(--amber);font-weight:800}
+.stat span{font-size:.72rem;color:var(--muted)}
+
+.widget{
+  position:relative;
+  background:linear-gradient(160deg,var(--surface-hi),var(--surface));
+  border:1px solid var(--line-hi);border-radius:20px;
+  padding:clamp(18px,1.9vw,26px);
+  display:flex;flex-direction:column;gap:.9rem;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.widget-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.widget-label{
+  font-size:.72rem;letter-spacing:1.8px;color:var(--amber);
+  font-weight:700;text-transform:uppercase;
+}
+.widget-results{
+  font-family:inherit;font-size:.79rem;padding:.45rem .95rem;border-radius:11px;
+  background:var(--surface-hi);border:1px solid var(--line);color:var(--text-2);
+  cursor:pointer;
+  transition:transform .2s,background-color .2s,color .2s,border-color .2s,box-shadow .2s;
+}
+.widget-results:hover{
+  background:var(--amber-soft);border-color:rgba(251,191,36,.5);color:var(--amber);
+  transform:translateY(-2px);box-shadow:0 6px 18px var(--amber-glow);
+}
+.widget-q{font-size:clamp(1rem,1.18vw,1.18rem);font-weight:700;color:var(--text);line-height:1.5}
+.opt-grid{display:grid;gap:.6rem}
+.opt-grid.g2{grid-template-columns:repeat(2,1fr)}
+.opt-grid.g3{grid-template-columns:repeat(3,1fr)}
+.opt-grid.g4{grid-template-columns:repeat(4,1fr)}
+.opt{
+  font-family:inherit;text-align:start;
+  padding:.85rem 1.15rem;border-radius:13px;
+  background:var(--surface);border:1px solid var(--line);
+  color:var(--text-2);cursor:pointer;font-size:.9rem;
+  display:flex;justify-content:space-between;align-items:center;gap:.5rem;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),
+             background-color .2s,border-color .2s,color .2s,box-shadow .25s;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.opt:hover{
+  background:var(--surface-hi);border-color:var(--line-hi);color:var(--text);
+  transform:translateY(-3px);box-shadow:var(--shadow-sm);
+}
+.opt.voted{
+  background:var(--amber-soft);border-color:rgba(251,191,36,.6);color:var(--text);
+  font-weight:600;
+  box-shadow:0 6px 20px var(--amber-glow);
+}
+.opt .pct{font-variant-numeric:tabular-nums;font-size:.78rem;color:var(--muted);opacity:0;transition:.4s}
+.opt.show-pct .pct{opacity:1}
+
+.wordcloud{
+  display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:center;
+  min-height:140px;padding:1.4rem;
+  background:var(--surface);border-radius:16px;border:1px solid var(--line);
+}
+.wordcloud span{
+  padding:.45rem 1rem;border-radius:999px;
+  background:var(--surface-hi);border:1px solid var(--line);color:var(--text-2);
+  font-weight:600;
+  transition:transform .25s,background-color .2s,color .2s,border-color .2s,box-shadow .2s;
+}
+.wordcloud span:hover{
+  background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.5);
+  transform:scale(1.1) translateY(-3px);
+  box-shadow:0 6px 20px var(--amber-glow);
+}
+.prompt-card{
+  background:var(--surface-hi);border:1px solid var(--line);border-radius:16px;
+  padding:1.2rem;font-size:.88rem;line-height:1.85;color:var(--text-2);
+  position:relative;cursor:pointer;
+  transition:transform .25s,border-color .25s,background-color .25s,box-shadow .25s;
+}
+.prompt-card:hover{
+  border-color:var(--line-hi);transform:translateY(-4px);
+  box-shadow:var(--shadow-md);
+}
+.prompt-card.voted{
+  border-color:var(--amber);background:var(--amber-soft);
+  box-shadow:0 10px 32px var(--amber-glow);
+}
+.prompt-card .prompt-tag{
+  position:absolute;top:-11px;inset-inline-start:16px;
+  padding:.18rem .7rem;border-radius:999px;
+  background:linear-gradient(135deg,#fde68a,var(--amber));
+  color:#1a1206;font-size:.7rem;font-weight:800;
+  box-shadow:0 4px 12px var(--amber-glow);
+}
+
+.break-num{
+  font-size:clamp(5rem,13vw,12rem);font-weight:800;line-height:1;
+  background:linear-gradient(180deg,#fde68a,var(--amber) 50%,var(--orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-align:center;letter-spacing:-.05em;
+  filter:drop-shadow(0 8px 40px var(--amber-glow));
+}
+
+.lb{display:flex;flex-direction:column;gap:.5rem}
+.lb-row{
+  display:grid;grid-template-columns:2.6rem 1fr auto;gap:.8rem;align-items:center;
+  padding:.65rem .95rem;border-radius:13px;
+  background:var(--surface);border:1px solid var(--line);font-size:.88rem;
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.lb-row:hover{transform:translateX(4px);border-color:var(--line-hi);box-shadow:var(--shadow-sm)}
+.lb-row.top1{
+  background:linear-gradient(90deg,var(--amber-soft),transparent);
+  border-color:rgba(251,191,36,.5);
+  box-shadow:0 6px 20px var(--amber-glow);
+}
+.lb-row.top2{background:linear-gradient(90deg,rgba(200,200,220,.13),transparent)}
+.lb-row.top3{background:linear-gradient(90deg,rgba(200,150,90,.13),transparent)}
+.lb-rank{font-weight:800;color:var(--amber);text-align:center}
+.lb-name{color:var(--text);font-weight:600}
+.lb-score{font-variant-numeric:tabular-nums;color:var(--amber);font-weight:700}
+
+.overlay,.modal{
+  position:fixed;inset:0;z-index:60;display:none;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  padding:clamp(16px,4vw,50px);overflow:auto;
+}
+.overlay.open,.modal.open{display:flex;align-items:center;justify-content:center;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.overlay-card,.modal-card{
+  background:linear-gradient(160deg,var(--bg-b),var(--bg-a));
+  border:1px solid var(--line-hi);border-radius:22px;
+  padding:clamp(22px,2.8vw,34px);width:100%;max-width:880px;
+  max-height:92vh;overflow:auto;
+  box-shadow:var(--shadow-lg);
+  animation:scaleIn .35s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes scaleIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.overlay-head,.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.close-btn{
+  width:40px;height:40px;border-radius:11px;
+  background:var(--surface);border:1px solid var(--line);color:var(--text-2);
+  cursor:pointer;font-size:1.2rem;font-family:inherit;
+  display:grid;place-items:center;
+  transition:transform .25s,background-color .2s,color .2s,border-color .2s;
+}
+.close-btn:hover{background:var(--surface-hi);color:var(--text);border-color:var(--line-hi);transform:rotate(90deg)}
+.qr-box{display:flex;justify-content:center;padding:1rem}
+.qr-box img{width:250px;height:250px;border-radius:14px;background:#fff;padding:10px}
+.qr-url{
+  font-family:monospace;font-size:.8rem;color:var(--amber);
+  text-align:center;padding:.75rem;background:var(--surface);border-radius:12px;
+  border:1px solid var(--line);word-break:break-all;
+  user-select:all;cursor:text;
+}
+
+.snackbar{
+  position:fixed;bottom:calc(28px + env(safe-area-inset-bottom,0px));
+  inset-inline-start:50%;transform:translateX(50%) translateY(80px);
+  z-index:70;padding:.8rem 1.4rem;border-radius:15px;
+  background:var(--bg-b);border:1px solid rgba(52,211,153,.55);color:var(--mint);
+  font-size:.88rem;font-weight:600;opacity:0;
+  transition:.4s cubic-bezier(.2,.7,.2,1);
+  box-shadow:var(--shadow-lg),0 0 30px rgba(52,211,153,.2);
+}
+.snackbar.show{opacity:1;transform:translateX(50%) translateY(0)}
+
+body.focus-mode .topbar{transform:translateY(-100%);opacity:0;pointer-events:none}
+body.focus-mode .schedule-strip{opacity:0}
+body.focus-mode .nav{transform:translateX(100%);opacity:0;pointer-events:none}
+body.focus-mode .deck{inset-inline-start:0;inset-block-start:0}
+body.focus-mode .nav-reopen{display:none!important}
+body.focus-mode .test-banner{display:none!important}
+.focus-timer{
+  position:fixed;top:14px;inset-inline-end:14px;z-index:65;
+  display:none;align-items:center;gap:.6rem;padding:.5rem 1rem;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--line-hi);border-radius:999px;
+  font-size:.82rem;color:#f1f5f9;
+  box-shadow:var(--shadow-lg);
+}
+body.focus-mode .focus-timer{display:flex}
+.focus-ring{position:relative;width:32px;height:32px}
+.focus-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.focus-ring-track{fill:none;stroke:rgba(255,255,255,.2);stroke-width:2.5}
+.focus-ring-fill{
+  fill:none;stroke:var(--mint);stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:75.4;stroke-dashoffset:75.4;
+  transition:stroke-dashoffset .8s,stroke .4s;
+}
+.focus-status{padding:.15rem .6rem;border-radius:999px;font-size:.72rem;background:rgba(255,255,255,.12);color:#8b96a8;font-weight:600}
+.focus-status.ok{background:rgba(52,211,153,.25);color:#a8e5cc}
+.focus-status.warn{background:rgba(251,191,36,.25);color:#fde68a}
+.focus-status.over{background:rgba(251,113,133,.25);color:#f6d3d3}
+.focus-hint{
+  position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  inset-inline-start:50%;transform:translateX(50%) translateY(80px);
+  z-index:75;padding:.6rem 1.2rem;border-radius:999px;
+  background:rgba(0,0,0,.8);border:1px solid var(--line-hi);
+  color:#c9d4e2;font-size:.78rem;font-weight:600;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:.4s;opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:.5rem;white-space:nowrap;
+}
+.focus-hint kbd{
+  padding:.1rem .5rem;border-radius:5px;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
+  font-family:monospace;font-size:.72rem;color:var(--amber);
+}
+
+.sec.station{
+  background:
+    radial-gradient(circle at 50% 30%, rgba(251,191,36,.14), transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(45,212,191,.07), transparent 50%);
+}
+.sec.station::after{
+  content:'';position:absolute;inset:22px;border-radius:28px;pointer-events:none;
+  background:linear-gradient(135deg,var(--amber),#2dd4bf) border-box;
+  border:2px solid transparent;
+  -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:stationPulse 4s ease-in-out infinite;z-index:1;
+}
+@keyframes stationPulse{0%,100%{opacity:.3}50%{opacity:.9}}
+.sec.station .widget{
+  background:linear-gradient(160deg,var(--surface-hi),var(--surface));
+  box-shadow:var(--shadow-lg),0 0 90px var(--amber-soft);
+}
+.sec.station .widget::before{
+  content:'';position:absolute;inset:-26px;border-radius:40px;
+  background:radial-gradient(circle, var(--amber-glow), transparent 65%);
+  filter:blur(50px);z-index:-1;
+  animation:halo 4s ease-in-out infinite;
+}
+@keyframes halo{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
+.station-badge{
+  position:absolute;top:28px;inset-inline-start:28px;z-index:3;
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.62rem 1.25rem;border-radius:999px;
+  background:linear-gradient(135deg,#fde68a,var(--amber) 50%,var(--orange));
+  color:#1a1206;font-weight:800;font-size:.82rem;letter-spacing:.5px;
+  box-shadow:0 10px 32px var(--amber-glow),0 0 60px rgba(251,191,36,.3),
+             inset 0 1px 0 rgba(255,255,255,.4);
+  animation:badgeBob 3s ease-in-out infinite;
+}
+@keyframes badgeBob{
+  0%,100%{transform:translateY(0);box-shadow:0 10px 32px var(--amber-glow),0 0 60px rgba(251,191,36,.3)}
+  50%{transform:translateY(-5px);box-shadow:0 16px 44px var(--amber-glow),0 0 90px rgba(251,191,36,.45)}
+}
+.station-badge svg{width:17px;height:17px}
+.sec.station .opt{padding:1.05rem 1.3rem;font-size:1rem;min-height:60px;border-radius:15px}
+.sec.station .widget-q{font-size:clamp(1.1rem,1.5vw,1.4rem)}
+
+.sec.demo{
+  background:
+    radial-gradient(circle at 50% 30%, rgba(45,212,191,.15), transparent 55%),
+    radial-gradient(circle at 30% 90%, rgba(52,211,153,.08), transparent 50%);
+}
+.sec.demo::after{
+  content:'';position:absolute;inset:22px;border-radius:28px;pointer-events:none;
+  background:linear-gradient(135deg,#2dd4bf,var(--mint)) border-box;
+  border:2px solid transparent;
+  -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:stationPulse 4s ease-in-out infinite;z-index:1;
+}
+.demo-badge{
+  position:absolute;top:28px;inset-inline-start:28px;z-index:3;
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.62rem 1.25rem;border-radius:999px;
+  background:linear-gradient(135deg,#7fe4d0,#2dd4bf 55%,#0d9488);
+  color:#04141a;font-weight:800;font-size:.82rem;letter-spacing:.5px;
+  box-shadow:0 10px 32px rgba(45,212,191,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  animation:badgeBob 3s ease-in-out infinite;
+}
+.demo-badge svg{width:17px;height:17px}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;position:relative;z-index:2}
+.demo-step{
+  background:linear-gradient(160deg,var(--surface-hi),var(--surface));
+  border:1px solid var(--line-hi);border-radius:18px;
+  padding:1.3rem;display:flex;flex-direction:column;gap:.75rem;
+  position:relative;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:transform .25s,box-shadow .25s;
+}
+.demo-step:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.demo-step .step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:11px;
+  background:linear-gradient(135deg,#fde68a,var(--amber));
+  color:#1a1206;font-weight:800;font-size:.85rem;
+  box-shadow:0 4px 14px var(--amber-glow);
+}
+.demo-step .step-title{font-weight:700;color:var(--text);font-size:.98rem}
+.demo-prompt{
+  background:rgba(0,0,0,.35);border:1px solid rgba(45,212,191,.28);
+  border-inline-start:3px solid #2dd4bf;
+  border-radius:12px;padding:1rem;
+  font-family:'Courier New',monospace;
+  font-size:.78rem;line-height:1.75;color:#b8e5ed;
+  direction:rtl;text-align:right;
+  position:relative;overflow:hidden;
+}
+.demo-prompt::before{
+  content:'PROMPT';position:absolute;top:7px;inset-inline-end:11px;
+  font-size:.58rem;color:#2dd4bf;opacity:.7;
+  font-family:'Vazirmatn',sans-serif;
+  letter-spacing:1.5px;font-weight:700;
+}
+.timing{
+  display:flex;align-items:center;gap:.85rem;
+  padding:.7rem 1.05rem;border-radius:13px;
+  background:rgba(0,0,0,.22);border:1px solid var(--line);
+  font-size:.86rem;font-weight:600;
+}
+.timing .t-before{color:var(--rose)}
+.timing .t-arrow{color:var(--muted);font-size:1.1rem}
+.timing .t-after{color:var(--mint);font-weight:700}
+
+@media(max-width:900px){
+  .nav{width:210px}
+  .deck{inset-inline-start:210px}
+  .g3,.g4,.g5{grid-template-columns:repeat(2,1fr)}
+  .opt-grid.g3,.opt-grid.g4{grid-template-columns:repeat(2,1fr)}
+  .brand-sub{display:none}
+  .status-info{min-width:64px}
+  .status-label{display:none}
+  .demo-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .nav{transform:translateX(100%);opacity:0;pointer-events:none;width:220px;background:var(--bg-b)}
+  .nav.open{transform:translateX(0);opacity:1;pointer-events:auto}
+  .deck{inset-inline-start:0}
+  .g2,.g3,.g4,.g5,.opt-grid.g2,.opt-grid.g3,.opt-grid.g4{grid-template-columns:1fr}
+  .brand-title{font-size:.72rem}
+  .station-badge,.demo-badge{top:16px;inset-inline-start:16px;font-size:.72rem;padding:.5rem 1rem}
+  .sec{padding:34px 18px 52px}
+  h2{font-size:1.4rem}
+  h2::after{width:48px}
+  .cover-title{font-size:1.7rem}
+  .break-num{font-size:5rem}
+  .icon-btn{width:36px;height:36px}
+  .theme-morph{width:40px;height:40px}
+  .status-ring{width:38px;height:38px}
+  .status-info{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">‹›</div>
+    <div>
+      <div class="brand-title">ai-workshops</div>
+      <div class="brand-sub">گروه اول · ۵ مرداد ۱۴۰۵ · G1-1405-05-05</div>
+    </div>
+  </div>
+  <div class="status-pill" id="statusPill">
+    <div class="status-ring" id="statusRing" role="button" tabindex="0" aria-label="شروع/توقف زمان‌سنجی">
+      <svg viewBox="0 0 40 40">
+        <circle class="ring-track" cx="20" cy="20" r="16"></circle>
+        <circle class="ring-fill" id="ringFill" cx="20" cy="20" r="16"></circle>
+      </svg>
+      <span class="ring-icon" id="ringIcon">▶</span>
+    </div>
+    <div class="status-info">
+      <span class="status-label" id="statusLabel">شروع نشده</span>
+      <span class="status-delta" id="statusDelta">—</span>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" id="testBtn" aria-label="حالت تست" title="حالت تست">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    </button>
+    <button class="icon-btn" id="focusBtn" aria-label="حالت تمرکز" title="حالت تمرکز (F)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+    <button class="icon-btn" id="menuBtn" aria-label="فهرست" title="فهرست">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <button class="icon-btn" id="qrBtn" aria-label="QR" title="نمایش QR (Q)">QR</button>
+    <button class="theme-morph" id="themeBtn" aria-label="تغییر تم" title="تغییر تم">
+      <span class="tm-sun" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="12" cy="12" r="4.2"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19" y2="19"/><line x1="5" y1="19" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19" y2="5"/></g></svg>
+      </span>
+      <span class="tm-moon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </span>
+    </button>
+  </div>
+</header>
+
+<div class="schedule-strip" id="scheduleStrip">
+  <div class="schedule-fill" id="scheduleFill"></div>
+  <div class="schedule-expected" id="scheduleExpected"></div>
+</div>
+
+<div class="test-banner" id="testBanner">
+  <span>🧪 حالت تست فعال · داده‌ها فقط شبیه‌سازی‌شده هستند</span>
+  <button id="exitTestBtn">پایان و پاک‌سازی</button>
+</div>
+
+<aside class="nav" id="nav">
+  <div class="nav-head">
+    <div class="nav-title">فهرست · گروه اول</div>
+    <button class="nav-toggle" id="navToggle" aria-label="بستن فهرست">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <ol class="nav-list" id="navList"></ol>
+</aside>
+
+<button class="nav-reopen" id="navReopen" aria-label="باز کردن فهرست">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<main class="deck" id="deck">
+
+<section class="sec" id="cover" data-title="شروع" data-target="3">
+  <div class="sec-inner">
+    <div class="cover-badge">● گروه اول · ۵ مرداد ۱۴۰۵ · کد سشن: G1-1405-05-05</div>
+    <h1 class="cover-title">کارگاه آموزشی<br><span class="grad-text">آشنایی با هوش مصنوعی</span><br>برای کارشناسان بانک</h1>
+    <p class="lead">۸:۰۰ تا ۱۲:۰۰ · مدرس و راهبر: دکتر حسین بیانی</p>
+    <div class="cover-actions">
+      <button class="btn-primary" id="startBtn">▶ شروع ارائه</button>
+      <button class="btn-ghost" id="showQrBtn">نمایش QR ورود شرکت‌کنندگان</button>
+    </div>
+    <div class="cover-stats">
+      <div class="stat"><b id="liveCount">۰</b><span>شرکت‌کننده</span></div>
+      <div class="stat"><b id="liveVotes">۰</b><span>مشارکت تا کنون</span></div>
+      <div class="stat"><b id="liveScore">۰</b><span>امتیاز شما (ماک)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="intro" data-title="مقدمه" data-target="2">
+  <div class="sec-inner">
+    <div class="eyebrow">مقدمه</div>
+    <h2>هوش مصنوعی؛ از فناوری نوظهور تا <span class="grad-text">ابزار روزمره بانکداری</span></h2>
+    <p class="lead">تحولات شتابان فناوری، شیوه انجام فعالیت‌های سازمانی و ارائه خدمات در بانکداری را دگرگون کرده است. هوش مصنوعی امروز ابزاری اثرگذار برای بهبود بهره‌وری، تسریع فرایندها، افزایش دقت، ارتقای تجربه مشتری و پشتیبانی از تصمیم‌گیری است.</p>
+    <div class="grid g5">
+      <div class="card"><div class="idx">۱</div><h3>بهره‌وری</h3><p>آزادسازی زمان از کارهای تکراری</p></div>
+      <div class="card"><div class="idx">۲</div><h3>سرعت</h3><p>پردازش سریع حجم بالای اسناد</p></div>
+      <div class="card"><div class="idx">۳</div><h3>دقت</h3><p>کاهش خطای انسانی</p></div>
+      <div class="card"><div class="idx">۴</div><h3>تجربه مشتری</h3><p>پاسخ‌گویی سریع‌تر و باکیفیت‌تر</p></div>
+      <div class="card"><div class="idx">۵</div><h3>تصمیم‌گیری</h3><p>پشتیبانی از تحلیل و ارزیابی</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="goals" data-title="اهداف دوره" data-target="2">
+  <div class="sec-inner">
+    <div class="eyebrow">اهداف دوره</div>
+    <h2>در پایان این کارگاه چه به دست می‌آوریم؟</h2>
+    <div class="grid g2">
+      <div class="card"><div class="idx">۱</div><h3>شناخت مفهوم و جایگاه</h3><p>آشنایی مقدماتی با مفهوم هوش مصنوعی و جایگاه آن در محیط‌های کاری</p></div>
+      <div class="card"><div class="idx">۲</div><h3>مفاهیم پایه و انواع</h3><p>شناخت مفاهیم پایه و انواع اصلی هوش مصنوعی</p></div>
+      <div class="card"><div class="idx">۳</div><h3>قابلیت‌ها و محدودیت‌ها</h3><p>آشنایی با قابلیت‌ها و محدودیت‌های هوش مصنوعی در عمل</p></div>
+      <div class="card"><div class="idx">۴</div><h3>کاربردهای بانکی</h3><p>درک کاربردها در صنعت بانکداری و فعالیت‌های کارشناسی</p></div>
+      <div class="card"><div class="idx">۵</div><h3>هوش مصنوعی مولد</h3><p>آشنایی اولیه با ظرفیت‌های آن در امور روزمره</p></div>
+      <div class="card accent"><div class="idx">۶</div><h3>نگاه مسئولانه</h3><p>تقویت نگاه مسئولانه و واقع‌بینانه در استفاده از ابزارها</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s1-ai-def" data-title="تعریف ساده" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۱ · ۸:۰۷</div>
+    <h2>هوش مصنوعی در یک تعریف ساده</h2>
+    <div class="callout">هوش مصنوعی سامانه‌ای محاسباتی است که الگوها را از داده‌ها یاد می‌گیرد تا وظایفی نظیر خواندن متن، دسته‌بندی و پردازش را شبیه‌سازی کند.</div>
+    <div class="grid g3">
+      <div class="card"><div class="idx">۱</div><h3>می‌خواند</h3><p>متن، سند، ایمیل، بخشنامه</p></div>
+      <div class="card"><div class="idx">۲</div><h3>دسته‌بندی می‌کند</h3><p>پرونده، شکایت، تراکنش</p></div>
+      <div class="card"><div class="idx">۳</div><h3>پردازش می‌کند</h3><p>خلاصه، جدول، تحلیل</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s1-programming-vs-ml" data-title="تفاوت با برنامه‌نویسی" data-target="4">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۱ · ۸:۱۲</div>
+    <h2>تفاوت تفکر سنتی و یادگیری ماشینی</h2>
+    <div class="grid g2">
+      <div class="card cyan"><div class="idx">الف</div><h3>برنامه‌نویسی سنتی</h3><p>دستورات صریح شرطی: «اگر … آنگاه …». برنامه‌نویس همه قواعد را از پیش می‌نویسد و سیستم همان‌ها را اجرا می‌کند.</p></div>
+      <div class="card accent"><div class="idx">ب</div><h3>یادگیری ماشینی</h3><p>یادگیری از شواهد و نمونه‌های گذشته. سیستم با دیدن داده‌های زیاد، الگو را خودش کشف می‌کند.</p></div>
+    </div>
+    <div class="callout">مثال: در برنامه‌نویسی سنتی باید بنویسید «اگر مبلغ > ۱ میلیارد و سابقه چک برگشتی > ۲ آنگاه رد کن»؛ در یادگیری ماشینی مدل از هزاران پرونده گذشته خودش الگوها را استخراج می‌کند.</div>
+  </div>
+</section>
+
+<section class="sec" id="s1-everyday" data-title="نمونه‌های روزمره" data-target="4">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۱ · ۸:۱۶</div>
+    <h2>هوش مصنوعی همین حالا کنار ماست</h2>
+    <div class="grid g4">
+      <div class="card"><div class="idx">۱</div><h3>مسیریاب‌ها</h3><p>پیش‌بینی زمان سفر و پیشنهاد مسیر جایگزین</p></div>
+      <div class="card"><div class="idx">۲</div><h3>پیشنهاد فیلم و موسیقی</h3><p>بر اساس سلیقه کاربر</p></div>
+      <div class="card"><div class="idx">۳</div><h3>فیلتر ضد‌امسپم</h3><p>تشخیص ایمیل‌های مزاحم</p></div>
+      <div class="card"><div class="idx">۴</div><h3>پردازش تصویر</h3><p>دوربین و پردازش در گوشی هوشمند</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-wc1" data-title="کلمه‌ابری" data-target="5">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · کلمه‌ابری
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="wc1" data-type="wordcloud">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ پاسخ شبیه‌سازی‌شده</span>
+        <button class="widget-results" data-results="wc1">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">هوش مصنوعی در یک کلمه برای شما چیست؟</div>
+      <div class="wordcloud" id="wc1Cloud"></div>
+      <div class="muted" style="font-size:.78rem;text-align:center">در فاز ۲، شرکت‌کننده یک کلمه می‌فرستد؛ اینجا داده ماک است.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s1-workplace" data-title="هوش مصنوعی در محیط کار" data-target="4">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۱ · ۸:۲۵</div>
+    <h2>آیا هوش مصنوعی جایگزین کارشناس می‌شود؟</h2>
+    <div class="grid g2">
+      <div class="card red"><div class="idx">؟</div><h3>دغدغه رایج</h3><p>ترس از حذف نقش کارشناس و واگذاری کامل تصمیم‌گیری به ماشین.</p></div>
+      <div class="card green"><div class="idx">✓</div><h3>پاسخ واقع‌بینانه</h3><p>هوش مصنوعی «دستیار شناختی» است: کارهای تکراری، خسته‌کننده و پردازش سنگین متون را انجام می‌دهد تا وقت کارشناس برای تحلیل آزاد شود.</p></div>
+    </div>
+    <div class="callout">نقش کارشناس تغییر می‌کند، نه حذف؛ از «انجام‌دهنده» به «ناظر و تصمیم‌گیرنده».</div>
+  </div>
+</section>
+
+<section class="sec" id="s1-augmented" data-title="هوش تلفیقی" data-target="3">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۱ · ۸:۲۹</div>
+    <h2>هوش انسانی، هوش مصنوعی، هوش تلفیقی</h2>
+    <div class="grid g2">
+      <div class="card"><div class="idx">ان</div><h3>هوش انسانی</h3><p>خلاقیت، شهود، قضاوت اخلاقی و درک مقتضیات محیطی</p></div>
+      <div class="card cyan"><div class="idx">مص</div><h3>هوش مصنوعی</h3><p>سرعت پردازش بالا، مقیاس‌پذیری و خستگی‌ناپذیری</p></div>
+    </div>
+    <div class="callout">هوش تلفیقی (Augmented Intelligence): ترکیب کارشناس مطلع با ابزار هوشمند، بهره‌وری و دقت نهایی را چند برابر می‌کند.</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-five-concepts" data-title="پنج مفهوم" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۲ · ۸:۳۲</div>
+    <h2>پنج مفهوم ضروری</h2>
+    <div class="grid g5">
+      <div class="card"><div class="idx">۱</div><h3>داده</h3><p>سوخت یادگیری. ورودی بی‌کیفیت = خروجی نامعتبر</p></div>
+      <div class="card"><div class="idx">۲</div><h3>الگوریتم</h3><p>منطق ریاضی کشف الگو</p></div>
+      <div class="card"><div class="idx">۳</div><h3>آموزش</h3><p>یادگیری از سوابق گذشته</p></div>
+      <div class="card"><div class="idx">۴</div><h3>مدل</h3><p>بسته نهایی آموزش‌دیده</p></div>
+      <div class="card accent"><div class="idx">۵</div><h3>استنتاج</h3><p>به‌کارگیری روزمره مدل</p></div>
+    </div>
+    <div class="callout cyan">این پنج مفهوم، واژه‌نامه مشترک گفت‌وگوی ما در ادامه کارگاه است.</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-four-families" data-title="چهار خانواده" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۲ · ۸:۳۸</div>
+    <h2>چهار خانواده اصلی کاربردها</h2>
+    <div class="grid g4">
+      <div class="card"><div class="idx">۱</div><h3>پیش‌بینی و دسته‌بندی</h3><p>Predictive Analytics — کشف روندها و ارزیابی احتمال رخدادها</p></div>
+      <div class="card"><div class="idx">۲</div><h3>پردازش زبان طبیعی</h3><p>NLP — خواندن، فهم، خلاصه‌سازی و ترجمه متون اداری</p></div>
+      <div class="card"><div class="idx">۳</div><h3>بینایی ماشین و OCR</h3><p>خواندن متن از تصاویر، اسناد اسکن‌شده و احراز هویت بصری</p></div>
+      <div class="card accent"><div class="idx">۴</div><h3>هوش مصنوعی مولد</h3><p>Generative AI — تولید متن رسمی، پیش‌نویس گزارش‌ها</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-p1" data-title="نظرسنجی: داده یا الگوریتم" data-target="2">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · نظرسنجی سریع
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="p1" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ رأی شبیه‌سازی‌شده</span>
+        <button class="widget-results" data-results="p1">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">به نظر شما در هوش مصنوعی، کدام مهم‌تر است؟</div>
+      <div class="opt-grid g2" data-options='[{"k":"data","l":"داده باکیفیت"},{"k":"algo","l":"الگوریتم پیشرفته"}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s3-good" data-title="نقاط قوت" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۳ · ۸:۴۵</div>
+    <h2>هوش مصنوعی در چه کارهایی خوب است؟</h2>
+    <div class="grid g2">
+      <div class="card green"><div class="idx">۱</div><h3>خلاصه‌سازی متون</h3><p>پردازش و خلاصه‌سازی متون و اسناد چند‌هزار کلمه‌ای در چند ثانیه.</p></div>
+      <div class="card green"><div class="idx">۲</div><h3>کشف الگو و ناهنجاری</h3><p>یافتن الگوها در میان حجم عظیمی از تراکنش‌ها یا پرونده‌ها.</p></div>
+      <div class="card green"><div class="idx">۳</div><h3>ساختاربندی و نگارش</h3><p>تبدیل فرمت متن، ساختاربندی یادداشت‌های پراکنده و نگارش پیش‌نویس‌های روان اداری.</p></div>
+      <div class="card green"><div class="idx">۴</div><h3>کار مداوم</h3><p>کار خستگی‌ناپذیر و یکنواخت بدون افت تمرکز ناشی از تکرار.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s3-weak" data-title="نقاط ضعف" data-target="7">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۳ · ۸:۵۱</div>
+    <h2>هوش مصنوعی در چه چیزهایی ضعف دارد؟</h2>
+    <div class="grid g3">
+      <div class="card red"><div class="idx">۱</div><h3>توهم هوش مصنوعی</h3><p>Hallucination: ساختن فکت‌های غیرواقعی، شماره بخشنامه‌های ساختگی یا بندهای قانونی ناموجود، با لحنی مطمئن.</p></div>
+      <div class="card red"><div class="idx">۲</div><h3>فقدان درک بافتار سازمانی</h3><p>بی‌اطلاعی از روحیات مدیران، سیاست‌های نانوشته داخلی و مصلحت‌های لحظه‌ای شعبه یا ستاد.</p></div>
+      <div class="card red"><div class="idx">۳</div><h3>ناتوانی در قضاوت اخلاقی</h3><p>ماشین مسئولیتی در قبال خطا، جریمه بازرسی یا خسارت مالی نمی‌پذیرد.</p></div>
+    </div>
+    <div class="callout red">قانون کلیدی برای کارشناسان: «روان‌بودن متن تولیدشده هرگز به معنای درست‌بودن محتوای آن نیست.»</div>
+  </div>
+</section>
+
+<section class="sec station" id="station-q1" data-title="کوییز: افسانه یا واقعیت" data-target="7">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · کوییز
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="q1" data-type="quiz">
+      <div class="widget-head">
+        <span class="widget-label">۴ جمله · ۱۵۰ پاسخ</span>
+        <button class="widget-results" data-results="q1">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">هر جمله را «واقعیت» یا «افسانه» علامت بزنید.</div>
+      <div id="q1List"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s4-credit" data-title="ریسک و AML" data-target="8">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۴ · ۹:۰۵</div>
+    <h2>مدیریت ریسک، اعتبارسنجی و کشف تقلب</h2>
+    <div class="grid g2">
+      <div class="card"><div class="idx">۱</div><h3>ریسک و اعتبارسنجی</h3><p>Risk &amp; Credit Scoring: تحلیل الگوهای بازپرداخت، بررسی جامع‌تر رفتارهای مالی متقاضی تسهیلات و برآورد ریسک نکول.</p></div>
+      <div class="card"><div class="idx">۲</div><h3>کشف تقلب و AML</h3><p>Fraud Detection &amp; AML: پایش الگوهای غیرعادی جریان وجوه، کشف شبکه‌های حساب‌های اجاره‌ای و کارت‌های متصل به سایت‌های غیرمجاز با تحلیل گراف و رفتار تراکنشی.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s4-digital" data-title="شعبه دیجیتال و اتوماسیون" data-target="8">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۴ · ۹:۱۳</div>
+    <h2>شعبه دیجیتال و اتوماسیون ستادی</h2>
+    <div class="grid g2">
+      <div class="card"><div class="idx">۳</div><h3>شعبه دیجیتال</h3><p>احراز هویت هوشمند بیومتریک (تشخیص زنده‌بودن تصویر و انطباق با کارت ملی)، چت‌بات‌های راهنمای خدمات کارت و تسهیلات.</p></div>
+      <div class="card"><div class="idx">۴</div><h3>اتوماسیون ستادی</h3><p>Back-Office Automation: مطابقت اولیه اسناد وثایق، بررسی اولیه پرونده‌های گشایش اعتبار اسنادی (LC) و کنترل مغایرت‌های مالی حسابداری.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s4-value-chain" data-title="زنجیره ارزش" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۴ · ۹:۲۱</div>
+    <h2>تصویر کامل زنجیره ارزش بانک</h2>
+    <div class="callout">این کاربردها در امتداد یک زنجیره به هم متصل‌اند: جذب مشتری → اعتبارسنجی → پایش تراکنش → خدمات پس از فروش → بازرسی و انطباق.</div>
+    <div class="grid g5">
+      <div class="card"><div class="idx">۱</div><h3>جذب</h3><p>پیشنهاد هدفمند محصول</p></div>
+      <div class="card"><div class="idx">۲</div><h3>اعتبارسنجی</h3><p>تحلیل پرونده و ریسک</p></div>
+      <div class="card"><div class="idx">۳</div><h3>پایش</h3><p>کشف تقلب و AML</p></div>
+      <div class="card"><div class="idx">۴</div><h3>خدمات</h3><p>چت‌بات و پاسخ‌گویی</p></div>
+      <div class="card"><div class="idx">۵</div><h3>انطباق</h3><p>بازرسی و کنترل</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-p2" data-title="حدس بزن: کدام فعال است" data-target="8">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · حدس بزن
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="p2" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ رأی · پاسخ صحیح: همه</span>
+        <button class="widget-results" data-results="p2">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">کدام‌یک از این کاربردها، امروز در بانک‌های ایران فعال است؟</div>
+      <div class="opt-grid g2" data-options='[{"k":"a","l":"اعتبارسنجی هوشمند"},{"k":"b","l":"کشف تقلب"},{"k":"c","l":"چت‌بات خدمات"},{"k":"d","l":"هر چهار مورد","correct":true}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s5-summary" data-title="کاربردهای کارشناسی" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۵ · ۹:۳۵</div>
+    <h2>کاربردهای هوش مصنوعی در فعالیت‌های کارشناسی</h2>
+    <div class="grid g5">
+      <div class="card"><div class="idx">۱</div><h3>خلاصه‌سازی اسناد</h3><p>گزارش حسابرسی، بخشنامه</p></div>
+      <div class="card"><div class="idx">۲</div><h3>پیش‌نویس مکاتبات</h3><p>تبدیل ایده به نامه رسمی</p></div>
+      <div class="card"><div class="idx">۳</div><h3>جدول‌سازی</h3><p>اقدامات، مسئولین، سررسید</p></div>
+      <div class="card"><div class="idx">۴</div><h3>بازنویسی لحن</h3><p>دیپلماتیک، قاطع، حقوقی</p></div>
+      <div class="card"><div class="idx">۵</div><h3>ساختار گزارش</h3><p>سرفصل و شاخص</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s5-table" data-title="جدول‌سازی و بازنویسی" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۵ · ۹:۴۱</div>
+    <h2>جدول‌سازی و بازنویسی لحن</h2>
+    <div class="grid g2">
+      <div class="card"><div class="idx">جدول</div><h3>از متن به جدول</h3><p>تبدیل بندهای یک گزارش متنی به جدول تفکیکی اقدامات، مسئولین اجرا و سررسیدها.</p></div>
+      <div class="card"><div class="idx">لحن</div><h3>اصلاح لحن نامه</h3><p>اصلاح لحن نامه‌های اداری حساس به لحنی دیپلماتیک، قاطع، حقوقی یا تعاملی متناسب با مخاطب.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec demo" id="demo-1" data-title="مثال عملی زنده" data-target="8">
+  <span class="demo-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    مثال عملی زنده · دمو
+  </span>
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۵ · ۹:۴۷</div>
+    <h2>دو کار روزمره کارمند بانک، با هوش مصنوعی</h2>
+    <p class="lead">همه داده‌ها فرضی و غیرواقعی هستند · هدف: نشان‌دادن «قبل و بعد»</p>
+    <div class="demo-grid">
+      <div class="demo-step">
+        <span class="step-num">۱</span>
+        <span class="step-title">خلاصه‌سازی بخشنامه ۱۰ صفحه‌ای</span>
+        <div class="timing"><span class="t-before">۴۵ دقیقه</span><span class="t-arrow">←</span><span class="t-after">۳۰ ثانیه</span></div>
+        <div class="demo-prompt">نقش: کارشناس حقوقی. زمینه: بخشنامه جدید ضمانت‌نامه. وظیفه: ۳ تغییر عمده نسبت به نسخه قبل را در قالب جدول ۳ ستونی (شماره | تغییر | ماده) خلاصه کن. لحن: رسمی. حداکثر ۲۰۰ کلمه.</div>
+        <p class="muted" style="font-size:.78rem">بازبینی: تطبیق تبصره‌ها با اصل بخشنامه</p>
+      </div>
+      <div class="demo-step">
+        <span class="step-num">۲</span>
+        <span class="step-title">پیش‌نویس پاسخ رسمی به درخواست مشتری</span>
+        <div class="timing"><span class="t-before">۲۰ دقیقه</span><span class="t-arrow">←</span><span class="t-after">۴۰ ثانیه</span></div>
+        <div class="demo-prompt">نقش: کارشناس خدمات مشتریان بانک. زمینه: درخواست مشتری برای تمدید ضمانت‌نامه. وظیفه: پاسخ رسمی مؤدبانه و قاطع بنویس که شرایط تمدید، مدارک لازم و زمان تقریبی را شامل شود. لحن: اداری. قالب: ۳ بند.</div>
+        <p class="muted" style="font-size:.78rem">بازبینی: انطباق با رویه جاری + شرایط خاص مشتری</p>
+      </div>
+    </div>
+    <div class="callout cyan">در روز کارگاه، DeepSeek را باز می‌کنیم و همین Prompt‌ها را اجرا می‌کنیم. اگر اینترنت سالن مشکل داشت، اسکرین‌شات از قبل آماده نمایش داده می‌شود.</div>
+  </div>
+</section>
+
+<section class="sec" id="s5-redlines" data-title="خط قرمزها" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۵ · ۹:۵۵</div>
+    <h2>موارد ممنوع یا حساس</h2>
+    <div class="grid g3">
+      <div class="card red"><div class="idx">۱</div><h3>داده‌های محرمانه</h3><p>بارگذاری داده‌های حاوی اسرار بانکی و اطلاعات محرمانه مشتریان در ابزارهای ابری و بیرونی.</p></div>
+      <div class="card red"><div class="idx">۲</div><h3>کپی‌پیست کورکرانه</h3><p>استفاده مستقیم از محاسبات مالی حساس یا ارقام تسهیلات بدون اعتبارسنجی با فرمول‌های اکسل و سامانه‌های رسمی.</p></div>
+      <div class="card red"><div class="idx">۳</div><h3>استعلام مواد قانونی</h3><p>اتکا به مدل در استعلام مواد قانونی، بدون تطبیق با متن رسمی قوانین منتشرشده.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-p3" data-title="چندانتخابی: کدام را می‌سپارید" data-target="5">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · چندگزینه‌ای
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="p3" data-type="multi">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ رأی</span>
+        <button class="widget-results" data-results="p3">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">کدام کار را حاضرید به هوش مصنوعی بسپارید؟ (چند گزینه)</div>
+      <div class="opt-grid g3" data-options='[{"k":"a","l":"خلاصه بخشنامه"},{"k":"b","l":"پیش‌نویس نامه"},{"k":"c","l":"جدول صورت‌جلسه"},{"k":"d","l":"محاسبه تسهیلات"},{"k":"e","l":"پاسخ به مشتری"},{"k":"f","l":"استعلام قانون"}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="brk" data-title="استراحت" data-target="15">
+  <div class="sec-inner">
+    <div class="eyebrow" style="justify-content:center">۱۰:۰۵ تا ۱۰:۲۰</div>
+    <div class="break-num">۱۵</div>
+    <h2 style="text-align:center">دقیقه استراحت</h2>
+    <p class="muted" style="text-align:center">در این فرصت، جدول امتیازات زنده را ببینید.</p>
+    <div class="widget" style="margin-top:1rem">
+      <div class="widget-head"><span class="widget-label">لیدربرد زنده · ۱۵۰ شرکت‌کننده</span></div>
+      <div class="lb" id="lbBreak"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s6-quality" data-title="کیفیت درخواست" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۶ · ۱۰:۲۰</div>
+    <h2>وابستگی کیفیت پاسخ به کیفیت درخواست</h2>
+    <div class="grid g2">
+      <div class="card red"><div class="idx">✕</div><h3>دستور ضعیف و کلی</h3><p>«درباره این بخشنامه یک متن بنویس.» → پاسخ کلی، کلیشه‌ای و غیرقابل استفاده در محیط اداری.</p></div>
+      <div class="card green"><div class="idx">✓</div><h3>دستور شفاف و هدایت‌شده</h3><p>نقش، زمینه، وظیفه دقیق، محدودیت‌ها و قالب خروجی مشخص می‌شود → پاسخ ساختاریافته و قابل ویرایش.</p></div>
+    </div>
+    <div class="callout">ابهام در سؤال، به پاسخ‌های کلی و غیرکاربردی منجر می‌شود.</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-five-parts" data-title="الگوی پنج‌بخشی" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۶ · ۱۰:۲۵</div>
+    <h2>پنج بخش یک درخواست حرفه‌ای</h2>
+    <div class="grid g5">
+      <div class="card"><div class="idx">۱</div><h3>نقش</h3><p>کارشناس اعتبارات، حقوقی، ویراستار</p></div>
+      <div class="card"><div class="idx">۲</div><h3>زمینه</h3><p>موقعیت و مخاطب هدف</p></div>
+      <div class="card"><div class="idx">۳</div><h3>وظیفه</h3><p>خلاصه، بازنویسی، جدول</p></div>
+      <div class="card"><div class="idx">۴</div><h3>محدودیت و لحن</h3><p>طول، لحن، تمرکز</p></div>
+      <div class="card accent"><div class="idx">۵</div><h3>قالب خروجی</h3><p>جدول، متن، بولت، ۳ بند</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-bp1" data-title="بهترین Prompt" data-target="5">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · بهترین Prompt
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="bp1" data-type="bestprompt">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ رأی</span>
+        <button class="widget-results" data-results="bp1">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">کدام دستور، پاسخ کاربردی‌تری می‌دهد؟</div>
+      <div class="grid g3" id="bp1List"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s6-compare" data-title="مقایسه نمونه" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۶ · ۱۰:۳۵</div>
+    <h2>مقایسه نمونه درست و غلط</h2>
+    <div class="callout cyan">گزینه B برنده: نقش + زمینه + وظیفه دقیق + محدودیت + قالب = پاسخ قابل استفاده در محیط اداری.</div>
+    <p class="muted" style="text-align:center">نتایج رأی‌گیری ایستگاه قبل، نمایش داده شد. تحلیل: چرا B بهترین است و A و C چه چیزهایی را جا انداخته‌اند.</p>
+  </div>
+</section>
+
+<section class="sec" id="s7-intro" data-title="مقدمه سناریوها" data-target="2">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۷ · ۱۰:۴۰</div>
+    <h2>بررسی نمونه‌ها و سناریوهای کاربردی</h2>
+    <p class="lead">برای هر سناریو رأی دهید: آیا قابل واگذاری به هوش مصنوعی است؟ سپس تحلیل کارشناسی را ببینید.</p>
+    <div class="chips"><span class="chip">۵ سناریو</span><span class="chip">نقش AI</span><span class="chip gold">نقش کارشناس</span></div>
+  </div>
+</section>
+
+<section class="sec station" id="station-sc1" data-title="سناریو ۱: خلاصه بخشنامه" data-target="6">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · سناریو ۱
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="sc1" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">خلاصه‌سازی بخشنامه ۱۰ صفحه‌ای</span>
+        <button class="widget-results" data-results="sc1">تحلیل و نتایج</button>
+      </div>
+      <div class="widget-q">استخراج ۳ تغییر عمده از بخشنامه ضمانت‌ها</div>
+      <div class="opt-grid g3" data-options='[{"k":"yes","l":"✓ قابل واگذاری"},{"k":"rev","l":"⚠ نیازمند بازبینی"},{"k":"no","l":"✕ غیرقابل واگذاری"}]'></div>
+      <div class="callout cyan" style="font-size:.85rem">تحلیل: هوش مصنوعی پیش‌نویس خلاصه را استخراج می‌کند؛ کارشناس تبصره‌ها و شرایط استثنا را با اصل بخشنامه تطبیق می‌دهد.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-sc2" data-title="سناریو ۲: صورت‌جلسه" data-target="6">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · سناریو ۲
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="sc2" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">تهیه صورت‌جلسه از یادداشت‌های پراکنده</span>
+        <button class="widget-results" data-results="sc2">تحلیل و نتایج</button>
+      </div>
+      <div class="widget-q">استخراج مصوبات جلسه ۲ ساعته کمیته</div>
+      <div class="opt-grid g3" data-options='[{"k":"yes","l":"✓ قابل واگذاری"},{"k":"rev","l":"⚠ نیازمند بازبینی"},{"k":"no","l":"✕ غیرقابل واگذاری"}]'></div>
+      <div class="callout cyan" style="font-size:.85rem">تحلیل: هوش مصنوعی متن را به جدول مرتب تبدیل می‌کند؛ دبیر جلسه صحت انتساب وظایف به واحدها را تأیید می‌کند.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-sc3" data-title="سناریو ۳: پاسخ پرتکرار" data-target="6">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · سناریو ۳
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="sc3" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">پاسخ پرتکرار به شعب</span>
+        <button class="widget-results" data-results="sc3">تحلیل و نتایج</button>
+      </div>
+      <div class="widget-q">پیش‌نویس پاسخ شرایط افتتاح حساب اشخاص حقوقی</div>
+      <div class="opt-grid g3" data-options='[{"k":"yes","l":"✓ قابل واگذاری"},{"k":"rev","l":"⚠ نیازمند بازبینی"},{"k":"no","l":"✕ غیرقابل واگذاری"}]'></div>
+      <div class="callout cyan" style="font-size:.85rem">تحلیل: هوش مصنوعی متن پاسخ روان و تفکیک‌شده را می‌نویسد؛ کارشناس عدم مغایرت با آخرین رویه روز را کنترل می‌کند.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-sc4" data-title="سناریو ۴: شکایات" data-target="6">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · سناریو ۴
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="sc4" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">دسته‌بندی ۲۰۰ شکایت ناشناس</span>
+        <button class="widget-results" data-results="sc4">تحلیل و نتایج</button>
+      </div>
+      <div class="widget-q">طبقه‌بندی موضوعی بازخوردهای اینترنت‌بانک</div>
+      <div class="opt-grid g3" data-options='[{"k":"yes","l":"✓ قابل واگذاری"},{"k":"rev","l":"⚠ نیازمند بازبینی"},{"k":"no","l":"✕ غیرقابل واگذاری"}]'></div>
+      <div class="callout cyan" style="font-size:.85rem">تحلیل: هوش مصنوعی پیام‌ها را در ۴ دسته طبقه‌بندی و فراوانی می‌دهد؛ کارشناس موضوعات دارای بار حقوقی را جداگانه بررسی می‌کند.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec station" id="station-sc5" data-title="سناریو ۵: کنترل مدارک" data-target="6">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · سناریو ۵
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="sc5" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">کنترل کسری مدارک تسهیلات</span>
+        <button class="widget-results" data-results="sc5">تحلیل و نتایج</button>
+      </div>
+      <div class="widget-q">مقایسه مدارک شرکت متقاضی با چک‌لیست</div>
+      <div class="opt-grid g3" data-options='[{"k":"yes","l":"✓ قابل واگذاری"},{"k":"rev","l":"⚠ نیازمند بازبینی"},{"k":"no","l":"✕ غیرقابل واگذاری"}]'></div>
+      <div class="callout cyan" style="font-size:.85rem">تحلیل: ابزار هوشمند کسری مدارک ظاهری را علامت می‌زند؛ کارشناس اصالت و صحت ماهوی مدارک را ارزیابی می‌کند.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s7-wrapup" data-title="جمع‌بندی سناریوها" data-target="3">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۷ · ۱۱:۱۲</div>
+    <h2>الگوی مشترک پنج سناریو</h2>
+    <div class="grid g3">
+      <div class="card green"><div class="idx">✓</div><h3>قابل واگذاری</h3><p>کارهای تکراری و پردازش متون حجیم — با بازبینی</p></div>
+      <div class="card"><div class="idx">⚠</div><h3>نیازمند بازبینی</h3><p>خروجی هوشمند + تأیید کارشناس در تصمیم نهایی</p></div>
+      <div class="card red"><div class="idx">✕</div><h3>غیرقابل واگذاری</h3><p>تصمیم نهایی، محاسبات مالی حساس، استعلام قانون</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s8-classify" data-title="طبقه‌بندی داده" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۸ · ۱۱:۱۵</div>
+    <h2>طبقه‌بندی داده در مواجهه با ابزارها</h2>
+    <div class="grid g3">
+      <div class="card red"><div class="idx">۱</div><h3>محرمانه</h3><p>کد ملی، شماره حساب و کارت، موجودی، سوابق اعتباری و پرونده‌های مشتریان، مستندات محرمانه داخلی، اطلاعات احراز هویت — <b>ممنوعیت مطلق در ابزارهای عمومی</b></p></div>
+      <div class="card"><div class="idx">۲</div><h3>داخلی</h3><p>آمار کلی تجمیعی غیرحساس، فرآیندهای کاری عمومی سازمانی — <b>محدود به سامانه‌های امن و مصوب بانک</b></p></div>
+      <div class="card green"><div class="idx">۳</div><h3>عمومی</h3><p>بخشنامه‌های علنی، قوانین کشوری، متون آموزشی، داده‌های کاملاً فرضی — <b>مجاز با رعایت احتیاط</b></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s8-golden-rules" data-title="قواعد طلایی امنیت" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۸ · ۱۱:۲۱</div>
+    <h2>سه قاعده طلایی امنیت</h2>
+    <div class="grid g3">
+      <div class="card accent"><div class="idx">۱</div><h3>ناشناس‌سازی</h3><p>Anonymization / Masking: تبدیل تمام اسامی واقعی، مبالغ دقیق و شناسه‌ها به متغیرهای فرضی پیش از ارسال.</p></div>
+      <div class="card accent"><div class="idx">۲</div><h3>عدم بارگذاری فایل سازمانی</h3><p>پرهیز از آپلود فایل‌های اکسل، PDF یا تصاویر اسناد بانکی ممهور در سایت‌ها و چت‌بات‌های متفرقه.</p></div>
+      <div class="card accent"><div class="idx">۳</div><h3>تفکیک محیط کاربری</h3><p>عدم ذخیره‌سازی نام‌های کاربری و رمزهای عبور سازمانی در ابزارهای هوشمند متفرقه.</p></div>
+    </div>
+    <div class="callout red">حفاظت از حریم مشتری و اسرار بانکی، تحت هیچ شرایطی فدای سرعت نمی‌شود.</div>
+  </div>
+</section>
+
+<section class="sec station" id="station-q2" data-title="کوییز امنیتی" data-target="8">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · کوییز امنیتی
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="q2" data-type="quiz2">
+      <div class="widget-head">
+        <span class="widget-label">۴ گزینه · ۱۵۰ رأی</span>
+        <button class="widget-results" data-results="q2">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">کدام مورد را می‌توانید در یک چت‌بات عمومی آپلود کنید؟</div>
+      <div class="opt-grid g2" data-options='[{"k":"a","l":"گزارش مالی مشتری با کد ملی","correct":false},{"k":"b","l":"بخشنامه علنی بانک مرکزی","correct":true},{"k":"c","l":"فهرست پرونده‌های تسهیلات","correct":false},{"k":"d","l":"تصویر کارت ملی","correct":false}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s9-risks" data-title="سه ریسک غیرفنی" data-target="7">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۹ · ۱۱:۳۵</div>
+    <h2>ریسک‌های غیرفنی</h2>
+    <div class="grid g3">
+      <div class="card red"><div class="idx">۱</div><h3>مسئولیت حقوقی</h3><p>هیچ نهاد نظارتی یا بازرسی، عذر «خطای هوش مصنوعی» را نمی‌پذیرد؛ امضاکننده سند، پاسخ‌گوی نهایی است.</p></div>
+      <div class="card red"><div class="idx">۲</div><h3>سوگیری الگوریتمی</h3><p>Algorithmic Bias: داده‌های گذشته ممکن است حاوی سوگیری‌هایی باشند که به قضاوت ناعادلانه در مورد مشتریان منجر شود.</p></div>
+      <div class="card red"><div class="idx">۳</div><h3>فرسایش مهارت</h3><p>Skill Atrophy: خطر تضعیف تفکر نقادانه و تحلیل‌گری کارشناس در صورت اتکای چشم‌بسته به پیش‌نویس‌های ماشینی.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s9-responsible" data-title="استفاده مسئولانه" data-target="5">
+  <div class="sec-inner">
+    <div class="eyebrow">بخش ۰۹ · ۱۱:۴۲</div>
+    <h2>الگوی استفاده مسئولانه</h2>
+    <div class="grid g2">
+      <div class="card green"><div class="idx">۱</div><h3>نظارت کامل انسانی</h3><p>Human-in-the-Loop: هیچ خروجی هوش مصنوعی بدون بازبینی و تأیید کارشناس، مبنای اقدام رسمی قرار نمی‌گیرد.</p></div>
+      <div class="card green"><div class="idx">۲</div><h3>توجیه‌پذیری و شفافیت</h3><p>توانایی توضیح منطق تصمیمات اعتباری یا فرآیندی به مراجع نظارتی و مشتریان، بدون فرافکنی به سیستم.</p></div>
+    </div>
+    <div class="callout">ابزار هوشمند، پیشنهاد می‌دهد؛ تصمیم و مسئولیت آن، با کارشناس است.</div>
+  </div>
+</section>
+
+<section class="sec station" id="station-p4" data-title="نظرسنجی: مسئولیت خطا" data-target="4">
+  <span class="station-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    ایستگاه تعاملی · نظرسنجی
+  </span>
+  <div class="sec-inner">
+    <div class="widget" data-widget="p4" data-type="single">
+      <div class="widget-head">
+        <span class="widget-label">۱۵۰ رأی</span>
+        <button class="widget-results" data-results="p4">نمایش نتایج</button>
+      </div>
+      <div class="widget-q">آیا حاضرید مسئولیت خطای خروجی هوش مصنوعی را با نام خود بپذیرید؟</div>
+      <div class="opt-grid g2" data-options='[{"k":"yes","l":"بله، با بازبینی کامل"},{"k":"no","l":"خیر، فقط با تأیید مافوق"}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="summary" data-title="جمع‌بندی" data-target="6">
+  <div class="sec-inner">
+    <div class="eyebrow">جمع‌بندی · ۱۱:۵۰</div>
+    <h2>پنج پیام کلیدی برای بازگشت به میز کار</h2>
+    <div class="grid g2">
+      <div class="card accent"><div class="idx">۱</div><h3>فرصت عملیاتی</h3><p>استفاده درست، کارایی فردی و رضایت شغلی را افزایش می‌دهد.</p></div>
+      <div class="card"><div class="idx">۲</div><h3>همه‌چیزدان و بدون خطا نیست</h3><p>همیشه احتمال خطا و توهم مدل وجود دارد؛ اعتبارسنجی، اصل اول است.</p></div>
+      <div class="card"><div class="idx">۳</div><h3>دستیار تولید و تحلیل اولیه</h3><p>برای نسخه اولیه، ساختاربندی و ویراستاری عالی است؛ تصمیم‌گیرنده نهایی کارشناس است.</p></div>
+      <div class="card"><div class="idx">۴</div><h3>داده و محرمانگی، خط قرمز بانک</h3><p>حفاظت از حریم شخصی مشتریان و اسرار بانکی فدای سرعت نمی‌شود.</p></div>
+    </div>
+    <div class="widget" data-widget="cm1" data-type="single">
+      <div class="widget-head"><span class="widget-label">تعهد یک‌کلیکی · ۱۵۰ رأی</span><button class="widget-results" data-results="cm1">نمایش نتایج</button></div>
+      <div class="widget-q">از هفته آینده چه می‌کنید؟</div>
+      <div class="opt-grid g3" data-options='[{"k":"a","l":"یک کار ساده را امتحان می‌کنم"},{"k":"b","l":"فعلاً نظاره‌گرم"},{"k":"c","l":"برای واحد من هنوز زود است"}]'></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="lb-final" data-title="لیدربرد نهایی" data-target="3">
+  <div class="sec-inner">
+    <div class="eyebrow">۱۱:۵۶</div>
+    <h2>لیدربرد نهایی · ۱۰ نفر برتر</h2>
+    <div class="widget">
+      <div class="widget-head"><span class="widget-label">با نام مستعار · ۱۵۰ شرکت‌کننده</span></div>
+      <div class="lb" id="lbFinal"></div>
+    </div>
+    <div class="callout cyan">بهترین مسیر، شروع کوچک و مسئولانه است: از کارهای ساده، کم‌ریسک و با داده‌های فرضی آغاز کنید.</div>
+  </div>
+</section>
+
+<section class="sec" id="end" data-title="پرسش و پاسخ" data-target="0">
+  <div class="sec-inner" style="text-align:center;align-items:center">
+    <div class="eyebrow" style="justify-content:center">پایان کارگاه</div>
+    <h2 class="grad-text" style="font-size:clamp(1.9rem,3.8vw,3.6rem);text-align:center">پرسش و پاسخ</h2>
+    <p class="lead" style="max-width:720px">ممنون از همراهی شما.<br>یک کار کوچک و کم‌ریسک از هفته آینده انتخاب کنید.</p>
+    <div class="chips" style="justify-content:center;margin-top:.5rem">
+      <span class="chip gold">ai-workshops</span>
+      <span class="chip">G1-1405-05-05</span>
+      <span class="chip">دکتر حسین بیانی</span>
+      <span class="chip">شرکت داتا</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="overlay" id="resultsOverlay">
+  <div class="overlay-card">
+    <div class="overlay-head">
+      <h2 id="overlayTitle" style="font-size:1.2rem">نتایج</h2>
+      <button class="close-btn" id="closeOverlay">×</button>
+    </div>
+    <div class="overlay-body" id="overlayBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="qrModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>ورود شرکت‌کنندگان</h3>
+      <button class="close-btn" id="closeQr">×</button>
+    </div>
+    <div class="qr-box" id="qrBox"></div>
+    <p class="qr-url" id="qrUrl"></p>
+    <p class="muted" style="font-size:.8rem;text-align:center;margin-top:.5rem">دوربین موبایل را روی QR بگیرید · در فاز ۲ QR محلی می‌شود</p>
+  </div>
+</div>
+
+<div class="focus-timer" id="focusTimer">
+  <div class="focus-ring">
+    <svg viewBox="0 0 32 32">
+      <circle class="focus-ring-track" cx="16" cy="16" r="12"></circle>
+      <circle class="focus-ring-fill" id="focusRingFill" cx="16" cy="16" r="12"></circle>
+    </svg>
+  </div>
+  <span class="focus-status" id="focusStatus">—</span>
+</div>
+
+<div class="focus-hint" id="focusHint">
+  حالت تمرکز فعال · <kbd>F</kbd> یا <kbd>Esc</kbd> برای خروج
+</div>
+
+<div class="snackbar" id="snackbar"></div>
+
+<script>
+/* ============================================================
+   ai-workshops · Phase 2 · Session G1-1405-05-05
+   Presenter view · Connected to Supabase (via presenter.js)
+   ============================================================ */
+const SESSION = { code:'G1-1405-05-05', date:'1405-05-05', group:'گروه اول' };
+const TOTAL_MIN = 240;
+const TOTAL_SEC = TOTAL_MIN * 60;
+
+const safeLS = {
+  get:function(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}},
+  del:function(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+const LS = {
+  get:function(k){return safeLS.get('ai_'+SESSION.code+'_'+k);},
+  set:function(k,v){safeLS.set('ai_'+SESSION.code+'_'+k,v);},
+  del:function(k){safeLS.del('ai_'+SESSION.code+'_'+k);}
+};
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+function seedFor(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}return h;}
+const rng=mulberry32(seedFor(SESSION.code));
+
+const MOCK = {
+  participants:150,
+  leaderboard:[
+    {name:'کارشناس اعتبارات',score:145},{name:'مهمان ۲۳',score:138},
+    {name:'تحلیل‌گر ریسک',score:132},{name:'مهمان ۵۱',score:127},
+    {name:'کارشناس حقوقی',score:121},{name:'مهمان ۰۹',score:118},
+    {name:'کارشناس ارزی',score:112},{name:'مهمان ۷۴',score:108},
+    {name:'کارشناس شعبه',score:104},{name:'مهمان ۱۲',score:99}
+  ]
+};
+
+const WIDGETS = {
+  wc1:{type:'wordcloud', words:[
+    {t:'فرصت',c:38},{t:'کارآمد',c:31},{t:'ترسناک',c:22},{t:'آینده',c:19},
+    {t:'دستیار',c:17},{t:'سریع',c:14},{t:'مبهم',c:11},{t:'هوشمند',c:9},
+    {t:'مفید',c:7},{t:'خطرناک',c:5},{t:'ابزار',c:4},{t:'صرفه‌جویی',c:3}
+  ]},
+  p1:{type:'single', counts:{data:92, algo:58}},
+  q1:{type:'quiz', statements:[
+    {id:'q1a', text:'هوش مصنوعی همیشه دقیق است.', correct:false, counts:{t:18, f:118, u:14}},
+    {id:'q1b', text:'هوش مصنوعی می‌تواند فکت جعلی بسازد.', correct:true, counts:{t:131, f:12, u:7}},
+    {id:'q1c', text:'هوش مصنوعی بافتار سازمانی را کامل می‌فهمد.', correct:false, counts:{t:22, f:113, u:15}},
+    {id:'q1d', text:'خروجی روان، همیشه درست است.', correct:false, counts:{t:9, f:135, u:6}}
+  ]},
+  p2:{type:'single', counts:{a:22, b:18, c:37, d:73}, correct:'d'},
+  p3:{type:'multi', counts:{a:138, b:121, c:104, d:19, e:66, f:31}},
+  bp1:{type:'bestprompt', prompts:[
+    {id:'bp1a', tag:'A', text:'«درباره ضمانت‌نامه یک متن بنویس.»', counts:14},
+    {id:'bp1b', tag:'B', text:'«نقش: کارشناس حقوقی. زمینه: بخشنامه جدید ضمانت. وظیفه: ۳ تغییر عمده را در قالب جدول ۳ ستونی خلاصه کن. لحن: رسمی. حداکثر ۳ بند.»', counts:118},
+    {id:'bp1c', tag:'C', text:'«یک متن رسمی و کامل درباره همه ضوابط ضمانت‌نامه بنویس، حداکثر ۵۰۰ کلمه، با لحن اداری.»', counts:18}
+  ]},
+  sc1:{type:'single', counts:{yes:41, rev:97, no:12}},
+  sc2:{type:'single', counts:{yes:38, rev:98, no:14}},
+  sc3:{type:'single', counts:{yes:29, rev:106, no:15}},
+  sc4:{type:'single', counts:{yes:63, rev:71, no:16}},
+  sc5:{type:'single', counts:{yes:47, rev:88, no:15}},
+  q2:{type:'quiz2', counts:{a:9, b:132, c:6, d:3}, correct:'b'},
+  p4:{type:'single', counts:{yes:54, no:96}},
+  cm1:{type:'single', counts:{a:112, b:26, c:12}}
+};
+
+const state = {
+  theme: safeLS.get('ai_theme') || 'dark',
+  votes: JSON.parse(LS.get('votes') || '{}'),
+  score: parseInt(LS.get('score') || '0')
+};
+function saveState(){
+  LS.set('votes', JSON.stringify(state.votes));
+  LS.set('score', String(state.score));
+}
+
+document.documentElement.setAttribute('data-theme', state.theme);
+document.getElementById('themeBtn').addEventListener('click', function(){
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  safeLS.set('ai_theme', state.theme);
+});
+
+const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+function sectionNum(id){
+  const map={cover:'★',intro:'▸',goals:'◎','s1-ai-def':'۰۱','s1-programming-vs-ml':'·','s1-everyday':'·','station-wc1':'★','s1-workplace':'·','s1-augmented':'·','s2-five-concepts':'۰۲','s2-four-families':'·','station-p1':'★','s3-good':'۰۳','s3-weak':'·','station-q1':'★','s4-credit':'۰۴','s4-digital':'·','s4-value-chain':'·','station-p2':'★','s5-summary':'۰۵','s5-table':'·','demo-1':'▶','s5-redlines':'·','station-p3':'★',brk:'⏸','s6-quality':'۰۶','s6-five-parts':'·','station-bp1':'★','s6-compare':'·','s7-intro':'۰۷','station-sc1':'★','station-sc2':'★','station-sc3':'★','station-sc4':'★','station-sc5':'★','s7-wrapup':'·','s8-classify':'۰۸','s8-golden-rules':'·','station-q2':'★','s9-risks':'۰۹','s9-responsible':'·','station-p4':'★','summary':'◆','lb-final':'◆',end:'●'};
+  return map[id]||'·';
+}
+
+const timerState = {
+  started: false,
+  running: false,
+  sectionEnteredAt: 0,
+  currentSection: null,
+  sectionAccum: {},
+  testMode: false
+};
+function loadTimer(){
+  try {
+    const raw = LS.get('timer');
+    if (raw) {
+      const t = JSON.parse(raw);
+      Object.assign(timerState, t);
+      timerState.running = false;
+    }
+  } catch(e){}
+}
+function saveTimer(){
+  LS.set('timer', JSON.stringify({
+    started: timerState.started,
+    running: false,
+    sectionEnteredAt: timerState.sectionEnteredAt,
+    currentSection: timerState.currentSection,
+    sectionAccum: timerState.sectionAccum
+  }));
+}
+
+function currentSectionElapsedMs(){
+  const cur = timerState.currentSection;
+  if (!cur) return 0;
+  const base = timerState.sectionAccum[cur] || 0;
+  if (timerState.running) return base + (Date.now() - timerState.sectionEnteredAt);
+  return base;
+}
+function totalElapsedMs(){
+  let total = 0;
+  for (const id in timerState.sectionAccum) {
+    if (id === timerState.currentSection) continue;
+    total += timerState.sectionAccum[id] || 0;
+  }
+  total += currentSectionElapsedMs();
+  return total;
+}
+function scheduledTimeToReach(idx){
+  let total = 0;
+  for (let i = 0; i < idx; i++) {
+    total += (parseInt(sections[i].dataset.target || 0)) * 60 * 1000;
+  }
+  return total;
+}
+function scheduledTimeComplete(idx){
+  return scheduledTimeToReach(idx) + (parseInt(sections[idx].dataset.target || 0)) * 60 * 1000;
+}
+
+const sections = Array.from(document.querySelectorAll('.sec'));
+const navList = document.getElementById('navList');
+const navItems = [];
+sections.forEach(function(sec, idx){
+  const li = document.createElement('li');
+  li.className = 'nav-item';
+  if(sec.classList.contains('station')) li.classList.add('station-nav');
+  li.innerHTML = '<span class="nav-num">'+sectionNum(sec.id)+'</span>' +
+                 '<span class="nav-t">'+sec.dataset.title+'</span>' +
+                 '<span class="nav-status" data-status="pending"></span>';
+  li.addEventListener('click', function(){ sec.scrollIntoView({behavior:'smooth',block:'start'}); });
+  navList.appendChild(li);
+  navItems.push(li);
+  if(idx === 0) sec.classList.add('visible');
+});
+
+const deck = document.getElementById('deck');
+let activeIdx = 0;
+const io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      if(e.intersectionRatio > 0.35){
+        const idx = sections.indexOf(e.target);
+        if(idx !== -1 && idx !== activeIdx){
+          activeIdx = idx;
+          updateActive(idx);
+        }
+      }
+    }
+  });
+}, {root: deck, threshold:[0.15, 0.35, 0.6]});
+sections.forEach(function(s){ io.observe(s); });
+
+function enterSection(newId){
+  if (timerState.currentSection === newId) return;
+  if (timerState.currentSection && timerState.running) {
+    const prevId = timerState.currentSection;
+    timerState.sectionAccum[prevId] = (timerState.sectionAccum[prevId] || 0) + (Date.now() - timerState.sectionEnteredAt);
+  }
+  timerState.currentSection = newId;
+  timerState.sectionEnteredAt = Date.now();
+  saveTimer();
+}
+
+function updateActive(idx){
+  navItems.forEach(function(it,i){
+    it.classList.toggle('active', i===idx);
+  });
+  enterSection(sections[idx].id);
+  updateNavStatuses();
+  updateTimerUI();
+}
+
+function updateNavStatuses(){
+  sections.forEach(function(sec, i){
+    const s = navItems[i].querySelector('.nav-status');
+    if (!timerState.started) { s.dataset.status = 'pending'; return; }
+    if (i === activeIdx) { s.dataset.status = 'in-progress'; return; }
+    if (i < activeIdx) {
+      const elapsed = timerState.sectionAccum[sec.id] || 0;
+      const target = parseInt(sec.dataset.target || 0) * 60 * 1000;
+      s.dataset.status = elapsed > target ? 'done-over' : 'done-ok';
+    } else {
+      s.dataset.status = 'pending';
+    }
+  });
+}
+
+const statusPill = document.getElementById('statusPill');
+const ringFill = document.getElementById('ringFill');
+const ringIcon = document.getElementById('ringIcon');
+const statusRing = document.getElementById('statusRing');
+const statusLabel = document.getElementById('statusLabel');
+const statusDelta = document.getElementById('statusDelta');
+const scheduleFill = document.getElementById('scheduleFill');
+const scheduleExpected = document.getElementById('scheduleExpected');
+const startBtn = document.getElementById('startBtn');
+
+const RING_CIRC = 2 * Math.PI * 16;
+ringFill.style.strokeDasharray = RING_CIRC;
+ringFill.style.strokeDashoffset = RING_CIRC;
+
+function startTimer(){
+  timerState.started = true;
+  timerState.running = true;
+  timerState.sectionEnteredAt = Date.now();
+  timerState.currentSection = sections[activeIdx].id;
+  saveTimer();
+  updateStartBtn();
+  showSnackbar('⏱ زمان‌سنجی شروع شد');
+}
+function pauseTimer(){
+  if (timerState.currentSection) {
+    const cur = timerState.currentSection;
+    timerState.sectionAccum[cur] = (timerState.sectionAccum[cur] || 0) + (Date.now() - timerState.sectionEnteredAt);
+  }
+  timerState.running = false;
+  saveTimer();
+  updateStartBtn();
+  showSnackbar('⏸ زمان‌سنجی متوقف شد');
+}
+function resumeTimer(){
+  if (!timerState.started) return startTimer();
+  timerState.running = true;
+  timerState.sectionEnteredAt = Date.now();
+  saveTimer();
+  updateStartBtn();
+  showSnackbar('▶ زمان‌سنجی ادامه یافت');
+}
+function updateStartBtn(){
+  if (!timerState.started) startBtn.textContent = '▶ شروع ارائه';
+  else if (timerState.running) startBtn.textContent = '⏸ توقف موقت';
+  else startBtn.textContent = '▶ ادامه';
+  startBtn.disabled = false;
+}
+startBtn.addEventListener('click', function(){
+  if (!timerState.started) startTimer();
+  else if (timerState.running) pauseTimer();
+  else resumeTimer();
+});
+statusRing.addEventListener('click', function(){
+  if (!timerState.started) startTimer();
+  else if (timerState.running) pauseTimer();
+  else resumeTimer();
+});
+statusRing.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); statusRing.click(); }
+});
+
+function updateTimerUI(){
+  const curSec = sections.find(s => s.id === timerState.currentSection);
+  const curTargetMs = curSec ? parseInt(curSec.dataset.target || 0) * 60 * 1000 : 0;
+  const curElapsedMs = currentSectionElapsedMs();
+  let ringPct = 0;
+  if (curTargetMs > 0) ringPct = Math.min(1, curElapsedMs / curTargetMs);
+
+  ringFill.style.strokeDashoffset = RING_CIRC * (1 - ringPct);
+
+  if (!timerState.started) {
+    ringFill.style.stroke = 'var(--muted)';
+    ringIcon.textContent = '▶';
+    statusRing.classList.remove('pulse');
+    statusPill.className = 'status-pill';
+    statusLabel.textContent = 'شروع نشده';
+    statusDelta.textContent = '—';
+    statusDelta.className = 'status-delta';
+  } else if (!timerState.running) {
+    ringFill.style.stroke = 'var(--muted)';
+    ringIcon.textContent = '▶';
+    statusRing.classList.remove('pulse');
+    statusPill.className = 'status-pill';
+    statusLabel.textContent = 'متوقف';
+    statusDelta.textContent = '—';
+    statusDelta.className = 'status-delta';
+  } else {
+    ringIcon.textContent = '❙❙';
+    if (ringPct < 0.6) ringFill.style.stroke = 'var(--mint)';
+    else if (ringPct < 0.95) ringFill.style.stroke = 'var(--amber)';
+    else ringFill.style.stroke = 'var(--rose)';
+    statusRing.classList.toggle('pulse', ringPct >= 0.95);
+  }
+
+  const elapsedMs = totalElapsedMs();
+  const reachMs = scheduledTimeToReach(activeIdx);
+  const completeMs = scheduledTimeComplete(activeIdx);
+  const deltaMs = elapsedMs - reachMs;
+  const deltaCompleteMs = elapsedMs - completeMs;
+
+  if (timerState.started && timerState.running) {
+    if (deltaCompleteMs > 120000) {
+      const minBehind = Math.round(deltaCompleteMs / 60000);
+      statusPill.className = 'status-pill behind';
+      statusLabel.textContent = 'عقب‌تر از برنامه';
+      statusDelta.textContent = toFa(minBehind) + ' دقیقه عقب';
+      statusDelta.className = 'status-delta behind';
+    } else if (deltaMs < -120000) {
+      const minAhead = Math.round(-deltaMs / 60000);
+      statusPill.className = 'status-pill ahead';
+      statusLabel.textContent = 'جلوتر از برنامه';
+      statusDelta.textContent = toFa(minAhead) + ' دقیقه جلو';
+      statusDelta.className = 'status-delta ahead';
+    } else {
+      statusPill.className = 'status-pill on-track';
+      statusLabel.textContent = 'در برنامه';
+      statusDelta.textContent = '✓';
+      statusDelta.className = 'status-delta on-track';
+    }
+  }
+
+  const actualPct = Math.min(100, (reachMs / (TOTAL_SEC * 1000)) * 100);
+  const expectedPct = Math.min(100, (elapsedMs / (TOTAL_SEC * 1000)) * 100);
+  scheduleFill.style.width = actualPct + '%';
+  scheduleExpected.style.left = expectedPct + '%';
+  scheduleFill.classList.toggle('behind', actualPct < expectedPct - 1);
+
+  updateNavStatuses();
+
+  const focusRingFill = document.getElementById('focusRingFill');
+  const focusStatus = document.getElementById('focusStatus');
+  if (focusRingFill) {
+    const FC = 2 * Math.PI * 12;
+    focusRingFill.style.strokeDasharray = FC;
+    focusRingFill.style.strokeDashoffset = FC * (1 - ringPct);
+    focusRingFill.style.stroke = ringPct < 0.6 ? '#34d399' : ringPct < 0.95 ? '#fbbf24' : '#fb7185';
+  }
+  if (focusStatus) {
+    focusStatus.className = 'focus-status ' + (statusPill.className.includes('behind') ? 'over' : statusPill.className.includes('ahead') ? 'warn' : statusPill.className.includes('on-track') ? 'ok' : '');
+    focusStatus.textContent = statusDelta.textContent;
+  }
+}
+
+setInterval(function(){ updateTimerUI(); }, 1000);
+
+const snackbar = document.getElementById('snackbar');
+let snackTimer;
+function showSnackbar(msg){
+  snackbar.textContent = msg;
+  snackbar.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(function(){ snackbar.classList.remove('show'); }, 2800);
+}
+
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('button, .opt, .chip, .nav-item, .prompt-card, .widget-results, .nav-toggle, .nav-reopen, .icon-btn, .theme-morph, .close-btn, .status-ring');
+  if (!btn) return;
+  if (btn.closest('.opt')) return;
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(function(){ ripple.remove(); }, 700);
+});
+
+function renderWordCloud(el, words){
+  el.innerHTML = '';
+  const max = Math.max.apply(null, words.map(function(w){return w.c;}));
+  words.forEach(function(w){
+    const span = document.createElement('span');
+    span.textContent = w.t + ' (' + w.c + ')';
+    span.style.fontSize = (0.85 + (w.c/max)*1.7)+'rem';
+    span.style.opacity = 0.6 + (w.c/max)*0.4;
+    el.appendChild(span);
+  });
+}
+function renderOptions(el, widget, widgetId, allowMulti){
+  const opts = JSON.parse(el.dataset.options);
+  el.innerHTML = '';
+  const total = Object.values(widget.counts||{}).reduce(function(a,b){return a+b;},0)||1;
+  const userVote = state.votes[widgetId];
+  opts.forEach(function(o){
+    const btn = document.createElement('button');
+    btn.className = 'opt'; btn.dataset.key = o.k;
+    const voted = allowMulti ? (userVote||[]).indexOf(o.k) > -1 : userVote === o.k;
+    if(voted) btn.classList.add('voted');
+    btn.innerHTML = '<span>'+o.l+'</span><span class="pct">'+Math.round(((widget.counts&&widget.counts[o.k])||0)/total*100)+'%</span>';
+    /* PATCH: expose correct flag for presenter.js */
+    if (o.correct === true) btn.dataset.correct = 'true';
+    else if (o.correct === false) btn.dataset.correct = 'false';
+
+    btn.addEventListener('click', function(){
+      if(allowMulti){
+        const arr = state.votes[widgetId] || [];
+        const i = arr.indexOf(o.k);
+        if(i > -1) arr.splice(i,1); else arr.push(o.k);
+        state.votes[widgetId] = arr;
+        btn.classList.toggle('voted');
+      } else {
+        if(state.votes[widgetId]) return;
+        state.votes[widgetId] = o.k;
+        el.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('voted'); });
+        btn.classList.add('voted');
+        let gain = 5;
+        if(o.correct === true) gain = 20;
+        state.score += gain; saveState();
+        document.getElementById('liveScore').textContent = toFa(state.score);
+        showSnackbar('✓ ثبت شد · +'+gain+' امتیاز');
+      }
+      saveState();
+    });
+    el.appendChild(btn);
+  });
+}
+function renderQuiz(container, widget, widgetId){
+  container.innerHTML = '';
+  widget.statements.forEach(function(st){
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '12px';
+    wrap.innerHTML = '<div style="font-weight:700;margin-bottom:.5rem;color:var(--text)">'+st.text+'</div>';
+    const optGrid = document.createElement('div');
+    optGrid.className = 'opt-grid g3';
+    const userVote = (state.votes[widgetId]||{})[st.id];
+    [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(function(pair){
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      if(userVote === pair[0]) btn.classList.add('voted');
+      btn.innerHTML = '<span>'+pair[1]+'</span>';
+      btn.addEventListener('click', function(){
+        if(!state.votes[widgetId]) state.votes[widgetId] = {};
+        if(state.votes[widgetId][st.id]) return;
+        state.votes[widgetId][st.id] = pair[0];
+        optGrid.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('voted'); });
+        btn.classList.add('voted');
+        const isCorrect = (pair[0] === 't' && st.correct) || (pair[0] === 'f' && !st.correct);
+        const gain = isCorrect ? 15 : 3;
+        state.score += gain; saveState();
+        document.getElementById('liveScore').textContent = toFa(state.score);
+        showSnackbar((isCorrect?'✓ درست · ':'✗ اشتباه · ')+'+'+gain+' امتیاز');
+      });
+      optGrid.appendChild(btn);
+    });
+    wrap.appendChild(optGrid);
+    container.appendChild(wrap);
+  });
+}
+function renderBestPrompt(container, widget, widgetId){
+  container.innerHTML = '';
+  const total = widget.prompts.reduce(function(a,p){return a+p.counts;},0)||1;
+  widget.prompts.forEach(function(p){
+    const div = document.createElement('div');
+    div.className = 'prompt-card';
+    if(state.votes[widgetId] === p.id) div.classList.add('voted');
+    div.innerHTML = '<span class="prompt-tag">'+p.tag+'</span>'+p.text+
+                    '<div style="margin-top:.55rem;font-size:.78rem;color:var(--muted)">'+Math.round(p.counts/total*100)+'% رأی</div>';
+    div.addEventListener('click', function(){
+      if(state.votes[widgetId]) return;
+      state.votes[widgetId] = p.id;
+      container.querySelectorAll('.prompt-card').forEach(function(c){ c.classList.remove('voted'); });
+      div.classList.add('voted');
+      const gain = p.id === 'bp1b' ? 20 : 5;
+      state.score += gain; saveState();
+      document.getElementById('liveScore').textContent = toFa(state.score);
+      showSnackbar('✓ ثبت شد · +'+gain+' امتیاز');
+    });
+    container.appendChild(div);
+  });
+}
+document.querySelectorAll('.widget[data-widget]').forEach(function(el){
+  const id = el.dataset.widget;
+  const w = WIDGETS[id];
+  if(!w) return;
+  if(w.type === 'wordcloud') renderWordCloud(document.getElementById(id+'Cloud'), w.words);
+  else if(w.type === 'single' || w.type === 'multi'){
+    const optEl = el.querySelector('.opt-grid');
+    if(optEl) renderOptions(optEl, w, id, w.type === 'multi');
+  }
+  else if(w.type === 'quiz') renderQuiz(document.getElementById(id+'List'), w, id);
+  else if(w.type === 'bestprompt') renderBestPrompt(document.getElementById(id+'List'), w, id);
+  else if(w.type === 'quiz2'){
+    const optEl = el.querySelector('.opt-grid');
+    if(optEl) renderOptions(optEl, w, id, false);
+  }
+});
+
+const overlay = document.getElementById('resultsOverlay');
+const overlayBody = document.getElementById('overlayBody');
+const overlayTitle = document.getElementById('overlayTitle');
+function buildResults(id){
+  const w = WIDGETS[id];
+  let html = '<p class="muted" style="margin-bottom:1rem">نتایج شبیه‌سازی‌شده · ۱۵۰ پاسخ</p>';
+  if(w.type === 'wordcloud'){
+    html += '<div class="wordcloud">';
+    const max = Math.max.apply(null, w.words.map(function(x){return x.c;}));
+    w.words.forEach(function(x){ html += '<span style="font-size:'+(0.85+x.c/max*1.7)+'rem">'+x.t+' ('+x.c+')</span>'; });
+    html += '</div>';
+  } else if(w.type === 'quiz'){
+    w.statements.forEach(function(st){
+      const total = Object.values(st.counts).reduce(function(a,b){return a+b;},0);
+      html += '<div style="margin-bottom:1.2rem"><div style="font-weight:700;margin-bottom:.5rem">'+st.text+'</div>';
+      [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(function(p){
+        const pct = Math.round((st.counts[p[0]]||0)/total*100);
+        html += '<div style="display:flex;justify-content:space-between;padding:.4rem .7rem;background:var(--surface);border-radius:9px;margin-bottom:.3rem"><span>'+p[1]+'</span><span style="color:var(--amber);font-weight:700">'+pct+'%</span></div>';
+      });
+      html += '<div style="font-size:.82rem;color:var(--mint);margin-top:.3rem;font-weight:600">✓ پاسخ صحیح: '+(st.correct?'واقعیت':'افسانه')+'</div></div>';
+    });
+  } else if(w.type === 'bestprompt'){
+    const total = w.prompts.reduce(function(a,p){return a+p.counts;},0);
+    w.prompts.forEach(function(p){
+      html += '<div style="padding:.7rem;background:var(--surface);border-radius:11px;margin-bottom:.5rem"><b>'+p.tag+':</b> '+p.text+'<div style="color:var(--amber);margin-top:.35rem;font-weight:700">'+Math.round(p.counts/total*100)+'%</div></div>';
+    });
+    html += '<p style="margin-top:.9rem;color:var(--mint);font-weight:600">✓ گزینه B بهترین است: نقش، زمینه، وظیفه، محدودیت، قالب را دارد.</p>';
+  } else if(w.counts){
+    const total = Object.values(w.counts).reduce(function(a,b){return a+b;},0);
+    const labels = {};
+    const g = document.querySelector('[data-widget="'+id+'"] .opt-grid');
+    if(g) JSON.parse(g.dataset.options).forEach(function(o){ labels[o.k] = o.l; });
+    Object.keys(w.counts).forEach(function(k){
+      const pct = Math.round(w.counts[k]/total*100);
+      html += '<div style="display:flex;justify-content:space-between;padding:.6rem .9rem;background:var(--surface);border-radius:11px;margin-bottom:.4rem"><span>'+(labels[k]||k)+'</span><span style="color:var(--amber);font-weight:700">'+pct+'%</span></div>';
+    });
+    if(w.correct){
+      const cLabel = labels[w.correct] || w.correct;
+      html += '<p style="margin-top:.9rem;color:var(--mint);font-weight:600">✓ پاسخ صحیح: '+cLabel+'</p>';
+    }
+  }
+  overlayBody.innerHTML = html;
+  const q = document.querySelector('[data-widget="'+id+'"] .widget-q');
+  overlayTitle.textContent = 'نتایج · ' + (q ? q.textContent : '');
+}
+document.querySelectorAll('.widget-results').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    const id = btn.dataset.results; if(!id) return;
+    buildResults(id); overlay.classList.add('open');
+  });
+});
+document.getElementById('closeOverlay').addEventListener('click', function(){ overlay.classList.remove('open'); });
+overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.classList.remove('open'); });
+
+function renderLB(el){
+  if(!el) return;
+  el.innerHTML = '';
+  MOCK.leaderboard.forEach(function(r,i){
+    const row = document.createElement('div');
+    row.className = 'lb-row' + (i===0?' top1':i===1?' top2':i===2?' top3':'');
+    row.innerHTML = '<span class="lb-rank">'+(i+1)+'</span><span class="lb-name">'+r.name+'</span><span class="lb-score">'+r.score+'</span>';
+    el.appendChild(row);
+  });
+}
+renderLB(document.getElementById('lbBreak'));
+renderLB(document.getElementById('lbFinal'));
+
+const qrModal = document.getElementById('qrModal');
+const qrBox = document.getElementById('qrBox');
+const qrUrl = document.getElementById('qrUrl');
+function openQr(){
+  const joinUrl = new URL('join.html', location.href);
+  joinUrl.searchParams.set('session', SESSION.code);
+  qrUrl.textContent = joinUrl.toString();
+  qrBox.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(joinUrl.toString())+'&bgcolor=FFFFFF&color=0B1324&margin=1';
+  img.alt = 'QR';
+  img.onerror = function(){ qrBox.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.8">QR در فاز ۲ محلی تولید می‌شود.<br>الان از آدرس زیر استفاده کنید.</div>'; };
+  qrBox.appendChild(img);
+  qrModal.classList.add('open');
+}
+document.getElementById('qrBtn').addEventListener('click', openQr);
+document.getElementById('showQrBtn').addEventListener('click', openQr);
+document.getElementById('closeQr').addEventListener('click', function(){ qrModal.classList.remove('open'); });
+qrModal.addEventListener('click', function(e){ if(e.target === qrModal) qrModal.classList.remove('open'); });
+
+const navEl = document.getElementById('nav');
+const navReopen = document.getElementById('navReopen');
+function isMobile(){ return window.matchMedia('(max-width:640px)').matches; }
+document.getElementById('menuBtn').addEventListener('click', function(){
+  if(isMobile()){ navEl.classList.toggle('open'); }
+  else {
+    if(navEl.classList.contains('collapsed')){
+      navEl.classList.remove('collapsed'); navReopen.classList.remove('show');
+    } else {
+      navEl.classList.add('collapsed'); navReopen.classList.add('show');
+    }
+  }
+});
+document.getElementById('navToggle').addEventListener('click', function(){
+  if(isMobile()){ navEl.classList.remove('open'); }
+  else { navEl.classList.add('collapsed'); navReopen.classList.add('show'); }
+});
+navReopen.addEventListener('click', function(){
+  navEl.classList.remove('collapsed'); navReopen.classList.remove('show');
+});
+
+let focusMode = false;
+const focusBtn = document.getElementById('focusBtn');
+const focusHint = document.getElementById('focusHint');
+function toggleFocus(force){
+  focusMode = typeof force === 'boolean' ? force : !focusMode;
+  document.body.classList.toggle('focus-mode', focusMode);
+  if(focusMode){
+    showSnackbar('◎ حالت تمرکز فعال شد');
+    focusHint.style.opacity = '1';
+    focusHint.style.transform = 'translateX(50%) translateY(0)';
+    clearTimeout(window.__hintTimer);
+    window.__hintTimer = setTimeout(function(){
+      if(focusMode){
+        focusHint.style.opacity = '0';
+        focusHint.style.transform = 'translateX(50%) translateY(80px)';
+      }
+    }, 4500);
+  } else {
+    focusHint.style.opacity = '0';
+    focusHint.style.transform = 'translateX(50%) translateY(80px)';
+    showSnackbar('حالت تمرکز غیرفعال شد');
+  }
+}
+focusBtn.addEventListener('click', function(){ toggleFocus(); });
+
+function enterTestMode(){
+  const testVotes = {};
+  Object.keys(WIDGETS).forEach(function(id){
+    const w = WIDGETS[id];
+    if(w.type === 'single' || w.type === 'multi' || w.type === 'quiz2'){
+      const keys = Object.keys(w.counts || {});
+      if(keys.length) testVotes[id] = keys[0];
+    } else if(w.type === 'quiz'){
+      testVotes[id] = {};
+      w.statements.forEach(function(st){ testVotes[id][st.id] = st.correct ? 't' : 'f'; });
+    } else if(w.type === 'bestprompt'){
+      testVotes[id] = 'bp1b';
+    }
+  });
+  const testTimer = {
+    started: true,
+    running: true,
+    sectionEnteredAt: Date.now() - 12 * 60 * 1000,
+    currentSection: 's2-five-concepts',
+    sectionAccum: {
+      cover: 3*60*1000, intro: 2*60*1000, goals: 2*60*1000,
+      's1-ai-def': 5*60*1000, 's1-programming-vs-ml': 4*60*1000,
+      's1-everyday': 4*60*1000, 'station-wc1': 6*60*1000,
+      's1-workplace': 4*60*1000, 's1-augmented': 3*60*1000
+    }
+  };
+  LS.set('votes', JSON.stringify(testVotes));
+  LS.set('score', '145');
+  LS.set('testMode', '1');
+  LS.set('timer', JSON.stringify(testTimer));
+  location.reload();
+}
+function exitTestMode(){
+  try{
+    const keys = [];
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.indexOf('ai_' + SESSION.code + '_') === 0) keys.push(k);
+    }
+    keys.forEach(function(k){ localStorage.removeItem(k); });
+  }catch(e){}
+  location.reload();
+}
+document.getElementById('testBtn').addEventListener('click', function(){
+  if(document.body.classList.contains('test-mode')) exitTestMode();
+  else enterTestMode();
+});
+document.getElementById('exitTestBtn').addEventListener('click', exitTestMode);
+
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const k = e.key;
+  if(k === 'Escape'){
+    if(focusMode){ toggleFocus(false); return; }
+    overlay.classList.remove('open'); qrModal.classList.remove('open');
+    navEl.classList.remove('open');
+    return;
+  }
+  if(k === 'f' || k === 'F'){ e.preventDefault(); toggleFocus(); return; }
+  if(k === 'ArrowDown' || k === 'J' || k === 'j' || k === ' '){ e.preventDefault(); goRel(1); }
+  else if(k === 'ArrowUp' || k === 'K' || k === 'k'){ e.preventDefault(); goRel(-1); }
+  else if(k === 'Home'){ e.preventDefault(); sections[0].scrollIntoView({behavior:'smooth'}); }
+  else if(k === 'End'){ e.preventDefault(); sections[sections.length-1].scrollIntoView({behavior:'smooth'}); }
+  else if(k === 'r' || k === 'R'){ const a = document.querySelector('.widget-results'); if(a) a.click(); }
+  else if(k === 'q' || k === 'Q'){ openQr(); }
+});
+function goRel(delta){
+  const next = Math.max(0, Math.min(sections.length-1, activeIdx + delta));
+  sections[next].scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+loadTimer();
+updateStartBtn();
+document.getElementById('liveScore').textContent = toFa(state.score);
+document.getElementById('liveCount').textContent = '۰';
+document.getElementById('liveVotes').textContent = '۰';
+
+if (LS.get('testMode') === '1') {
+  document.body.classList.add('test-mode');
+  document.getElementById('testBanner').classList.add('show');
+}
+
+if (!timerState.currentSection) {
+  timerState.currentSection = 'cover';
+  timerState.sectionEnteredAt = Date.now();
+}
+updateActive(0);
+updateTimerUI();
+</script>
+<script type="module" src="assets/js/presenter.js"></script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>پیوستن به کارگاه · گروه اول</title>
+<script>
+(function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.3/Vazirmatn-font-face.css">
+<style>
+:root[data-theme="dark"]{
+  --bg:#080c17;--sur:rgba(255,255,255,.06);--line:rgba(255,255,255,.14);
+  --txt:#f1f5f9;--txt2:#c9d4e2;--mut:#8b96a8;
+  --amber:#fbbf24;--orange:#f97316;--mint:#34d399;--rose:#fb7185;
+  --amber-soft:rgba(251,191,36,.14);--amber-glow:rgba(251,191,36,.35);
+  --mint-soft:rgba(52,211,153,.14);--rose-soft:rgba(251,113,133,.14);
+}
+:root[data-theme="light"]{
+  --bg:#fdfcfa;--sur:rgba(15,23,42,.04);--line:rgba(15,23,42,.12);
+  --txt:#0f172a;--txt2:#1e293b;--mut:#64748b;
+  --amber:#b45309;--orange:#c2410c;--mint:#059669;--rose:#e11d48;
+  --amber-soft:rgba(180,83,9,.12);--amber-glow:rgba(180,83,9,.25);
+  --mint-soft:rgba(5,150,105,.12);--rose-soft:rgba(225,29,72,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:'Vazirmatn',Tahoma,sans-serif;color:var(--txt);
+  min-height:100vh;min-height:100svh;min-height:100dvh;
+  padding:max(20px,env(safe-area-inset-top)) 14px max(20px,env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse 60% 40% at 82% 8%, rgba(251,191,36,.08), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 8% 92%, rgba(45,212,191,.05), transparent 60%),
+    linear-gradient(160deg,var(--bg) 0%,#0c1120 60%,#05080e 100%);
+  transition:background .5s,color .5s;
+}
+:root[data-theme="light"] body{
+  background:
+    radial-gradient(ellipse 60% 40% at 82% 8%, rgba(180,83,9,.05), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 8% 92%, rgba(5,150,105,.04), transparent 60%),
+    linear-gradient(160deg,var(--bg) 0%,#faf5ff 55%,#fef5f0 100%);
+}
+button,.opt{touch-action:manipulation;position:relative;overflow:hidden;font-family:inherit}
+input{font-size:16px;font-family:inherit}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;
+  background:rgba(251,191,36,.4);transform:scale(0);
+  animation:rippleAnim .7s cubic-bezier(.2,.7,.2,1);z-index:1}
+:root[data-theme="light"] .ripple{background:rgba(180,83,9,.22)}
+@keyframes rippleAnim{0%{transform:scale(0);opacity:.8}100%{transform:scale(1);opacity:0}}
+button:active{transform:scale(.97)!important;transition:transform .08s!important}
+
+.wrap{max-width:440px;margin:0 auto}
+.card{
+  background:linear-gradient(160deg,var(--sur),rgba(255,255,255,.005));
+  border:1px solid var(--line);border-radius:22px;padding:22px;position:relative;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 24px 60px rgba(0,0,0,.4);margin-bottom:14px;
+}
+.badge{display:inline-block;padding:.3rem .8rem;border-radius:999px;
+  background:var(--amber-soft);color:var(--amber);border:1px solid rgba(251,191,36,.35);
+  font-size:.72rem;font-weight:700}
+h1{font-size:1.15rem;margin:.85rem 0 .3rem;letter-spacing:-.3px}
+h2{font-size:1.05rem;margin:.6rem 0 .5rem;letter-spacing:-.2px}
+p{font-size:.85rem;color:var(--mut);line-height:1.8;margin:0}
+label{display:block;font-size:.8rem;color:var(--txt);margin:1rem 0 .4rem;font-weight:600}
+input{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--line);
+  background:rgba(0,0,0,.2);color:var(--txt);transition:.2s}
+input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.btn{
+  width:100%;margin-top:1rem;padding:.9rem;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#fde68a,var(--amber) 45%,var(--orange));
+  color:#1a1206;font-weight:700;font-size:.95rem;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px var(--amber-glow);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px var(--amber-glow)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.score{margin-top:.8rem;padding:.7rem;border-radius:12px;
+  background:var(--mint-soft);border:1px solid rgba(52,211,153,.3);
+  text-align:center;color:var(--mint);font-weight:700;font-size:.92rem}
+.status{margin-top:.6rem;font-size:.78rem;color:var(--mut);text-align:center}
+.theme-morph{position:absolute;top:14px;inset-inline-end:14px;
+  width:42px;height:42px;border-radius:50%;background:var(--sur);
+  border:1px solid var(--line);cursor:pointer;padding:0;transition:.4s}
+.theme-morph:hover{border-color:rgba(251,191,36,.4);box-shadow:0 0 0 5px var(--amber-soft)}
+.theme-morph .tm-sun,.theme-morph .tm-moon{position:absolute;inset:0;
+  display:grid;place-items:center;transition:opacity .55s,transform .7s cubic-bezier(.5,1.5,.5,1),color .4s}
+:root[data-theme="dark"] .tm-sun{opacity:0;transform:rotate(-140deg) scale(.25)}
+:root[data-theme="dark"] .tm-moon{opacity:1;transform:rotate(0) scale(1);color:var(--amber)}
+:root[data-theme="light"] .tm-sun{opacity:1;transform:rotate(0) scale(1);color:#f59e0b}
+:root[data-theme="light"] .tm-moon{opacity:0;transform:rotate(140deg) scale(.25)}
+
+.opt-grid{display:grid;gap:.55rem;margin-top:.8rem}
+.opt-grid.g2{grid-template-columns:repeat(2,1fr)}
+.opt-grid.g1{grid-template-columns:1fr}
+.opt{padding:.9rem 1.1rem;border-radius:12px;border:1px solid var(--line);
+  background:var(--sur);color:var(--txt2);cursor:pointer;font-size:.9rem;
+  text-align:start;display:flex;justify-content:space-between;align-items:center;gap:.5rem;
+  transition:transform .2s,background-color .2s,border-color .2s,color .2s}
+.opt:hover{background:rgba(255,255,255,.1);border-color:var(--line);color:var(--txt)}
+.opt.voted{background:var(--amber-soft);border-color:rgba(251,191,36,.6);color:var(--txt);font-weight:600}
+.opt.correct{background:var(--mint-soft);border-color:rgba(52,211,153,.5)}
+.opt .pct{font-size:.75rem;color:var(--mut);font-variant-numeric:tabular-nums}
+
+.quiz-item{margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--line)}
+.quiz-item:first-child{margin-top:0;padding-top:0;border-top:none}
+.quiz-q{font-weight:600;color:var(--txt);font-size:.9rem;margin-bottom:.5rem}
+
+.waiting{text-align:center;padding:2rem 1rem;color:var(--mut);font-size:.88rem;line-height:1.9}
+.waiting .dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--amber);margin-left:.4rem;animation:pulseDot 1.6s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+
+.wc-input{display:flex;gap:.5rem;margin-top:.8rem}
+.wc-input input{flex:1;margin:0;padding:.8rem 1rem}
+.wc-input .btn{width:auto;margin:0;padding:.8rem 1.2rem;white-space:nowrap}
+
+#widgetArea{margin-top:.5rem}
+#widgetArea:empty::before{content:'منتظر شروع تعامل بعدی توسط مدرس…';display:block;
+  text-align:center;padding:2rem 1rem;color:var(--mut);font-size:.85rem;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Alias card -->
+  <div class="card" id="aliasCard">
+    <button class="theme-morph" id="themeBtn" aria-label="تغییر تم">
+      <span class="tm-sun"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="4.2"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19" y2="19"/><line x1="5" y1="19" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19" y2="5"/></g></svg></span>
+      <span class="tm-moon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+    </button>
+    <span class="badge">G1-1405-05-05 · گروه اول</span>
+    <h1>به کارگاه خوش آمدید</h1>
+    <p>یک نام مستعار انتخاب کنید. این نام در لیدربرد نمایش داده می‌شود و هر زمان قابل ویرایش است.</p>
+    <label for="alias">نام مستعار</label>
+    <input id="alias" placeholder="مثلاً کارشناس اعتبارات" maxlength="30" autocomplete="off">
+    <button class="btn" id="saveBtn">ثبت و ورود</button>
+    <div class="score" id="scoreBox" style="display:none"></div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- Live widget card -->
+  <div class="card" id="liveCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span class="badge" id="liveBadge">ایستگاه تعاملی</span>
+      <span id="myAlias" style="font-size:.78rem;color:var(--mut)"></span>
+    </div>
+    <h2 id="widgetQ" style="margin-top:.8rem"></h2>
+    <div id="widgetArea"></div>
+    <div class="score" id="myScore" style="display:none"></div>
+  </div>
+</div>
+
+<script type="module">
+import * as SB from './assets/js/supabase-client.js';
+
+const safeLS = {
+  get: k => { try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set: (k,v) => { try { localStorage.setItem(k,v); } catch(e){} }
+};
+const LSKey = 'ai_' + SB.SESSION_CODE + '_';
+
+/* Theme */
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  safeLS.set('ai_theme', next);
+});
+
+/* Ripple */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button, .opt');
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 700);
+});
+
+/* Elements */
+const aliasInput = document.getElementById('alias');
+const saveBtn = document.getElementById('saveBtn');
+const scoreBox = document.getElementById('scoreBox');
+const statusEl = document.getElementById('status');
+const aliasCard = document.getElementById('aliasCard');
+const liveCard = document.getElementById('liveCard');
+const liveBadge = document.getElementById('liveBadge');
+const widgetQ = document.getElementById('widgetQ');
+const widgetArea = document.getElementById('widgetArea');
+const myAlias = document.getElementById('myAlias');
+const myScore = document.getElementById('myScore');
+
+/* ====== Alias registration ====== */
+aliasInput.value = safeLS.get(LSKey + 'alias') || '';
+
+async function refreshScore() {
+  try {
+    const p = await SB.getMyParticipant();
+    if (!p) return;
+    scoreBox.style.display = 'block';
+    scoreBox.textContent = 'امتیاز شما: ' + p.score;
+    myScore.style.display = 'block';
+    myScore.textContent = 'امتیاز شما: ' + p.score;
+    myAlias.textContent = p.alias;
+  } catch(e){}
+}
+
+saveBtn.addEventListener('click', async () => {
+  const v = aliasInput.value.trim();
+  if (!v) { aliasInput.focus(); return; }
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'در حال ثبت…';
+  try {
+    await SB.registerParticipant(v);
+    safeLS.set(LSKey + 'alias', v);
+    await refreshScore();
+    statusEl.textContent = '✓ نام شما ثبت شد';
+    statusEl.style.color = 'var(--mint)';
+    aliasCard.style.display = 'none';
+    liveCard.style.display = 'block';
+    await refreshCurrentWidget();
+    startPolling();
+  } catch(e) {
+    safeLS.set(LSKey + 'alias', v);
+    statusEl.textContent = '⚠ اتصال ضعیف — بعداً همگام می‌شود';
+    statusEl.style.color = 'var(--rose)';
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'تلاش دوباره';
+  }
+});
+
+/* ====== Current widget from presenter state ====== */
+let currentWidgetId = null;
+let myVotes = {};
+
+async function refreshMyVotes() {
+  try { myVotes = await SB.getMyVotes(); } catch(e){ myVotes = []; }
+}
+
+async function refreshCurrentWidget() {
+  try {
+    const ps = await SB.getPresenterState();
+    const wid = SB.sectionToWidget(ps?.current_section);
+    if (wid === currentWidgetId) return;
+    currentWidgetId = wid;
+    await renderWidget(wid);
+    await refreshScore();
+  } catch(e) {
+    console.warn('refreshCurrentWidget', e);
+  }
+}
+
+function alreadyVoted(widgetId, statementId=null) {
+  return myVotes.some(v =>
+    v.widget_id === widgetId &&
+    (statementId === null ? v.statement_id === null : v.statement_id === statementId)
+  );
+}
+
+async function renderWidget(wid) {
+  widgetArea.innerHTML = '';
+  if (!wid) { widgetQ.textContent = ''; return; }
+  const meta = SB.WIDGET_META[wid];
+  if (!meta) { widgetQ.textContent = ''; return; }
+  widgetQ.textContent = meta.q;
+  await refreshMyVotes();
+
+  if (meta.type === 'wordcloud') {
+    const has = myVotes.some(v => v.widget_id === wid);
+    if (has) {
+      widgetArea.innerHTML = '<div class="waiting">✓ کلمه شما ثبت شد. منتظر نتایج باشید.</div>';
+      return;
+    }
+    widgetArea.innerHTML = `
+      <div class="wc-input">
+        <input id="wcWord" placeholder="یک کلمه…" maxlength="20">
+        <button class="btn" id="wcSend">ثبت</button>
+      </div>`;
+    document.getElementById('wcSend').addEventListener('click', async () => {
+      const w = document.getElementById('wcWord').value.trim();
+      if (!w) return;
+      try {
+        await SB.submitVote({ widgetId: wid, voteValue: w, points: 5 });
+        widgetArea.innerHTML = '<div class="waiting">✓ ثبت شد</div>';
+        await refreshScore();
+      } catch(e){ console.warn(e); }
+    });
+  } else if (meta.type === 'single' || meta.type === 'multi') {
+    const grid = document.createElement('div');
+    grid.className = 'opt-grid ' + (meta.type === 'multi' ? 'g2' : (meta.options.length <= 2 ? 'g2' : 'g1'));
+    meta.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      const voted = myVotes.some(v => v.widget_id === wid && v.vote_value === o.k);
+      if (voted) btn.classList.add('voted');
+      btn.innerHTML = `<span>${o.l}</span>`;
+      btn.addEventListener('click', async () => {
+        if (meta.type === 'single') {
+          if (alreadyVoted(wid)) return;
+          const pts = o.correct === true ? 20 : 5;
+          const isCorrect = o.correct === true ? true : (o.correct === false ? false : null);
+          try {
+            await SB.submitVote({ widgetId: wid, voteValue: o.k, isCorrect, points: pts });
+            grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
+            btn.classList.add('voted');
+            await refreshScore(); await refreshMyVotes();
+          } catch(e){ console.warn(e); }
+        } else {
+          const isVoted = myVotes.some(v => v.widget_id === wid && v.vote_value === o.k);
+          try {
+            if (isVoted) {
+              await SB.deleteMultiVote(wid, o.k);
+              btn.classList.remove('voted');
+            } else {
+              await SB.submitVote({ widgetId: wid, voteValue: o.k, points: 5 });
+              btn.classList.add('voted');
+            }
+            await refreshScore(); await refreshMyVotes();
+          } catch(e){ console.warn(e); }
+        }
+      });
+      grid.appendChild(btn);
+    });
+    widgetArea.appendChild(grid);
+  } else if (meta.type === 'quiz') {
+    meta.statements.forEach(st => {
+      const wrap = document.createElement('div');
+      wrap.className = 'quiz-item';
+      wrap.innerHTML = `<div class="quiz-q">${st.text}</div>`;
+      const grid = document.createElement('div');
+      grid.className = 'opt-grid g2';
+      const votedVal = myVotes.find(v => v.widget_id === wid && v.statement_id === st.id)?.vote_value;
+      [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        if (votedVal === k) btn.classList.add('voted');
+        btn.innerHTML = `<span>${l}</span>`;
+        btn.addEventListener('click', async () => {
+          if (votedVal) return;
+          const isCorrect = (k === 't' && st.correct) || (k === 'f' && !st.correct);
+          const pts = isCorrect ? 15 : 3;
+          try {
+            await SB.submitVote({ widgetId: wid, statementId: st.id, voteValue: k, isCorrect, points: pts });
+            grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
+            btn.classList.add('voted');
+            await refreshScore(); await refreshMyVotes();
+          } catch(e){ console.warn(e); }
+        });
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
+      widgetArea.appendChild(wrap);
+    });
+  } else if (meta.type === 'quiz2') {
+    const grid = document.createElement('div');
+    grid.className = 'opt-grid g1';
+    const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
+    meta.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      if (votedVal === o.k) btn.classList.add('voted');
+      btn.innerHTML = `<span>${o.l}</span>`;
+      btn.addEventListener('click', async () => {
+        if (votedVal) return;
+        const pts = o.correct ? 20 : 3;
+        try {
+          await SB.submitVote({ widgetId: wid, voteValue: o.k, isCorrect: o.correct, points: pts });
+          grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
+          btn.classList.add('voted');
+          await refreshScore(); await refreshMyVotes();
+        } catch(e){ console.warn(e); }
+      });
+      grid.appendChild(btn);
+    });
+    widgetArea.appendChild(grid);
+  } else if (meta.type === 'bestprompt') {
+    const grid = document.createElement('div');
+    grid.className = 'opt-grid g1';
+    const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
+    meta.prompts.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      if (votedVal === p.tag) btn.classList.add('voted');
+      btn.style.flexDirection = 'column';
+      btn.style.alignItems = 'flex-start';
+      btn.style.textAlign = 'right';
+      btn.innerHTML = `<div style="font-weight:700;color:var(--amber);font-size:.78rem">گزینه ${p.tag}</div><div style="font-size:.83rem;line-height:1.7;margin-top:.3rem">${p.text}</div>`;
+      btn.addEventListener('click', async () => {
+        if (votedVal) return;
+        const pts = p.correct ? 20 : 5;
+        try {
+          await SB.submitVote({ widgetId: wid, voteValue: p.tag, isCorrect: p.correct || false, points: pts });
+          grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
+          btn.classList.add('voted');
+          await refreshScore(); await refreshMyVotes();
+        } catch(e){ console.warn(e); }
+      });
+      grid.appendChild(btn);
+    });
+    widgetArea.appendChild(grid);
+  }
+}
+
+/* ====== Polling every 3s for new widget + score ====== */
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) return;
+  pollTimer = setInterval(async () => {
+    await refreshCurrentWidget();
+    await refreshScore();
+  }, 3000);
+}
+
+/* ====== Bootstrap: if already registered, jump straight to live ====== */
+(async () => {
+  const savedName = safeLS.get(LSKey + 'alias');
+  if (savedName) {
+    try {
+      const p = await SB.getMyParticipant();
+      if (p) {
+        aliasCard.style.display = 'none';
+        liveCard.style.display = 'block';
+        await refreshScore();
+        await refreshCurrentWidget();
+        startPolling();
+        return;
+      }
+    } catch(e){}
+    // If no participant but name saved, show alias card prefilled
+    statusEl.textContent = 'برای ادامه، نام را دوباره ثبت کنید';
+    saveBtn.textContent = 'ثبت و ورود';
+    saveBtn.disabled = false;
+  }
+})();
+
+aliasInput.addEventListener('focus', () => setTimeout(() => window.scrollTo(0,0), 120));
+</script>
+</body>
+</html>
