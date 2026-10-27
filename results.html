@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
 <title>نتایج زنده · G1-1405-05-05</title>
 <script>
 (function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
@@ -14,6 +15,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--txt);overflow:hidden}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 85% 5%, rgba(251,191,36,.1), transparent 60%),radial-gradient(ellipse 50% 40% at 10% 95%, rgba(45,212,191,.06), transparent 60%)}
+.conn-banner{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-70px);background:linear-gradient(90deg,#dc2626,#ef4444);color:#fff;padding:10px 22px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(220,38,38,.5);opacity:0;pointer-events:none;transition:all .3s;white-space:nowrap}
+.conn-banner.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .layout{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:340px 1fr}
 .side{padding:24px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(90deg, rgba(255,255,255,.02), transparent);border-inline-end:1px solid var(--line);overflow-y:auto}
 .side-head{font-size:.72rem;letter-spacing:2.5px;color:var(--amber);font-weight:700}
@@ -53,7 +56,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .bar-count{color:#1a1206;font-weight:800;font-size:.85rem;font-variant-numeric:tabular-nums}
 .bar-fill.empty{background:rgba(255,255,255,.1);box-shadow:none}
 .bar-fill.empty .bar-count{color:var(--mut)}
-/* Correct answer highlighting */
 .bar-row.correct .bar-label{color:var(--mint);font-weight:800}
 .bar-row.correct .bar-label::after{content:' ✓';color:var(--mint);font-size:1rem}
 .bar-row.correct .bar-pct{color:var(--mint)}
@@ -77,6 +79,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </style>
 </head>
 <body>
+
+<div class="conn-banner" id="connBanner">⚠ اتصال به سرور قطع است — تلاش مجدد...</div>
+
 <div class="layout">
   <aside class="side">
     <div class="side-head">ورود به کارگاه</div>
@@ -115,6 +120,25 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 
 <script>
+/* ========== Wake Lock ========== */
+window.__wakeLock = null;
+async function requestWakeLock(){
+  try {
+    if ('wakeLock' in navigator && !window.__wakeLock) {
+      window.__wakeLock = await navigator.wakeLock.request('screen');
+      window.__wakeLock.addEventListener('release', function(){ window.__wakeLock = null; });
+    }
+  } catch(e){}
+}
+document.addEventListener('click', function(){
+  if (!window.__wakeLock) requestWakeLock();
+}, { once:true, capture:true });
+document.addEventListener('visibilitychange', function(){
+  if (document.visibilityState === 'visible' && !window.__wakeLock) requestWakeLock();
+});
+requestWakeLock();
+
+/* ========== QR ========== */
 (function(){
   var joinUrl = new URL('join.html', location.href);
   joinUrl.searchParams.set('session', 'G1-1405-05-05');
@@ -132,6 +156,37 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
   };
   img.src = qrUrlStr;
 })();
+
+/* ========== Connection banner ========== */
+var SUPABASE_CHECK_URL = 'https://aqmcervucsyyqlbifmqh.supabase.co/rest/v1/sessions?select=code&limit=1';
+var SUPABASE_KEY = 'sb_publishable_TMwkKkKQ5MwhuqVZSKgFcg_2YfGk-Pk';
+var connFailCount = 0;
+var connStatus = 'online';
+function setConnStatus(status){
+  if (connStatus === status) return;
+  connStatus = status;
+  var banner = document.getElementById('connBanner');
+  if (!banner) return;
+  if (status === 'online') banner.classList.remove('show');
+  else banner.classList.add('show');
+}
+window.addEventListener('offline', function(){ connFailCount = 2; setConnStatus('offline'); });
+window.addEventListener('online', function(){ connFailCount = 0; setConnStatus('online'); });
+async function checkConnection(){
+  try {
+    var res = await fetch(SUPABASE_CHECK_URL, {
+      method: 'GET', cache: 'no-store',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    if (res.ok) { connFailCount = 0; setConnStatus('online'); }
+    else { connFailCount++; if (connFailCount >= 2) setConnStatus('error'); }
+  } catch(e) {
+    connFailCount++;
+    if (connFailCount >= 2) setConnStatus('offline');
+  }
+}
+setInterval(checkConnection, 15000);
+setTimeout(checkConnection, 2000);
 </script>
 
 <script type="module">
