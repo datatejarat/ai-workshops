@@ -278,6 +278,12 @@ function alreadyVoted(widgetId, statementId=null) {
   );
 }
 
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function hasVotedFor(wid){ return myVotes.some(v => v.widget_id === wid); }
+function currentValuesFor(wid){ return myVotes.filter(v => v.widget_id === wid).map(v => v.vote_value); }
+
 async function renderWidget(wid) {
   widgetArea.innerHTML = '';
   if (!wid) { widgetQ.textContent = ''; return; }
@@ -286,140 +292,261 @@ async function renderWidget(wid) {
   widgetQ.textContent = meta.q;
   await refreshMyVotes();
 
-  if (meta.type === 'wordcloud') {
-    const has = myVotes.some(v => v.widget_id === wid);
-    if (has) {
-      widgetArea.innerHTML = '<div class="waiting">✓ کلمه شما ثبت شد. منتظر نتایج باشید.</div>';
+  if (meta.type === 'wordcloud') renderWordcloudEditable(wid, meta);
+  else if (meta.type === 'single') renderSingleEditable(wid, meta);
+  else if (meta.type === 'multi') renderMultiEditable(wid, meta);
+  else if (meta.type === 'quiz') renderQuizLocked(wid, meta);
+  else if (meta.type === 'quiz2') renderQuiz2Locked(wid, meta);
+  else if (meta.type === 'bestprompt') renderBestPromptLocked(wid, meta);
+}
+
+function renderWordcloudEditable(wid, meta) {
+  const currentWord = currentValuesFor(wid)[0] || '';
+  const hasVoted = !!currentWord;
+  let isEditing = !hasVoted;
+
+  const render = () => {
+    widgetArea.innerHTML = '';
+    if (!isEditing) {
+      const d = document.createElement('div');
+      d.className = 'waiting';
+      d.innerHTML = `✓ کلمه شما: <strong style="color:var(--amber);margin-inline-start:.3rem">${esc(currentWord)}</strong>`;
+      widgetArea.appendChild(d);
+      const b = document.createElement('button');
+      b.className = 'btn';
+      b.style.cssText = 'margin-top:1rem;width:100%;background:var(--sur);color:var(--txt);box-shadow:none;border:1px solid var(--line)';
+      b.textContent = '✎ ویرایش کلمه';
+      b.addEventListener('click', () => { isEditing = true; render(); });
+      widgetArea.appendChild(b);
       return;
     }
-    widgetArea.innerHTML = `
-      <div class="wc-input">
-        <input id="wcWord" placeholder="یک کلمه…" maxlength="20">
-        <button class="btn" id="wcSend">ثبت</button>
-      </div>`;
-    document.getElementById('wcSend').addEventListener('click', async () => {
-      const w = document.getElementById('wcWord').value.trim();
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:.5rem;margin-top:1rem';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = 'یک کلمه…';
+    inp.maxLength = 20;
+    inp.value = currentWord;
+    inp.style.cssText = 'flex:1;margin:0;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--txt)';
+    wrap.appendChild(inp);
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.style.cssText = 'width:auto;margin:0;padding:.85rem 1.2rem';
+    btn.textContent = 'ثبت';
+    btn.disabled = !inp.value.trim();
+    inp.addEventListener('input', () => { btn.disabled = !inp.value.trim(); });
+    btn.addEventListener('click', async () => {
+      const w = inp.value.trim();
       if (!w) return;
+      btn.disabled = true; btn.textContent = '…';
       try {
-        await SB.submitVote({ widgetId: wid, voteValue: w, points: 5 });
-        widgetArea.innerHTML = '<div class="waiting">✓ ثبت شد</div>';
-        await refreshScore();
-      } catch(e){ console.warn(e); }
+        await SB.submitOrEditVotes(wid, [w], 5);
+        await refreshScore(); await refreshMyVotes();
+        renderWidget(wid);
+      } catch(e) {
+        console.error(e);
+        btn.textContent = '⚠ خطا';
+        setTimeout(() => { btn.disabled = false; btn.textContent = 'ثبت'; }, 2000);
+      }
     });
-  } else if (meta.type === 'single' || meta.type === 'multi') {
+    wrap.appendChild(btn);
+    widgetArea.appendChild(wrap);
+  };
+  render();
+}
+
+function renderSingleEditable(wid, meta) {
+  const hasVoted = hasVotedFor(wid);
+  let isEditing = !hasVoted;
+  let selected = new Set(currentValuesFor(wid));
+
+  const render = () => {
+    widgetArea.innerHTML = '';
     const grid = document.createElement('div');
-    grid.className = 'opt-grid ' + (meta.type === 'multi' ? 'g2' : (meta.options.length <= 2 ? 'g2' : 'g1'));
+    grid.className = 'opt-grid ' + (meta.options.length <= 2 ? 'g2' : 'g1');
+
     meta.options.forEach(o => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      const voted = myVotes.some(v => v.widget_id === wid && v.vote_value === o.k);
-      if (voted) btn.classList.add('voted');
-      btn.innerHTML = `<span>${o.l}</span>`;
+      if (selected.has(o.k)) btn.classList.add('voted');
+      if (!isEditing) { btn.disabled = true; btn.style.cursor = 'default'; }
+      btn.innerHTML = `<span>${esc(o.l)}</span>` +
+        (selected.has(o.k) ? '<span style="color:var(--amber);font-weight:800">✓</span>' : '');
       btn.addEventListener('click', async () => {
-        if (meta.type === 'single') {
-          if (alreadyVoted(wid)) return;
-          const pts = o.correct === true ? 20 : 5;
-          const isCorrect = o.correct === true ? true : (o.correct === false ? false : null);
-          try {
-            await SB.submitVote({ widgetId: wid, voteValue: o.k, isCorrect, points: pts });
-            grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
-            btn.classList.add('voted');
-            await refreshScore(); await refreshMyVotes();
-          } catch(e){ console.warn(e); }
-        } else {
-          const isVoted = myVotes.some(v => v.widget_id === wid && v.vote_value === o.k);
-          try {
-            if (isVoted) {
-              await SB.deleteMultiVote(wid, o.k);
-              btn.classList.remove('voted');
-            } else {
-              await SB.submitVote({ widgetId: wid, voteValue: o.k, points: 5 });
-              btn.classList.add('voted');
-            }
-            await refreshScore(); await refreshMyVotes();
-          } catch(e){ console.warn(e); }
+        if (!isEditing) return;
+        btn.disabled = true;
+        try {
+          await SB.submitOrEditVotes(wid, [o.k], 5);
+          await refreshScore(); await refreshMyVotes();
+          selected = new Set(currentValuesFor(wid));
+          isEditing = false;
+          render();
+        } catch(e) { console.error(e); btn.disabled = false; }
+      });
+      grid.appendChild(btn);
+    });
+    widgetArea.appendChild(grid);
+
+    if (!isEditing) {
+      const eb = document.createElement('button');
+      eb.className = 'btn';
+      eb.style.cssText = 'margin-top:1rem;width:100%;background:var(--sur);color:var(--txt);box-shadow:none;border:1px solid var(--line)';
+      eb.textContent = '✎ ویرایش انتخاب';
+      eb.addEventListener('click', () => {
+        selected = new Set(currentValuesFor(wid));
+        isEditing = true;
+        render();
+      });
+      widgetArea.appendChild(eb);
+    }
+  };
+  render();
+}
+
+function renderMultiEditable(wid, meta) {
+  const hasVoted = hasVotedFor(wid);
+  let isEditing = !hasVoted;
+  let pending = new Set(currentValuesFor(wid));
+
+  const render = () => {
+    widgetArea.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'opt-grid g2';
+
+    meta.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      if (pending.has(o.k)) btn.classList.add('voted');
+      if (!isEditing) { btn.disabled = true; btn.style.cursor = 'default'; }
+      btn.innerHTML = `<span>${esc(o.l)}</span>` +
+        (pending.has(o.k) ? '<span style="color:var(--amber);font-weight:800">✓</span>' : '');
+      btn.addEventListener('click', () => {
+        if (!isEditing) return;
+        if (pending.has(o.k)) pending.delete(o.k); else pending.add(o.k);
+        render();
+      });
+      grid.appendChild(btn);
+    });
+    widgetArea.appendChild(grid);
+
+    const actionBtn = document.createElement('button');
+    actionBtn.className = 'btn';
+    actionBtn.style.cssText = 'margin-top:1rem;width:100%';
+
+    if (isEditing) {
+      const count = pending.size;
+      actionBtn.textContent = count > 0 ? `ثبت انتخاب (${toFa(count)})` : 'حداقل یک گزینه انتخاب کنید';
+      actionBtn.disabled = count === 0;
+      actionBtn.addEventListener('click', async () => {
+        actionBtn.disabled = true;
+        actionBtn.textContent = '…';
+        try {
+          await SB.submitOrEditVotes(wid, Array.from(pending), 5);
+          await refreshScore(); await refreshMyVotes();
+          pending = new Set(currentValuesFor(wid));
+          isEditing = false;
+          render();
+        } catch(e) {
+          console.error(e);
+          actionBtn.textContent = '⚠ خطا — دوباره تلاش کنید';
+          setTimeout(() => render(), 2000);
         }
       });
-      grid.appendChild(btn);
-    });
-    widgetArea.appendChild(grid);
-  } else if (meta.type === 'quiz') {
-    meta.statements.forEach(st => {
-      const wrap = document.createElement('div');
-      wrap.className = 'quiz-item';
-      wrap.innerHTML = `<div class="quiz-q">${st.text}</div>`;
-      const grid = document.createElement('div');
-      grid.className = 'opt-grid g2';
-      const votedVal = myVotes.find(v => v.widget_id === wid && v.statement_id === st.id)?.vote_value;
-      [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
-        const btn = document.createElement('button');
-        btn.className = 'opt';
-        if (votedVal === k) btn.classList.add('voted');
-        btn.innerHTML = `<span>${l}</span>`;
-        btn.addEventListener('click', async () => {
-          if (votedVal) return;
-          const isCorrect = (k === 't' && st.correct) || (k === 'f' && !st.correct);
-          const pts = isCorrect ? 15 : 3;
-          try {
-            await SB.submitVote({ widgetId: wid, statementId: st.id, voteValue: k, isCorrect, points: pts });
-            grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
-            btn.classList.add('voted');
-            await refreshScore(); await refreshMyVotes();
-          } catch(e){ console.warn(e); }
-        });
-        grid.appendChild(btn);
+    } else {
+      actionBtn.style.background = 'var(--sur)';
+      actionBtn.style.color = 'var(--txt)';
+      actionBtn.style.boxShadow = 'none';
+      actionBtn.style.border = '1px solid var(--line)';
+      actionBtn.textContent = '✎ ویرایش انتخاب';
+      actionBtn.addEventListener('click', () => {
+        pending = new Set(currentValuesFor(wid));
+        isEditing = true;
+        render();
       });
-      wrap.appendChild(grid);
-      widgetArea.appendChild(wrap);
-    });
-  } else if (meta.type === 'quiz2') {
+    }
+    widgetArea.appendChild(actionBtn);
+  };
+  render();
+}
+
+function renderQuizLocked(wid, meta) {
+  meta.statements.forEach(st => {
+    const wrap = document.createElement('div');
+    wrap.className = 'quiz-item';
+    wrap.innerHTML = `<div class="quiz-q">${esc(st.text)}</div>`;
     const grid = document.createElement('div');
-    grid.className = 'opt-grid g1';
-    const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
-    meta.options.forEach(o => {
+    grid.className = 'opt-grid g2';
+    const votedVal = myVotes.find(v => v.widget_id === wid && v.statement_id === st.id)?.vote_value;
+    [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      if (votedVal === o.k) btn.classList.add('voted');
-      btn.innerHTML = `<span>${o.l}</span>`;
+      if (votedVal === k) btn.classList.add('voted');
+      if (votedVal) btn.disabled = true;
+      btn.innerHTML = `<span>${l}</span>`;
       btn.addEventListener('click', async () => {
         if (votedVal) return;
-        const pts = o.correct ? 20 : 3;
+        const isCorrect = (k === 't' && st.correct) || (k === 'f' && !st.correct);
         try {
-          await SB.submitVote({ widgetId: wid, voteValue: o.k, isCorrect: o.correct, points: pts });
-          grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
+          await SB.submitVote({ widgetId: wid, statementId: st.id, voteValue: k, isCorrect, points: isCorrect ? 15 : 3 });
+          grid.querySelectorAll('.opt').forEach(b => { b.classList.remove('voted'); b.disabled = true; });
           btn.classList.add('voted');
           await refreshScore(); await refreshMyVotes();
-        } catch(e){ console.warn(e); }
+        } catch(e) { console.warn(e); }
       });
       grid.appendChild(btn);
     });
-    widgetArea.appendChild(grid);
-  } else if (meta.type === 'bestprompt') {
-    const grid = document.createElement('div');
-    grid.className = 'opt-grid g1';
-    const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
-    meta.prompts.forEach(p => {
-      const btn = document.createElement('button');
-      btn.className = 'opt';
-      if (votedVal === p.tag) btn.classList.add('voted');
-      btn.style.flexDirection = 'column';
-      btn.style.alignItems = 'flex-start';
-      btn.style.textAlign = 'right';
-      btn.innerHTML = `<div style="font-weight:700;color:var(--amber);font-size:.78rem">گزینه ${p.tag}</div><div style="font-size:.83rem;line-height:1.7;margin-top:.3rem">${p.text}</div>`;
-      btn.addEventListener('click', async () => {
-        if (votedVal) return;
-        const pts = p.correct ? 20 : 5;
-        try {
-          await SB.submitVote({ widgetId: wid, voteValue: p.tag, isCorrect: p.correct || false, points: pts });
-          grid.querySelectorAll('.opt').forEach(b => b.classList.remove('voted'));
-          btn.classList.add('voted');
-          await refreshScore(); await refreshMyVotes();
-        } catch(e){ console.warn(e); }
-      });
-      grid.appendChild(btn);
+    wrap.appendChild(grid);
+    widgetArea.appendChild(wrap);
+  });
+}
+
+function renderQuiz2Locked(wid, meta) {
+  const grid = document.createElement('div');
+  grid.className = 'opt-grid g1';
+  const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
+  meta.options.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    if (votedVal === o.k) btn.classList.add('voted');
+    if (votedVal) btn.disabled = true;
+    btn.innerHTML = `<span>${esc(o.l)}</span>`;
+    btn.addEventListener('click', async () => {
+      if (votedVal) return;
+      try {
+        await SB.submitVote({ widgetId: wid, voteValue: o.k, isCorrect: o.correct, points: o.correct ? 20 : 3 });
+        grid.querySelectorAll('.opt').forEach(b => { b.classList.remove('voted'); b.disabled = true; });
+        btn.classList.add('voted');
+        await refreshScore(); await refreshMyVotes();
+      } catch(e) { console.warn(e); }
     });
-    widgetArea.appendChild(grid);
-  }
+    grid.appendChild(btn);
+  });
+  widgetArea.appendChild(grid);
+}
+
+function renderBestPromptLocked(wid, meta) {
+  const grid = document.createElement('div');
+  grid.className = 'opt-grid g1';
+  const votedVal = myVotes.find(v => v.widget_id === wid)?.vote_value;
+  meta.prompts.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    if (votedVal === p.tag) btn.classList.add('voted');
+    if (votedVal) btn.disabled = true;
+    btn.style.cssText = 'flex-direction:column;align-items:flex-start;text-align:right';
+    btn.innerHTML = `<div style="font-weight:700;color:var(--amber);font-size:.78rem">گزینه ${p.tag}</div><div style="font-size:.83rem;line-height:1.7;margin-top:.3rem">${esc(p.text)}</div>`;
+    btn.addEventListener('click', async () => {
+      if (votedVal) return;
+      try {
+        await SB.submitVote({ widgetId: wid, voteValue: p.tag, isCorrect: p.correct || false, points: p.correct ? 20 : 5 });
+        grid.querySelectorAll('.opt').forEach(b => { b.classList.remove('voted'); b.disabled = true; });
+        btn.classList.add('voted');
+        await refreshScore(); await refreshMyVotes();
+      } catch(e) { console.warn(e); }
+    });
+    grid.appendChild(btn);
+  });
+  widgetArea.appendChild(grid);
 }
 
 /* ====== Polling every 3s for new widget + score ====== */
