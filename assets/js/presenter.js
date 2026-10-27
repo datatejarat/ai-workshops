@@ -18,14 +18,13 @@ function waitFor(sel, timeout = 5000) {
 
 async function init() {
   await waitFor('.deck');
-  // Let inline script fully initialize
   await new Promise(r => setTimeout(r, 200));
 
   window.SB = SB;
   window.SB.isReal = true;
   console.log('[SB] presenter connected');
 
-  /* ---- Override buildResults to use RPC ---- */
+  /* ---- Override buildResults ---- */
   const origBuildResults = window.buildResults;
   window.buildResults = async function(id) {
     try {
@@ -37,7 +36,7 @@ async function init() {
     }
   };
 
-  /* ---- Override renderLB to use RPC ---- */
+  /* ---- Override renderLB ---- */
   const origRenderLB = window.renderLB;
   window.renderLB = async function(el) {
     if (!el) return;
@@ -59,13 +58,10 @@ async function init() {
     }
   };
 
-  /* ---- Re-render existing leaderboards ---- */
   window.renderLB(document.getElementById('lbBreak'));
   window.renderLB(document.getElementById('lbFinal'));
 
-  /* ---- Hook submitVote into inline click handlers ---- */
-  // Strategy: intercept clicks on .opt in capture phase, extract widget + value,
-  // submit to Supabase. Inline script handles local state separately.
+  /* ---- Hook submitVote into click handlers ---- */
   document.addEventListener('click', async (e) => {
     const opt = e.target.closest('.opt');
     if (!opt) return;
@@ -84,7 +80,6 @@ async function init() {
     }
   }, true);
 
-  /* Same for prompt cards */
   document.addEventListener('click', async (e) => {
     const card = e.target.closest('.prompt-card');
     if (!card) return;
@@ -99,7 +94,7 @@ async function init() {
     } catch(err) {}
   }, true);
 
-  /* ---- Sync current section to Supabase (for join.html) ---- */
+  /* ---- Sync current section ---- */
   const origUpdateActive = window.updateActive;
   if (typeof origUpdateActive === 'function') {
     window.updateActive = function(idx) {
@@ -107,12 +102,11 @@ async function init() {
       const sec = document.querySelectorAll('.sec')[idx];
       if (sec) SB.updatePresenterState({ current_section: sec.id }).catch(()=>{});
     };
-    // Sync initial
     const activeSec = document.querySelectorAll('.sec')[0];
     if (activeSec) SB.updatePresenterState({ current_section: activeSec.id }).catch(()=>{});
   }
 
-  /* ---- Realtime: update live participant count ---- */
+  /* ---- Realtime: participant count ---- */
   SB.subscribeToParticipants(async () => {
     try {
       const count = await SB.getParticipantCount();
@@ -121,12 +115,30 @@ async function init() {
     } catch(e){}
   });
 
-  /* Initial participant count */
   try {
     const count = await SB.getParticipantCount();
     const el = document.getElementById('liveCount');
     if (el) el.textContent = toFa(count);
   } catch(e){}
+
+  /* ===== پچ: پاک کردن پیش‌نمایش ماک از ویجت‌ها ===== */
+  setTimeout(function(){
+    document.querySelectorAll('.widget[data-widget]').forEach(function(w){
+      const wc = w.querySelector('.wordcloud');
+      if (wc) {
+        wc.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem;line-height:1.8">منتظر رأی شرکت‌کنندگان…<br><span style="font-size:.78rem;opacity:.7">نتایج زنده در صفحه results.html</span></div>';
+      }
+      w.querySelectorAll('.opt .pct').forEach(function(p){
+        p.textContent = '';
+        p.style.opacity = '0';
+      });
+      w.querySelectorAll('.prompt-card').forEach(function(card){
+        const last = card.querySelector('div:last-child');
+        if (last && last.textContent.indexOf('%') > -1) last.remove();
+      });
+    });
+    console.log('[SB] mock preview cleared');
+  }, 400);
 }
 
 /* ---- Render results from RPC rows ---- */
@@ -141,6 +153,12 @@ function renderResults(id, rows) {
 
   const total = rows.reduce((a, r) => a + Number(r.count), 0) || 1;
   let html = `<p class="muted" style="margin-bottom:1rem">مجموع پاسخ‌ها: ${toFa(total)}</p>`;
+
+  if (rows.length === 0) {
+    overlayBody.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--muted)">هنوز پاسخی ثبت نشده است</p>';
+    overlay.classList.add('open');
+    return;
+  }
 
   if (meta?.type === 'wordcloud') {
     html += '<div class="wordcloud">';
@@ -177,7 +195,7 @@ function renderResults(id, rows) {
     const correct = meta.options.find(o => o.correct);
     if (correct) html += `<p style="margin-top:.9rem;color:var(--mint);font-weight:600">✓ پاسخ صحیح: ${esc(correct.l)}</p>`;
   } else {
-    html = `<p class="muted">داده‌ای ثبت نشده</p>`;
+    html = '<p class="muted">داده‌ای ثبت نشده</p>';
   }
 
   overlayBody.innerHTML = html;
