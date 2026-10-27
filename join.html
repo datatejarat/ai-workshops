@@ -162,11 +162,25 @@ const safeLS = {
 const LSKey = 'ai_' + SB.SESSION_CODE + '_';
 
 /* Theme */
-document.getElementById('themeBtn').addEventListener('click', () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  safeLS.set('ai_theme', next);
+document.getElementById('wcSend').addEventListener('click', async () => {
+  const w = document.getElementById('wcWord').value.trim();
+  if (!w) return;
+  const btn = document.getElementById('wcSend');
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    await SB.submitVote({ widgetId: wid, voteValue: w, points: 5 });
+    widgetArea.innerHTML = '<div class="waiting">✓ ثبت شد — منتظر نتایج باشید</div>';
+    await refreshScore();
+  } catch(e) {
+    console.error('submitVote failed:', e);
+    widgetArea.innerHTML =
+      '<div class="waiting" style="color:var(--rose);line-height:1.8">' +
+      '⚠ ارسال نشد<br>' +
+      '<small style="font-size:.75rem;opacity:.8">' + (e.message || e.toString()) + '</small><br>' +
+      '<small style="font-size:.7rem;opacity:.6">دوباره تلاش کنید</small>' +
+      '</div>';
+  }
 });
 
 /* Ripple */
