@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>گزارش کارگاه · G1-1405-05-05</title>
+<script>
+(function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<style>
+:root[data-theme="dark"]{
+  --bg:#080c17;--sur:rgba(255,255,255,.05);--line:rgba(255,255,255,.12);
+  --txt:#f1f5f9;--txt2:#c9d4e2;--mut:#8b96a8;
+  --amber:#fbbf24;--orange:#f97316;--mint:#34d399;--rose:#fb7185;
+  --amber-soft:rgba(251,191,36,.14);
+}
+:root[data-theme="light"]{
+  --bg:#fdfcfa;--sur:rgba(15,23,42,.04);--line:rgba(15,23,42,.12);
+  --txt:#0f172a;--txt2:#1e293b;--mut:#64748b;
+  --amber:#b45309;--orange:#c2410c;--mint:#059669;--rose:#e11d48;
+  --amber-soft:rgba(180,83,9,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--txt);padding:32px 20px;min-height:100vh}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 85% 5%, rgba(251,191,36,.08), transparent 60%);
+}
+.container{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+h1{font-size:1.6rem;margin:0 0 .3rem;letter-spacing:-.5px}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:24px}
+.btn-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.btn{
+  font-family:inherit;font-size:.9rem;font-weight:700;padding:.75rem 1.4rem;
+  border-radius:12px;border:1px solid transparent;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:.5rem;
+}
+.btn-primary{background:linear-gradient(135deg,#fde68a,var(--amber) 45%,var(--orange));color:#1a1206;
+  box-shadow:0 8px 24px rgba(251,191,36,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(251,191,36,.4)}
+.btn-ghost{background:var(--sur);border-color:var(--line);color:var(--txt2)}
+.btn-ghost:hover{background:rgba(255,255,255,.08);color:var(--txt)}
+.btn:disabled{opacity:.5;cursor:wait;transform:none!important}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--sur);border:1px solid var(--line);border-radius:16px;padding:18px}
+.stat-card .n{font-size:2.2rem;font-weight:800;color:var(--amber);line-height:1;font-variant-numeric:tabular-nums}
+.stat-card .l{font-size:.78rem;color:var(--mut);margin-top:.4rem;font-weight:600}
+.section-h{font-size:1.15rem;font-weight:800;margin:28px 0 14px;padding-bottom:.4rem;
+  border-bottom:2px solid var(--amber);display:inline-block;letter-spacing:-.2px}
+.widget-block{background:var(--sur);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px}
+.widget-block h3{margin:0 0 .3rem;font-size:1rem;letter-spacing:-.2px}
+.widget-meta{font-size:.75rem;color:var(--mut);margin-bottom:14px;font-family:monospace}
+.row{display:flex;justify-content:space-between;padding:.5rem .8rem;background:rgba(255,255,255,.03);border-radius:9px;margin-bottom:.4rem;font-size:.88rem}
+.row .pct{color:var(--amber);font-weight:800;font-variant-numeric:tabular-nums}
+.row.correct{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
+.row.correct .label::after{content:' ✓';color:var(--mint)}
+.empty{text-align:center;padding:2rem;color:var(--mut);font-size:.9rem}
+.loading{text-align:center;padding:3rem;color:var(--mut);font-size:.95rem}
+.error{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.4);color:var(--rose);
+  padding:16px 20px;border-radius:12px;margin:14px 0;font-size:.9rem;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+table th,table td{padding:.6rem .8rem;text-align:start;border-bottom:1px solid var(--line)}
+table th{font-weight:700;color:var(--amber);font-size:.78rem;letter-spacing:1px;text-transform:uppercase}
+table tr:hover{background:rgba(255,255,255,.03)}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>گزارش کارگاه · گروه اول</h1>
+  <div class="sub">G1-1405-05-05 · ۵ مرداد ۱۴۰۵ · دکتر حسین بیانی</div>
+
+  <div class="btn-bar">
+    <button class="btn btn-primary" id="refreshBtn">🔄 بارگذاری مجدد</button>
+    <button class="btn btn-ghost" id="csvBtn" disabled>⬇ دانلود CSV</button>
+    <button class="btn btn-ghost" id="jsonBtn" disabled>⬇ دانلود JSON</button>
+  </div>
+
+  <div id="content">
+    <div class="loading">در حال بارگذاری داده‌ها…</div>
+  </div>
+</div>
+
+<script type="module">
+import * as SB from './assets/js/supabase-client.js';
+
+const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const content = document.getElementById('content');
+const refreshBtn = document.getElementById('refreshBtn');
+const csvBtn = document.getElementById('csvBtn');
+const jsonBtn = document.getElementById('jsonBtn');
+
+let allData = null;
+
+async function loadAll() {
+  content.innerHTML = '<div class="loading">در حال بارگذاری داده‌ها…</div>';
+  csvBtn.disabled = true;
+  jsonBtn.disabled = true;
+
+  try {
+    const participants = await SB.supabase
+      .from('participants')
+      .select('alias, score, created_at')
+      .eq('session_code', SB.SESSION_CODE)
+      .order('score', { ascending: false });
+
+    if (participants.error) throw participants.error;
+
+    const votesRpc = await SB.supabase
+      .rpc('get_all_results', { p_session: SB.SESSION_CODE });
+
+    if (votesRpc.error) throw votesRpc.error;
+
+    allData = {
+      session: SB.SESSION_CODE,
+      session_code: SB.SESSION_CODE,
+      generated_at: new Date().toISOString(),
+      participants: participants.data || [],
+      results: votesRpc.data || []
+    };
+
+    renderReport(allData);
+    csvBtn.disabled = false;
+    jsonBtn.disabled = false;
+  } catch(e) {
+    console.error(e);
+    content.innerHTML = `<div class="error">
+      <strong>خطا در بارگذاری داده‌ها</strong><br>
+      ${esc(e.message || String(e))}<br>
+      <small>مطمئن شوید RPC «get_all_results» در Supabase ساخته شده است.</small>
+    </div>`;
+  }
+}
+
+function renderReport(d) {
+  const participantCount = d.participants.length;
+  const voteCount = d.results.reduce((a, r) => a + Number(r.count), 0);
+  const widgetIds = [...new Set(d.results.map(r => r.widget_id))];
+
+  let html = '';
+
+  html += '<div class="stats">';
+  html += `<div class="stat-card"><div class="n">${toFa(participantCount)}</div><div class="l">شرکت‌کننده</div></div>`;
+  html += `<div class="stat-card"><div class="n">${toFa(voteCount)}</div><div class="l">پاسخ ثبت‌شده</div></div>`;
+  html += `<div class="stat-card"><div class="n">${toFa(widgetIds.length)}</div><div class="l">ایستگاه تعاملی</div></div>`;
+  html += `<div class="stat-card"><div class="n">${toFa(d.participants.filter(p => p.score > 0).length)}</div><div class="l">شرکت‌کننده فعال</div></div>`;
+  html += '</div>';
+
+  html += '<div class="section-h">نتایج ایستگاه‌ها</div>';
+
+  if (widgetIds.length === 0) {
+    html += '<div class="empty">هنوز پاسخ‌ای ثبت نشده است</div>';
+  } else {
+    widgetIds.forEach(wid => {
+      const meta = SB.WIDGET_META[wid];
+      const widgetRows = d.results.filter(r => r.widget_id === wid);
+      const wTotal = widgetRows.reduce((a, r) => a + Number(r.count), 0);
+
+      html += `<div class="widget-block">`;
+      html += `<h3>${meta ? esc(meta.q) : wid}</h3>`;
+      html += `<div class="widget-meta">${wid} · ${toFa(wTotal)} پاسخ</div>`;
+
+      if (!meta) {
+        html += '<div class="empty">تعریف نشده</div>';
+      } else if (meta.type === 'wordcloud') {
+        const sorted = widgetRows.slice().sort((a, b) => Number(b.count) - Number(a.count));
+        sorted.forEach(r => {
+          html += `<div class="row"><span class="label">${esc(r.vote_value)}</span><span class="pct">${toFa(r.count)}</span></div>`;
+        });
+      } else if (meta.type === 'quiz') {
+        meta.statements.forEach(st => {
+          const stRows = widgetRows.filter(r => r.statement_id === st.id);
+          html += `<div style="margin-bottom:1rem"><strong>${esc(st.text)}</strong>`;
+          [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
+            const c = (stRows.find(x => x.vote_value === k) || {}).count || 0;
+            const isCorrect = (k === 't' && st.correct) || (k === 'f' && !st.correct);
+            html += `<div class="row ${isCorrect?'correct':''}"><span class="label">${l}</span><span class="pct">${toFa(c)}</span></div>`;
+          });
+          html += '</div>';
+        });
+      } else if (meta.type === 'bestprompt') {
+        meta.prompts.forEach(p => {
+          const c = (widgetRows.find(r => r.vote_value === p.tag) || {}).count || 0;
+          html += `<div class="row ${p.correct?'correct':''}"><span class="label">گزینه ${p.tag}: ${esc(p.text.substring(0, 80))}…</span><span class="pct">${toFa(c)}</span></div>`;
+        });
+      } else if (meta.options) {
+        meta.options.forEach(o => {
+          const c = (widgetRows.find(r => r.vote_value === o.k) || {}).count || 0;
+          const isCorrect = o.correct === true;
+          html += `<div class="row ${isCorrect?'correct':''}"><span class="label">${esc(o.l)}</span><span class="pct">${toFa(c)}</span></div>`;
+        });
+      }
+      html += '</div>';
+    });
+  }
+
+  html += '<div class="section-h">جدول امتیازات</div>';
+  if (d.participants.length === 0) {
+    html += '<div class="empty">هنوز شرکت‌کننده‌ای ثبت‌نام نکرده است</div>';
+  } else {
+    html += '<div style="background:var(--sur);border:1px solid var(--line);border-radius:16px;overflow:hidden">';
+    html += '<table><thead><tr><th>#</th><th>نام مستعار</th><th>امتیاز</th></tr></thead><tbody>';
+    d.participants.forEach((p, i) => {
+      html += `<tr><td>${toFa(i+1)}</td><td>${esc(p.alias)}</td><td style="color:var(--amber);font-weight:700">${toFa(p.score)}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  content.innerHTML = html;
+}
+
+/* CSV */
+function downloadCSV() {
+  if (!allData) return;
+  const lines = [];
+  const esc2 = v => {
+    const s = String(v == null ? '' : v);
+    return /[,"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+
+  lines.push('# گزارش کارگاه ' + allData.session_code);
+  lines.push('# تاریخ تولید: ' + allData.generated_at);
+  lines.push('# تعداد شرکت‌کننده: ' + allData.participants.length);
+  lines.push('');
+  lines.push('widget_id,question,option,count');
+  allData.results.forEach(r => {
+    const meta = SB.WIDGET_META[r.widget_id];
+    const q = meta ? meta.q : r.widget_id;
+    lines.push([r.widget_id, q, r.vote_value, r.count].map(esc2).join(','));
+  });
+  lines.push('');
+  lines.push('alias,score');
+  allData.participants.forEach(p => {
+    lines.push([p.alias, p.score].map(esc2).join(','));
+  });
+
+  const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'workshop-report-' + allData.session_code + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadJSON() {
+  if (!allData) return;
+  const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'workshop-report-' + allData.session_code + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+refreshBtn.addEventListener('click', loadAll);
+csvBtn.addEventListener('click', downloadCSV);
+jsonBtn.addEventListener('click', downloadJSON);
+
+loadAll();
+</script>
+</body>
+</html>
