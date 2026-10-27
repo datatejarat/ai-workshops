@@ -4,144 +4,122 @@ import * as SB from './supabase-client.js';
 const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function waitFor(sel, timeout = 5000) {
-  return new Promise((resolve, reject) => {
-    const t0 = Date.now();
-    (function loop() {
-      const el = document.querySelector(sel);
-      if (el) return resolve(el);
-      if (Date.now() - t0 > timeout) return reject(new Error('timeout ' + sel));
-      setTimeout(loop, 50);
-    })();
+console.log('[SB] presenter.js loaded');
+
+function clearMockPreview() {
+  let count = 0;
+  document.querySelectorAll('.widget[data-widget]').forEach(function(w){
+    const wc = w.querySelector('.wordcloud');
+    if (wc && wc.querySelector('span')) {
+      wc.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem;line-height:1.8">منتظر رأی شرکت‌کنندگان…<br><span style="font-size:.78rem;opacity:.7">نتایج زنده در صفحه results.html</span></div>';
+      count++;
+    }
+    w.querySelectorAll('.opt .pct').forEach(function(p){
+      if (p.textContent) { p.textContent = ''; p.style.opacity = '0'; count++; }
+    });
+    w.querySelectorAll('.prompt-card').forEach(function(card){
+      card.querySelectorAll('div').forEach(function(d){
+        if (d.textContent.indexOf('%') > -1) { d.remove(); count++; }
+      });
+    });
   });
+  if (count > 0) console.log('[SB] cleared ' + count + ' mock elements');
 }
 
 async function init() {
-  await waitFor('.deck');
-  await new Promise(r => setTimeout(r, 200));
-
-  window.SB = SB;
-  window.SB.isReal = true;
-  console.log('[SB] presenter connected');
-
-  /* ---- Override buildResults ---- */
-  const origBuildResults = window.buildResults;
-  window.buildResults = async function(id) {
-    try {
-      const rows = await SB.getResults(id);
-      renderResults(id, rows);
-    } catch(e) {
-      console.warn('[SB] results failed, fallback', e);
-      if (origBuildResults) origBuildResults(id);
+  try {
+    const t0 = Date.now();
+    while (!document.querySelector('.deck') && Date.now() - t0 < 5000) {
+      await new Promise(r => setTimeout(r, 50));
     }
-  };
+    await new Promise(r => setTimeout(r, 200));
 
-  /* ---- Override renderLB ---- */
-  const origRenderLB = window.renderLB;
-  window.renderLB = async function(el) {
-    if (!el) return;
-    try {
-      const rows = await SB.getLeaderboard(10);
-      el.innerHTML = '';
-      if (!rows.length) {
-        el.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.85rem">هنوز کسی امتیاز نگرفته</div>';
-        return;
+    console.log('[SB] starting overrides');
+
+    /* Override buildResults */
+    const origBuildResults = window.buildResults;
+    window.buildResults = async function(id) {
+      try {
+        const rows = await SB.getResults(id);
+        renderResults(id, rows);
+      } catch(e) {
+        console.warn('[SB] results failed', e);
+        if (origBuildResults) origBuildResults(id);
       }
-      rows.forEach((r, i) => {
-        const row = document.createElement('div');
-        row.className = 'lb-row' + (i===0?' top1':i===1?' top2':i===2?' top3':'');
-        row.innerHTML = `<span class="lb-rank">${i+1}</span><span class="lb-name">${esc(r.alias)}</span><span class="lb-score">${r.score}</span>`;
-        el.appendChild(row);
-      });
-    } catch(e) {
-      if (origRenderLB) origRenderLB(el);
-    }
-  };
-
-  window.renderLB(document.getElementById('lbBreak'));
-  window.renderLB(document.getElementById('lbFinal'));
-
-  /* ---- Hook submitVote into click handlers ---- */
-  document.addEventListener('click', async (e) => {
-    const opt = e.target.closest('.opt');
-    if (!opt) return;
-    const widget = opt.closest('.widget[data-widget]');
-    if (!widget) return;
-    const widgetId = widget.dataset.widget;
-    const value = opt.dataset.key;
-    if (!value) return;
-    let points = 5, isCorrect = null;
-    if (opt.dataset.correct === 'true') { points = 20; isCorrect = true; }
-    else if (opt.dataset.correct === 'false') { points = 3; isCorrect = false; }
-    try {
-      await SB.submitVote({ widgetId, voteValue: value, isCorrect, points });
-    } catch(err) {
-      // duplicate or rate-limit — expected, ignore
-    }
-  }, true);
-
-  document.addEventListener('click', async (e) => {
-    const card = e.target.closest('.prompt-card');
-    if (!card) return;
-    const widget = card.closest('.widget[data-widget]');
-    if (!widget) return;
-    const widgetId = widget.dataset.widget;
-    const tag = card.querySelector('.prompt-tag')?.textContent?.trim() || '';
-    const isCorrect = tag === 'B' ? true : false;
-    const points = isCorrect ? 20 : 5;
-    try {
-      await SB.submitVote({ widgetId, voteValue: tag, isCorrect, points });
-    } catch(err) {}
-  }, true);
-
-  /* ---- Sync current section ---- */
-  const origUpdateActive = window.updateActive;
-  if (typeof origUpdateActive === 'function') {
-    window.updateActive = function(idx) {
-      origUpdateActive(idx);
-      const sec = document.querySelectorAll('.sec')[idx];
-      if (sec) SB.updatePresenterState({ current_section: sec.id }).catch(()=>{});
     };
+
+    /* Override renderLB */
+    const origRenderLB = window.renderLB;
+    window.renderLB = async function(el) {
+      if (!el) return;
+      try {
+        const rows = await SB.getLeaderboard(10);
+        el.innerHTML = '';
+        if (!rows.length) {
+          el.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.85rem">هنوز کسی امتیاز نگرفته</div>';
+          return;
+        }
+        rows.forEach((r, i) => {
+          const row = document.createElement('div');
+          row.className = 'lb-row' + (i===0?' top1':i===1?' top2':i===2?' top3':'');
+          row.innerHTML = `<span class="lb-rank">${i+1}</span><span class="lb-name">${esc(r.alias)}</span><span class="lb-score">${r.score}</span>`;
+          el.appendChild(row);
+        });
+      } catch(e) {
+        if (origRenderLB) origRenderLB(el);
+      }
+    };
+
+    window.renderLB(document.getElementById('lbBreak'));
+    window.renderLB(document.getElementById('lbFinal'));
+
+    /* Hook submitVote */
+    document.addEventListener('click', async (e) => {
+      const opt = e.target.closest('.opt');
+      if (!opt) return;
+      const widget = opt.closest('.widget[data-widget]');
+      if (!widget) return;
+      const widgetId = widget.dataset.widget;
+      const value = opt.dataset.key;
+      if (!value) return;
+      let points = 5, isCorrect = null;
+      if (opt.dataset.correct === 'true') { points = 20; isCorrect = true; }
+      else if (opt.dataset.correct === 'false') { points = 3; isCorrect = false; }
+      try { await SB.submitVote({ widgetId, voteValue: value, isCorrect, points }); } catch(err) {}
+    }, true);
+
+    /* Sync section */
+    if (typeof window.updateActive === 'function') {
+      const origUpdateActive = window.updateActive;
+      window.updateActive = function(idx) {
+        origUpdateActive(idx);
+        const sec = document.querySelectorAll('.sec')[idx];
+        if (sec) SB.updatePresenterState({ current_section: sec.id }).catch(()=>{});
+      };
+    }
     const activeSec = document.querySelectorAll('.sec')[0];
     if (activeSec) SB.updatePresenterState({ current_section: activeSec.id }).catch(()=>{});
-  }
 
-  /* ---- Realtime: participant count ---- */
-  SB.subscribeToParticipants(async () => {
+    /* Live count */
     try {
       const count = await SB.getParticipantCount();
       const el = document.getElementById('liveCount');
       if (el) el.textContent = toFa(count);
-    } catch(e){}
-  });
+    } catch(e) {}
 
-  try {
-    const count = await SB.getParticipantCount();
-    const el = document.getElementById('liveCount');
-    if (el) el.textContent = toFa(count);
-  } catch(e){}
+    console.log('[SB] overrides applied');
 
-  /* ===== پچ: پاک کردن پیش‌نمایش ماک از ویجت‌ها ===== */
-  setTimeout(function(){
-    document.querySelectorAll('.widget[data-widget]').forEach(function(w){
-      const wc = w.querySelector('.wordcloud');
-      if (wc) {
-        wc.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem;line-height:1.8">منتظر رأی شرکت‌کنندگان…<br><span style="font-size:.78rem;opacity:.7">نتایج زنده در صفحه results.html</span></div>';
-      }
-      w.querySelectorAll('.opt .pct').forEach(function(p){
-        p.textContent = '';
-        p.style.opacity = '0';
-      });
-      w.querySelectorAll('.prompt-card').forEach(function(card){
-        const last = card.querySelector('div:last-child');
-        if (last && last.textContent.indexOf('%') > -1) last.remove();
-      });
-    });
-    console.log('[SB] mock preview cleared');
-  }, 400);
+    /* پاک‌سازی پیش‌نمایش ماک - چند بار برای اطمینان */
+    clearMockPreview();
+    setTimeout(clearMockPreview, 300);
+    setTimeout(clearMockPreview, 800);
+    setTimeout(clearMockPreview, 1500);
+    setTimeout(clearMockPreview, 3000);
+  } catch(e) {
+    console.error('[SB] init failed', e);
+  }
 }
 
-/* ---- Render results from RPC rows ---- */
 function renderResults(id, rows) {
   const overlay = document.getElementById('resultsOverlay');
   const overlayBody = document.getElementById('overlayBody');
@@ -152,13 +130,14 @@ function renderResults(id, rows) {
   overlayTitle.textContent = 'نتایج · ' + q;
 
   const total = rows.reduce((a, r) => a + Number(r.count), 0) || 1;
-  let html = `<p class="muted" style="margin-bottom:1rem">مجموع پاسخ‌ها: ${toFa(total)}</p>`;
 
   if (rows.length === 0) {
     overlayBody.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--muted)">هنوز پاسخی ثبت نشده است</p>';
     overlay.classList.add('open');
     return;
   }
+
+  let html = `<p class="muted" style="margin-bottom:1rem">مجموع پاسخ‌ها: ${toFa(total)}</p>`;
 
   if (meta?.type === 'wordcloud') {
     html += '<div class="wordcloud">';
@@ -202,4 +181,4 @@ function renderResults(id, rows) {
   overlay.classList.add('open');
 }
 
-init().catch(e => console.error('[SB] init failed', e));
+init();
