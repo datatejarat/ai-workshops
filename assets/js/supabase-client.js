@@ -75,7 +75,19 @@ export async function deleteMultiVote(widgetId, voteValue) {
   await supabase.from('votes').delete()
     .eq('participant_id', pid).eq('widget_id', widgetId).eq('vote_value', voteValue);
 }
-
+export async function submitOrEditVotes(widgetId, values, pointsIfNew = 5) {
+  const pid = getPid();
+  if (!pid) throw new Error('no_participant');
+  const { data, error } = await supabase.rpc('submit_or_edit_votes', {
+    p_pid: pid,
+    p_session: SESSION_CODE,
+    p_widget: widgetId,
+    p_values: values,
+    p_points_if_new: pointsIfNew
+  });
+  if (error) throw error;
+  return data;
+}
 export async function getMyVotes() {
   const pid = getPid();
   if (!pid) return [];
