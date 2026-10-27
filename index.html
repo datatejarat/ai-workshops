@@ -11,7 +11,8 @@
 (function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="assets/fonts/Vazirmatn-font-face.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <style>
 :root[data-theme="dark"]{
   --bg-a:#080c17;--bg-b:#0c1120;--bg-c:#05080e;
@@ -105,7 +106,7 @@ button:active,.opt:active,.chip:active,.nav-item:active,.prompt-card:active{
   transition:transform .08s!important;
 }
 
-/* ===== Topbar ===== */
+/* Topbar */
 .topbar{
   position:fixed;inset-inline:0;top:0;height:64px;z-index:40;
   display:flex;align-items:center;justify-content:space-between;
@@ -227,7 +228,6 @@ button:active,.opt:active,.chip:active,.nav-item:active,.prompt-card:active{
 }
 .icon-btn:active{transform:translateY(0) scale(.92);transition-duration:.08s}
 
-/* Test mode: orange test button */
 body.test-mode #testBtn{
   background:linear-gradient(135deg, var(--amber), var(--orange));
   color:#1a1206;border-color:transparent;
@@ -988,6 +988,9 @@ body.focus-mode .focus-timer{display:flex}
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <button class="icon-btn" id="qrBtn" aria-label="QR" title="نمایش QR (Q)">QR</button>
+    <button class="icon-btn" id="resultsBtn" aria-label="صفحه نتایج" title="صفحه نتایج (مانیتور دوم)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </button>
     <button class="theme-morph" id="themeBtn" aria-label="تغییر تم" title="تغییر تم">
       <span class="tm-sun" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="12" cy="12" r="4.2"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19" y2="19"/><line x1="5" y1="19" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19" y2="5"/></g></svg>
@@ -1700,7 +1703,7 @@ body.focus-mode .focus-timer{display:flex}
     </div>
     <div class="qr-box" id="qrBox"></div>
     <p class="qr-url" id="qrUrl"></p>
-    <p class="muted" style="font-size:.8rem;text-align:center;margin-top:.5rem">دوربین موبایل را روی QR بگیرید · در فاز ۲ QR محلی می‌شود</p>
+    <p class="muted" style="font-size:.8rem;text-align:center;margin-top:.5rem">دوربین موبایل را روی QR بگیرید · QR محلی تولید می‌شود</p>
   </div>
 </div>
 
@@ -1721,10 +1724,6 @@ body.focus-mode .focus-timer{display:flex}
 <div class="snackbar" id="snackbar"></div>
 
 <script>
-/* ============================================================
-   ai-workshops · Phase 2 · Session G1-1405-05-05
-   Presenter view · Connected to Supabase (via presenter.js)
-   ============================================================ */
 const SESSION = { code:'G1-1405-05-05', date:'1405-05-05', group:'گروه اول' };
 const TOTAL_MIN = 240;
 const TOTAL_SEC = TOTAL_MIN * 60;
@@ -2123,7 +2122,6 @@ function renderOptions(el, widget, widgetId, allowMulti){
     const voted = allowMulti ? (userVote||[]).indexOf(o.k) > -1 : userVote === o.k;
     if(voted) btn.classList.add('voted');
     btn.innerHTML = '<span>'+o.l+'</span><span class="pct">'+Math.round(((widget.counts&&widget.counts[o.k])||0)/total*100)+'%</span>';
-    /* PATCH: expose correct flag for presenter.js */
     if (o.correct === true) btn.dataset.correct = 'true';
     else if (o.correct === false) btn.dataset.correct = 'false';
 
@@ -2288,25 +2286,56 @@ function renderLB(el){
 renderLB(document.getElementById('lbBreak'));
 renderLB(document.getElementById('lbFinal'));
 
+/* ===== QR محلی (بدون API خارجی) ===== */
 const qrModal = document.getElementById('qrModal');
 const qrBox = document.getElementById('qrBox');
 const qrUrl = document.getElementById('qrUrl');
-function openQr(){
-  const joinUrl = new URL('join.html', location.href);
-  joinUrl.searchParams.set('session', SESSION.code);
-  qrUrl.textContent = joinUrl.toString();
+
+function fallbackQr(joinUrl){
   qrBox.innerHTML = '';
   const img = document.createElement('img');
   img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(joinUrl.toString())+'&bgcolor=FFFFFF&color=0B1324&margin=1';
   img.alt = 'QR';
-  img.onerror = function(){ qrBox.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.8">QR در فاز ۲ محلی تولید می‌شود.<br>الان از آدرس زیر استفاده کنید.</div>'; };
+  img.onerror = function(){
+    qrBox.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.8">QR در دسترس نیست.<br>آدرس را دستی در مرورگر باز کنید.</div>';
+  };
   qrBox.appendChild(img);
+}
+
+function openQr(){
+  const joinUrl = new URL('join.html', location.href);
+  joinUrl.searchParams.set('session', SESSION.code);
+  qrUrl.textContent = joinUrl.toString();
+  qrBox.innerHTML = '<div style="width:250px;height:250px;display:grid;place-items:center;color:var(--muted);font-size:.85rem">در حال ساخت QR…</div>';
+  if (window.QRCode && window.QRCode.toDataURL) {
+    window.QRCode.toDataURL(joinUrl.toString(), {
+      width: 500, margin: 1,
+      color: { dark: '#0B1324', light: '#FFFFFF' },
+      errorCorrectionLevel: 'M'
+    }).then(function(url) {
+      qrBox.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'QR';
+      qrBox.appendChild(img);
+    }).catch(function(e){
+      console.warn('QR local failed', e);
+      fallbackQr(joinUrl);
+    });
+  } else {
+    fallbackQr(joinUrl);
+  }
   qrModal.classList.add('open');
 }
 document.getElementById('qrBtn').addEventListener('click', openQr);
 document.getElementById('showQrBtn').addEventListener('click', openQr);
 document.getElementById('closeQr').addEventListener('click', function(){ qrModal.classList.remove('open'); });
 qrModal.addEventListener('click', function(e){ if(e.target === qrModal) qrModal.classList.remove('open'); });
+
+/* ===== دکمه صفحه نتایج ===== */
+document.getElementById('resultsBtn').addEventListener('click', function(){
+  window.open('results.html', 'results', 'width=1600,height=900');
+});
 
 const navEl = document.getElementById('nav');
 const navReopen = document.getElementById('navReopen');
