@@ -14,40 +14,31 @@
 :root[data-theme="light"]{--bg:#fdfcfa;--sur:rgba(15,23,42,.04);--line:rgba(15,23,42,.12);--txt:#0f172a;--txt2:#1e293b;--mut:#64748b;--amber:#b45309;--orange:#c2410c;--mint:#059669;--rose:#e11d48;--amber-soft:rgba(180,83,9,.12);--mint-soft:rgba(5,150,105,.12);--rose-soft:rgba(225,29,72,.12)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;min-height:100dvh;padding:max(20px,env(safe-area-inset-top)) 14px max(20px,env(safe-area-inset-bottom))}
+body{margin:0;font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:max(20px,env(safe-area-inset-top)) 14px max(20px,env(safe-area-inset-bottom))}
 button,input{touch-action:manipulation;font-family:inherit}
 input{font-size:16px}
 button{position:relative;overflow:hidden}
-.ripple{position:absolute;border-radius:50%;pointer-events:none;background:rgba(251,191,36,.4);transform:scale(0);animation:rippleAnim .7s cubic-bezier(.2,.7,.2,1);z-index:1}
-@keyframes rippleAnim{0%{transform:scale(0);opacity:.8}100%{transform:scale(1);opacity:0}}
-button:active{transform:scale(.97)!important;transition:transform .08s!important}
 .wrap{max-width:440px;margin:0 auto}
 .card{background:linear-gradient(160deg,var(--sur),rgba(255,255,255,.005));border:1px solid var(--line);border-radius:22px;padding:22px;position:relative;backdrop-filter:blur(20px);box-shadow:0 24px 60px rgba(0,0,0,.4);margin-bottom:14px}
 .badge{display:inline-block;padding:.3rem .8rem;border-radius:999px;background:var(--amber-soft);color:var(--amber);border:1px solid rgba(251,191,36,.35);font-size:.72rem;font-weight:700}
-h1{font-size:1.15rem;margin:.85rem 0 .3rem;letter-spacing:-.3px}
-h2{font-size:1.05rem;margin:.6rem 0 .5rem;letter-spacing:-.2px;line-height:1.5}
+h1{font-size:1.15rem;margin:.85rem 0 .3rem}
+h2{font-size:1.05rem;margin:.6rem 0 .5rem;line-height:1.5}
 p{font-size:.85rem;color:var(--mut);line-height:1.8;margin:0}
 label{display:block;font-size:.8rem;color:var(--txt);margin:1rem 0 .4rem;font-weight:600}
-input{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--txt);transition:.2s}
+input{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--txt)}
 input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
-.btn{width:100%;margin-top:1rem;padding:.9rem;border-radius:12px;border:none;background:linear-gradient(135deg,#fde68a,var(--amber) 45%,var(--orange));color:#1a1206;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .2s;box-shadow:0 8px 24px rgba(251,191,36,.3)}
-.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 32px rgba(251,191,36,.4)}
+.btn{width:100%;margin-top:1rem;padding:.9rem;border-radius:12px;border:none;background:linear-gradient(135deg,#fde68a,var(--amber) 45%,var(--orange));color:#1a1206;font-weight:700;font-size:.95rem;cursor:pointer;box-shadow:0 8px 24px rgba(251,191,36,.3);transition:.2s}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-secondary{background:var(--sur);color:var(--txt);border:1px solid var(--line);box-shadow:none}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
-.btn-locked{background:var(--mint-soft);color:var(--mint);box-shadow:none;border:1px solid rgba(52,211,153,.4);cursor:default}
+.btn-sec{background:var(--sur);color:var(--txt);border:1px solid var(--line);box-shadow:none}
 .score{margin-top:.8rem;padding:.7rem;border-radius:12px;background:var(--mint-soft);border:1px solid rgba(52,211,153,.3);text-align:center;color:var(--mint);font-weight:700;font-size:.92rem}
 .status{margin-top:.6rem;font-size:.78rem;color:var(--mut);text-align:center}
-.theme-morph{position:absolute;top:14px;inset-inline-end:14px;width:42px;height:42px;border-radius:50%;background:var(--sur);border:1px solid var(--line);cursor:pointer;padding:0;transition:.4s}
-.theme-morph .tm-sun,.theme-morph .tm-moon{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .55s,transform .7s cubic-bezier(.5,1.5,.5,1),color .4s}
-:root[data-theme="dark"] .tm-sun{opacity:0;transform:rotate(-140deg) scale(.25)}
-:root[data-theme="dark"] .tm-moon{opacity:1;transform:rotate(0) scale(1);color:var(--amber)}
-:root[data-theme="light"] .tm-sun{opacity:1;transform:rotate(0) scale(1);color:#f59e0b}
-:root[data-theme="light"] .tm-moon{opacity:0;transform:rotate(140deg) scale(.25)}
+.theme-btn{position:absolute;top:14px;inset-inline-end:14px;width:42px;height:42px;border-radius:50%;background:var(--sur);border:1px solid var(--line);cursor:pointer;padding:0;display:grid;place-items:center;color:var(--amber);font-size:1.2rem}
 .opt-grid{display:grid;gap:.55rem;margin-top:.8rem}
 .opt-grid.g2{grid-template-columns:repeat(2,1fr)}
 .opt-grid.g1{grid-template-columns:1fr}
-.opt{padding:.9rem 1.1rem;border-radius:12px;border:1px solid var(--line);background:var(--sur);color:var(--txt2);cursor:pointer;font-size:.9rem;text-align:start;display:flex;justify-content:space-between;align-items:center;gap:.5rem;transition:.2s;width:100%}
+.opt{padding:.9rem 1.1rem;border-radius:12px;border:1px solid var(--line);background:var(--sur);color:var(--txt2);cursor:pointer;font-size:.9rem;text-align:start;display:flex;justify-content:space-between;align-items:center;gap:.5rem;width:100%;transition:.2s}
+.opt:hover:not(:disabled){background:rgba(255,255,255,.1)}
 .opt.voted{background:var(--amber-soft);border-color:rgba(251,191,36,.6);color:var(--txt);font-weight:600}
 .opt:disabled{cursor:default;opacity:.85}
 .quiz-item{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--line)}
@@ -63,13 +54,10 @@ input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--am
 <body>
 <div class="wrap">
   <div class="card" id="aliasCard">
-    <button class="theme-morph" id="themeBtn" aria-label="تغییر تم">
-      <span class="tm-sun"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="4.2"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.4" y2="6.4"/><line x1="17.6" y1="17.6" x2="19" y2="19"/><line x1="5" y1="19" x2="6.4" y2="17.6"/><line x1="17.6" y1="6.4" x2="19" y2="5"/></g></svg></span>
-      <span class="tm-moon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
-    </button>
+    <button class="theme-btn" id="themeBtn" aria-label="تغییر تم">☾</button>
     <span class="badge">G1-1405-05-05 · گروه اول</span>
     <h1>به کارگاه خوش آمدید</h1>
-    <p>یک نام مستعار انتخاب کنید. این نام در لیدربرد نمایش داده می‌شود و هر زمان قابل ویرایش است.</p>
+    <p>یک نام مستعار انتخاب کنید. این نام در لیدربرد نمایش داده می‌شود.</p>
     <label for="alias">نام مستعار</label>
     <input id="alias" placeholder="مثلاً کارشناس اعتبارات" maxlength="30" autocomplete="off">
     <button class="btn" id="saveBtn">ثبت و ورود</button>
@@ -78,7 +66,7 @@ input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--am
   </div>
   <div class="card" id="liveCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <span class="badge" id="liveBadge">ایستگاه تعاملی</span>
+      <span class="badge">ایستگاه تعاملی</span>
       <span id="myAlias" style="font-size:.78rem;color:var(--mut)"></span>
     </div>
     <h2 id="widgetQ" style="margin-top:.8rem"></h2>
@@ -90,59 +78,49 @@ input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--am
 <script type="module">
 import * as SB from './assets/js/supabase-client.js';
 
-const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const safeLS = { get: k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, set: (k,v) => { try { localStorage.setItem(k,v); } catch(e){} } };
+const toFa = function(n){ return String(n).replace(/\d/g, function(d){ return '۰۱۲۳۴۵۶۷۸۹'[d]; }); };
+const esc = function(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+};
+const safeLS = {
+  get: function(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set: function(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+};
 const LSKey = 'ai_' + SB.SESSION_CODE + '_';
 
-document.getElementById('themeBtn').addEventListener('click', () => {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
+const $ = function(id){ return document.getElementById(id); };
+const aliasInput = $('alias');
+const saveBtn = $('saveBtn');
+const scoreBox = $('scoreBox');
+const statusEl = $('status');
+const aliasCard = $('aliasCard');
+const liveCard = $('liveCard');
+const widgetQ = $('widgetQ');
+const widgetArea = $('widgetArea');
+const myAlias = $('myAlias');
+const myScore = $('myScore');
+
+let myVotes = [];
+let currentWidgetId = null;
+let pollTimer = null;
+
+/* Theme */
+$('themeBtn').addEventListener('click', function(){
+  var cur = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   safeLS.set('ai_theme', next);
+  $('themeBtn').textContent = next === 'dark' ? '☾' : '☀';
 });
-
-document.addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  const rect = btn.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height) * 2;
-  const ripple = document.createElement('span');
-  ripple.className = 'ripple';
-  ripple.style.width = ripple.style.height = size + 'px';
-  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
-  btn.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 700);
-});
-
-const aliasInput = document.getElementById('alias');
-const saveBtn = document.getElementById('saveBtn');
-const scoreBox = document.getElementById('scoreBox');
-const statusEl = document.getElementById('status');
-const aliasCard = document.getElementById('aliasCard');
-const liveCard = document.getElementById('liveCard');
-const widgetQ = document.getElementById('widgetQ');
-const widgetArea = document.getElementById('widgetArea');
-const myAlias = document.getElementById('myAlias');
-const myScore = document.getElementById('myScore');
+$('themeBtn').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☾' : '☀';
 
 aliasInput.value = safeLS.get(LSKey + 'alias') || '';
 
-async function refreshScore() {
-  try {
-    const p = await SB.getMyParticipant();
-    if (!p) return;
-    scoreBox.style.display = 'block';
-    scoreBox.textContent = 'امتیاز شما: ' + p.score;
-    myScore.style.display = 'block';
-    myScore.textContent = 'امتیاز شما: ' + p.score;
-    myAlias.textContent = p.alias;
-  } catch(e){}
-}
-
-saveBtn.addEventListener('click', async () => {
-  const v = aliasInput.value.trim();
+/* Register */
+saveBtn.addEventListener('click', async function(){
+  var v = aliasInput.value.trim();
   if (!v) { aliasInput.focus(); return; }
   saveBtn.disabled = true;
   saveBtn.textContent = 'در حال ثبت…';
@@ -155,16 +133,25 @@ saveBtn.addEventListener('click', async () => {
     await refreshCurrentWidget();
     startPolling();
   } catch(e) {
-    console.error(e);
-    statusEl.textContent = '⚠ اتصال ضعیف — دوباره تلاش کنید';
+    console.error('register failed:', e);
+    statusEl.textContent = '⚠ ' + (e.message || String(e));
     statusEl.style.color = 'var(--rose)';
     saveBtn.disabled = false;
     saveBtn.textContent = 'تلاش دوباره';
   }
 });
 
-let currentWidgetId = null;
-let myVotes = [];
+async function refreshScore() {
+  try {
+    var p = await SB.getMyParticipant();
+    if (!p) return;
+    scoreBox.style.display = 'block';
+    scoreBox.textContent = 'امتیاز شما: ' + p.score;
+    myScore.style.display = 'block';
+    myScore.textContent = 'امتیاز شما: ' + p.score;
+    myAlias.textContent = p.alias;
+  } catch(e){}
+}
 
 async function refreshMyVotes() {
   try { myVotes = await SB.getMyVotes(); } catch(e){ myVotes = []; }
@@ -172,193 +159,265 @@ async function refreshMyVotes() {
 
 async function refreshCurrentWidget() {
   try {
-    const ps = await SB.getPresenterState();
-    const wid = SB.sectionToWidget(ps?.current_section);
+    var ps = await SB.getPresenterState();
+    var wid = SB.sectionToWidget(ps && ps.current_section);
     if (wid === currentWidgetId) return;
     currentWidgetId = wid;
     await renderWidget(wid);
     await refreshScore();
-  } catch(e) {
-    console.warn('refreshCurrentWidget', e);
-  }
+  } catch(e){ console.warn(e); }
 }
 
+function startPolling() {
+  if (pollTimer) return;
+  pollTimer = setInterval(async function(){
+    await refreshCurrentWidget();
+    await refreshScore();
+  }, 3000);
+}
+
+/* RPC helpers */
+async function rpcOrEdit(wid, values, pts) {
+  pts = pts || 5;
+  var pid = SB.getPid ? SB.getPid() : safeLS.get(LSKey + 'pid');
+  if (!pid) throw new Error('شناسه کاربر پیدا نشد — دوباره وارد شوید');
+  var res = await SB.supabase.rpc('submit_or_edit_votes', {
+    p_pid: pid, p_session: SB.SESSION_CODE, p_widget: wid,
+    p_values: values, p_points_if_new: pts
+  });
+  if (res.error) throw res.error;
+  return res.data;
+}
+
+async function rpcStatement(wid, statement, value, isCorrect, pts) {
+  var pid = SB.getPid ? SB.getPid() : safeLS.get(LSKey + 'pid');
+  if (!pid) throw new Error('شناسه کاربر پیدا نشد');
+  var res = await SB.supabase.rpc('submit_statement_vote', {
+    p_pid: pid, p_session: SB.SESSION_CODE, p_widget: wid,
+    p_statement: statement, p_value: value,
+    p_is_correct: isCorrect, p_points: pts
+  });
+  if (res.error) throw res.error;
+  return res.data;
+}
+
+/* Dispatcher */
 async function renderWidget(wid) {
   widgetArea.innerHTML = '';
   if (!wid) { widgetQ.textContent = ''; return; }
-  const meta = SB.WIDGET_META[wid];
+  var meta = SB.WIDGET_META[wid];
   if (!meta) { widgetQ.textContent = ''; return; }
   widgetQ.textContent = meta.q;
   await refreshMyVotes();
-  const values = myVotes.filter(v => v.widget_id === wid).map(v => v.vote_value);
+  var values = myVotes.filter(function(v){ return v.widget_id === wid; }).map(function(v){ return v.vote_value; });
 
-  if (meta.type === 'wordcloud') return renderWC(wid, values[0] || '');
-  if (meta.type === 'single' || meta.type === 'quiz2') return renderSingle(wid, meta, values);
-  if (meta.type === 'multi') return renderMulti(wid, meta, values);
-  if (meta.type === 'quiz') return renderQuiz(wid, meta);
-  if (meta.type === 'bestprompt') return renderPrompt(wid, meta, values);
+  if (meta.type === 'wordcloud') {
+    renderWC(wid, values[0] || '');
+  } else if (meta.type === 'single' || meta.type === 'quiz2') {
+    renderSingle(wid, meta, values);
+  } else if (meta.type === 'multi') {
+    renderMulti(wid, meta, values);
+  } else if (meta.type === 'quiz') {
+    renderQuiz(wid, meta);
+  } else if (meta.type === 'bestprompt') {
+    renderPrompt(wid, meta, values);
+  }
 }
 
+/* Word cloud */
 function renderWC(wid, current) {
   if (current) {
-    widgetArea.innerHTML = `<div class="waiting">✓ کلمه شما: <strong style="color:var(--amber)">${esc(current)}</strong></div>`;
-    const eb = document.createElement('button');
-    eb.className = 'btn btn-secondary';
+    widgetArea.innerHTML = '<div class="waiting">✓ کلمه شما: <strong style="color:var(--amber)">' + esc(current) + '</strong></div>';
+    var eb = document.createElement('button');
+    eb.className = 'btn btn-sec';
     eb.textContent = '✎ ویرایش';
-    eb.onclick = () => renderWC(wid, '');
+    eb.onclick = function(){ renderWC(wid, ''); };
     widgetArea.appendChild(eb);
     return;
   }
-  const row = document.createElement('div');
+  var row = document.createElement('div');
   row.className = 'wc-row';
-  const inp = document.createElement('input');
-  inp.type = 'text'; inp.placeholder = 'یک کلمه…'; inp.maxLength = 20;
-  const b = document.createElement('button');
-  b.className = 'btn'; b.textContent = 'ثبت'; b.disabled = true;
-  inp.oninput = () => { b.disabled = !inp.value.trim(); };
-  b.onclick = async () => {
-    const w = inp.value.trim();
+  var inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = 'یک کلمه…';
+  inp.maxLength = 20;
+  var b = document.createElement('button');
+  b.className = 'btn';
+  b.textContent = 'ثبت';
+  b.disabled = true;
+  inp.oninput = function(){ b.disabled = !inp.value.trim(); };
+  b.onclick = async function(){
+    var w = inp.value.trim();
     if (!w) return;
-    b.disabled = true; b.textContent = '…';
+    b.disabled = true;
+    b.textContent = '…';
     try {
-      await SB.submitOrEditVotes(wid, [w], 5);
-      await refreshScore(); await refreshMyVotes();
+      await rpcOrEdit(wid, [w], 5);
+      await refreshScore();
+      await refreshMyVotes();
       renderWidget(wid);
     } catch(e) {
       console.error(e);
       b.textContent = 'خطا';
-      setTimeout(() => { b.disabled = false; b.textContent = 'ثبت'; }, 2000);
+      setTimeout(function(){ b.disabled = false; b.textContent = 'ثبت'; }, 2000);
     }
   };
-  row.appendChild(inp); row.appendChild(b);
+  row.appendChild(inp);
+  row.appendChild(b);
   widgetArea.appendChild(row);
 }
 
+/* Single choice */
 function renderSingle(wid, meta, values) {
-  let editing = values.length === 0;
-  let selected = values[0] || null;
+  var editing = values.length === 0;
+  var selected = values[0] || null;
+
   function draw() {
     widgetArea.innerHTML = '';
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'opt-grid ' + (meta.options.length <= 2 ? 'g2' : 'g1');
-    meta.options.forEach(o => {
-      const btn = document.createElement('button');
+    meta.options.forEach(function(o){
+      var btn = document.createElement('button');
       btn.className = 'opt';
       if (selected === o.k) btn.classList.add('voted');
-      btn.innerHTML = `<span>${esc(o.l)}</span>` + (selected === o.k ? '<span style="font-weight:800">✓</span>' : '');
+      btn.innerHTML = '<span>' + esc(o.l) + '</span>' + (selected === o.k ? '<span style="font-weight:800">✓</span>' : '');
       if (!editing) btn.disabled = true;
-      else btn.onclick = () => { selected = o.k; draw(); };
+      else btn.onclick = function(){ selected = o.k; draw(); };
       grid.appendChild(btn);
     });
     widgetArea.appendChild(grid);
-    const ab = document.createElement('button');
+    var ab = document.createElement('button');
     ab.className = 'btn';
     if (editing) {
       ab.textContent = selected ? 'ثبت' : 'یک گزینه انتخاب کنید';
       ab.disabled = !selected;
-      ab.onclick = async () => {
-        ab.disabled = true; ab.textContent = '…';
+      ab.onclick = async function(){
+        ab.disabled = true;
+        ab.textContent = '…';
         try {
-          await SB.submitOrEditVotes(wid, [selected], 5);
-          await refreshScore(); await refreshMyVotes();
-          editing = false; draw();
+          await rpcOrEdit(wid, [selected], 5);
+          await refreshScore();
+          await refreshMyVotes();
+          editing = false;
+          draw();
         } catch(e) {
+          console.error(e);
           ab.textContent = 'خطا — دوباره';
           setTimeout(draw, 2000);
         }
       };
     } else {
       ab.textContent = '✎ ویرایش انتخاب';
-      ab.className = 'btn btn-secondary';
-      ab.onclick = () => { editing = true; draw(); };
+      ab.className = 'btn btn-sec';
+      ab.onclick = function(){ editing = true; draw(); };
     }
     widgetArea.appendChild(ab);
   }
   draw();
 }
 
+/* Multi choice */
 function renderMulti(wid, meta, values) {
-  let editing = values.length === 0;
-  let selected = new Set(values);
+  var editing = values.length === 0;
+  var selected = new Set(values);
+
   function draw() {
     widgetArea.innerHTML = '';
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'opt-grid g2';
-    meta.options.forEach(o => {
-      const btn = document.createElement('button');
+    meta.options.forEach(function(o){
+      var btn = document.createElement('button');
       btn.className = 'opt';
       if (selected.has(o.k)) btn.classList.add('voted');
-      btn.innerHTML = `<span>${esc(o.l)}</span>` + (selected.has(o.k) ? '<span style="font-weight:800">✓</span>' : '');
+      btn.innerHTML = '<span>' + esc(o.l) + '</span>' + (selected.has(o.k) ? '<span style="font-weight:800">✓</span>' : '');
       if (!editing) btn.disabled = true;
-      else btn.onclick = () => { if (selected.has(o.k)) selected.delete(o.k); else selected.add(o.k); draw(); };
+      else btn.onclick = function(){
+        if (selected.has(o.k)) selected.delete(o.k);
+        else selected.add(o.k);
+        draw();
+      };
       grid.appendChild(btn);
     });
     widgetArea.appendChild(grid);
-    const ab = document.createElement('button');
+    var ab = document.createElement('button');
     ab.className = 'btn';
     if (editing) {
-      ab.textContent = selected.size ? `ثبت (${toFa(selected.size)} مورد)` : 'حداقل یک مورد';
+      ab.textContent = selected.size ? 'ثبت (' + toFa(selected.size) + ')' : 'حداقل یک مورد';
       ab.disabled = selected.size === 0;
-      ab.onclick = async () => {
-        ab.disabled = true; ab.textContent = '…';
+      ab.onclick = async function(){
+        ab.disabled = true;
+        ab.textContent = '…';
         try {
-          await SB.submitOrEditVotes(wid, Array.from(selected), 5);
-          await refreshScore(); await refreshMyVotes();
-          editing = false; draw();
+          await rpcOrEdit(wid, Array.from(selected), 5);
+          await refreshScore();
+          await refreshMyVotes();
+          editing = false;
+          draw();
         } catch(e) {
+          console.error(e);
           ab.textContent = 'خطا — دوباره';
           setTimeout(draw, 2000);
         }
       };
     } else {
       ab.textContent = '✎ ویرایش انتخاب';
-      ab.className = 'btn btn-secondary';
-      ab.onclick = () => { editing = true; draw(); };
+      ab.className = 'btn btn-sec';
+      ab.onclick = function(){ editing = true; draw(); };
     }
     widgetArea.appendChild(ab);
   }
   draw();
 }
 
+/* Quiz (statement) */
 function renderQuiz(wid, meta) {
-  meta.statements.forEach(st => {
-    const wrap = document.createElement('div');
+  meta.statements.forEach(function(st){
+    var wrap = document.createElement('div');
     wrap.className = 'quiz-item';
-    wrap.innerHTML = `<div class="quiz-q">${esc(st.text)}</div>`;
+    wrap.innerHTML = '<div class="quiz-q">' + esc(st.text) + '</div>';
 
-    const votedVal = myVotes.find(v => v.widget_id === wid && v.statement_id === st.id)?.vote_value;
-    let tempSelected = votedVal || null;
-    let locked = !!votedVal;
+    var votedVal = null;
+    for (var i = 0; i < myVotes.length; i++) {
+      if (myVotes[i].widget_id === wid && myVotes[i].statement_id === st.id) {
+        votedVal = myVotes[i].vote_value;
+        break;
+      }
+    }
+    var tempSelected = votedVal || null;
+    var locked = !!votedVal;
 
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'opt-grid g2';
 
-    const submitBtn = document.createElement('button');
+    var submitBtn = document.createElement('button');
     submitBtn.className = 'btn';
     submitBtn.style.cssText = 'margin-top:.6rem;font-size:.85rem;padding:.7rem';
 
-    const editBtn = document.createElement('button');
+    var editBtn = document.createElement('button');
     editBtn.className = 'btn btn-sec';
     editBtn.style.cssText = 'margin-top:.5rem;font-size:.82rem;padding:.65rem;display:none';
     editBtn.textContent = '✎ ویرایش پاسخ';
 
-    const errEl = document.createElement('div');
+    var errEl = document.createElement('div');
     errEl.style.cssText = 'display:none;margin-top:.5rem;padding:.6rem;background:var(--rose-soft);border:1px solid rgba(251,113,133,.4);border-radius:8px;color:var(--rose);font-size:.75rem;line-height:1.6;word-break:break-word';
 
     function draw() {
       grid.innerHTML = '';
-      [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']].forEach(([k, l]) => {
-        const btn = document.createElement('button');
+      var opts = [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']];
+      opts.forEach(function(pair){
+        var k = pair[0];
+        var l = pair[1];
+        var btn = document.createElement('button');
         btn.className = 'opt';
         if (tempSelected === k) btn.classList.add('voted');
-        btn.innerHTML = `<span>${l}</span>` + (tempSelected === k ? '<span style="font-weight:800">✓</span>' : '');
+        btn.innerHTML = '<span>' + l + '</span>' + (tempSelected === k ? '<span style="font-weight:800">✓</span>' : '');
         if (locked) btn.disabled = true;
-        else btn.onclick = () => { tempSelected = k; draw(); };
+        else btn.onclick = function(){ tempSelected = k; draw(); };
         grid.appendChild(btn);
       });
 
       if (locked) {
-        const label = votedVal === 't' ? 'واقعیت' : votedVal === 'f' ? 'افسانه' : 'مطمئن نیستم';
+        var label = votedVal === 't' ? 'واقعیت' : votedVal === 'f' ? 'افسانه' : 'مطمئن نیستم';
         submitBtn.textContent = '✓ ثبت شد: ' + label;
         submitBtn.disabled = true;
         submitBtn.style.opacity = '.65';
@@ -372,18 +431,18 @@ function renderQuiz(wid, meta) {
       errEl.style.display = 'none';
     }
 
-    editBtn.onclick = () => {
+    editBtn.onclick = function() {
       locked = false;
       tempSelected = votedVal;
       draw();
     };
 
-    submitBtn.onclick = async () => {
+    submitBtn.onclick = async function() {
       if (locked || !tempSelected) return;
       submitBtn.disabled = true;
       submitBtn.textContent = 'در حال ثبت…';
       errEl.style.display = 'none';
-      const isCorrect = (tempSelected === 't' && st.correct) || (tempSelected === 'f' && !st.correct);
+      var isCorrect = (tempSelected === 't' && st.correct) || (tempSelected === 'f' && !st.correct);
       try {
         await rpcStatement(wid, st.id, tempSelected, isCorrect, isCorrect ? 15 : 3);
         await refreshScore();
@@ -406,106 +465,76 @@ function renderQuiz(wid, meta) {
     widgetArea.appendChild(wrap);
   });
 }
-    function updateSubmit() {
-      if (locked) {
-        submitBtn.textContent = `✓ ثبت شد (${votedVal === 't' ? 'واقعیت' : votedVal === 'f' ? 'افسانه' : 'مطمئن نیستم'})`;
-        submitBtn.disabled = true;
-        submitBtn.className = 'btn btn-locked';
-      } else {
-        submitBtn.className = 'btn';
-        submitBtn.textContent = tempSelected ? 'ثبت' : 'یک گزینه انتخاب کنید';
-        submitBtn.disabled = !tempSelected;
-      }
-    }
-    submitBtn.onclick = async () => {
-      if (locked || !tempSelected) return;
-      submitBtn.disabled = true; submitBtn.textContent = '…';
-      const isCorrect = (tempSelected === 't' && st.correct) || (tempSelected === 'f' && !st.correct);
-      try {
-        await SB.submitStatementVote(wid, st.id, tempSelected, isCorrect, isCorrect ? 15 : 3);
-        await refreshScore(); await refreshMyVotes();
-        renderWidget(wid);
-      } catch(e) {
-        submitBtn.textContent = 'خطا';
-        setTimeout(() => renderWidget(wid), 2000);
-      }
-    };
-    draw();
-    wrap.appendChild(grid);
-    wrap.appendChild(submitBtn);
-    widgetArea.appendChild(wrap);
-  });
-}
 
+/* Best prompt */
 function renderPrompt(wid, meta, values) {
-  let editing = values.length === 0;
-  let selected = values[0] || null;
+  var editing = values.length === 0;
+  var selected = values[0] || null;
+
   function draw() {
     widgetArea.innerHTML = '';
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'opt-grid g1';
-    meta.prompts.forEach(p => {
-      const btn = document.createElement('button');
+    meta.prompts.forEach(function(p){
+      var btn = document.createElement('button');
       btn.className = 'opt';
       if (selected === p.tag) btn.classList.add('voted');
       btn.style.cssText = 'flex-direction:column;align-items:flex-start;text-align:right';
-      btn.innerHTML = `<div style="font-weight:700;color:var(--amber);font-size:.78rem">گزینه ${p.tag}</div><div style="font-size:.83rem;line-height:1.7;margin-top:.3rem">${esc(p.text)}</div>`;
+      btn.innerHTML = '<div style="font-weight:700;color:var(--amber);font-size:.78rem">گزینه ' + p.tag + '</div><div style="font-size:.83rem;line-height:1.7;margin-top:.3rem">' + esc(p.text) + '</div>';
       if (!editing) btn.disabled = true;
-      else btn.onclick = () => { selected = p.tag; draw(); };
+      else btn.onclick = function(){ selected = p.tag; draw(); };
       grid.appendChild(btn);
     });
     widgetArea.appendChild(grid);
-    const ab = document.createElement('button');
+    var ab = document.createElement('button');
     ab.className = 'btn';
     if (editing) {
       ab.textContent = selected ? 'ثبت' : 'یک گزینه انتخاب کنید';
       ab.disabled = !selected;
-      ab.onclick = async () => {
-        ab.disabled = true; ab.textContent = '…';
+      ab.onclick = async function(){
+        ab.disabled = true;
+        ab.textContent = '…';
         try {
-          await SB.submitOrEditVotes(wid, [selected], 5);
-          await refreshScore(); await refreshMyVotes();
-          editing = false; draw();
+          await rpcOrEdit(wid, [selected], 5);
+          await refreshScore();
+          await refreshMyVotes();
+          editing = false;
+          draw();
         } catch(e) {
+          console.error(e);
           ab.textContent = 'خطا — دوباره';
           setTimeout(draw, 2000);
         }
       };
     } else {
       ab.textContent = '✎ ویرایش انتخاب';
-      ab.className = 'btn btn-secondary';
-      ab.onclick = () => { editing = true; draw(); };
+      ab.className = 'btn btn-sec';
+      ab.onclick = function(){ editing = true; draw(); };
     }
     widgetArea.appendChild(ab);
   }
   draw();
 }
 
-let pollTimer = null;
-function startPolling() {
-  if (pollTimer) return;
-  pollTimer = setInterval(async () => { await refreshCurrentWidget(); await refreshScore(); }, 3000);
-}
-
-(async () => {
-  const savedName = safeLS.get(LSKey + 'alias');
-  if (savedName) {
-    try {
-      const p = await SB.getMyParticipant();
-      if (p) {
-        aliasCard.style.display = 'none';
-        liveCard.style.display = 'block';
-        await refreshScore();
-        await refreshCurrentWidget();
-        startPolling();
-        return;
-      }
-    } catch(e){}
-    statusEl.textContent = 'برای ادامه، نام را دوباره ثبت کنید';
-  }
+/* Boot */
+(async function(){
+  var savedName = safeLS.get(LSKey + 'alias');
+  if (!savedName) return;
+  try {
+    var p = await SB.getMyParticipant();
+    if (p) {
+      aliasCard.style.display = 'none';
+      liveCard.style.display = 'block';
+      await refreshScore();
+      await refreshCurrentWidget();
+      startPolling();
+    }
+  } catch(e) { console.warn('auto-login failed', e); }
 })();
 
-aliasInput.addEventListener('focus', () => setTimeout(() => window.scrollTo(0,0), 120));
+aliasInput.addEventListener('focus', function(){
+  setTimeout(function(){ window.scrollTo(0, 0); }, 120);
+});
 </script>
 </body>
 </html>
