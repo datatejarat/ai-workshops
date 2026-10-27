@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080c17">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="کارگاه AI">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
 <title>پیوستن به کارگاه · گروه اول</title>
 <script>
 (function(){try{var t=localStorage.getItem('ai_theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
@@ -18,6 +24,8 @@ body{margin:0;font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);col
 button,input{touch-action:manipulation;font-family:inherit}
 input{font-size:16px}
 button{position:relative;overflow:hidden}
+.conn-banner{position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-70px);background:linear-gradient(90deg,#dc2626,#ef4444);color:#fff;padding:10px 22px;border-radius:12px;font-size:.82rem;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(220,38,38,.5);opacity:0;pointer-events:none;transition:all .3s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.conn-banner.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .wrap{max-width:440px;margin:0 auto}
 .card{background:linear-gradient(160deg,var(--sur),rgba(255,255,255,.005));border:1px solid var(--line);border-radius:22px;padding:22px;position:relative;backdrop-filter:blur(20px);box-shadow:0 24px 60px rgba(0,0,0,.4);margin-bottom:14px}
 .badge{display:inline-block;padding:.3rem .8rem;border-radius:999px;background:var(--amber-soft);color:var(--amber);border:1px solid rgba(251,191,36,.35);font-size:.72rem;font-weight:700}
@@ -49,9 +57,16 @@ input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--am
 .wc-row{display:flex;gap:.5rem;margin-top:1rem}
 .wc-row input{flex:1;margin:0}
 .wc-row .btn{width:auto;margin:0;padding:.85rem 1.2rem}
+.progress-wrap{margin-top:.8rem;display:flex;flex-direction:column;gap:.35rem}
+.progress-bar{height:6px;background:var(--sur);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--amber));border-radius:999px;transition:width .4s ease;box-shadow:0 0 8px var(--mint)}
+.progress-text{font-size:.73rem;color:var(--mut);text-align:center}
 </style>
 </head>
 <body>
+
+<div class="conn-banner" id="connBanner">⚠ اتصال به سرور قطع است — تلاش مجدد...</div>
+
 <div class="wrap">
   <div class="card" id="aliasCard">
     <button class="theme-btn" id="themeBtn" aria-label="تغییر تم">☾</button>
@@ -68,6 +83,10 @@ input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--am
     <div style="display:flex;justify-content:space-between;align-items:center">
       <span class="badge">ایستگاه تعاملی</span>
       <span id="myAlias" style="font-size:.78rem;color:var(--mut)"></span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">شما در ۰ از ۱۴ ایستگاه شرکت کرده‌اید</div>
     </div>
     <h2 id="widgetQ" style="margin-top:.8rem"></h2>
     <div id="widgetArea"></div>
@@ -89,6 +108,9 @@ const safeLS = {
   set: function(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
 };
 const LSKey = 'ai_' + SB.SESSION_CODE + '_';
+const SUPABASE_CHECK_URL = 'https://aqmcervucsyyqlbifmqh.supabase.co/rest/v1/sessions?select=code&limit=1';
+const SUPABASE_KEY = 'sb_publishable_TMwkKkKQ5MwhuqVZSKgFcg_2YfGk-Pk';
+const TOTAL_STATIONS = 14;
 
 const $ = function(id){ return document.getElementById(id); };
 const aliasInput = $('alias');
@@ -101,12 +123,52 @@ const widgetQ = $('widgetQ');
 const widgetArea = $('widgetArea');
 const myAlias = $('myAlias');
 const myScore = $('myScore');
+const progressFill = $('progressFill');
+const progressText = $('progressText');
 
 let myVotes = [];
 let currentWidgetId = null;
 let pollTimer = null;
 
-/* Theme */
+/* ========== Connection banner ========== */
+let connFailCount = 0;
+let connStatus = 'online';
+function setConnStatus(status){
+  if (connStatus === status) return;
+  connStatus = status;
+  const banner = $('connBanner');
+  if (!banner) return;
+  if (status === 'online') banner.classList.remove('show');
+  else banner.classList.add('show');
+}
+window.addEventListener('offline', function(){ connFailCount = 2; setConnStatus('offline'); });
+window.addEventListener('online', function(){ connFailCount = 0; setConnStatus('online'); });
+async function checkConnection(){
+  try {
+    const res = await fetch(SUPABASE_CHECK_URL, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      }
+    });
+    if (res.ok) {
+      connFailCount = 0;
+      setConnStatus('online');
+    } else {
+      connFailCount++;
+      if (connFailCount >= 2) setConnStatus('error');
+    }
+  } catch(e) {
+    connFailCount++;
+    if (connFailCount >= 2) setConnStatus('offline');
+  }
+}
+setInterval(checkConnection, 15000);
+setTimeout(checkConnection, 2000);
+
+/* ========== Theme ========== */
 $('themeBtn').addEventListener('click', function(){
   var cur = document.documentElement.getAttribute('data-theme');
   var next = cur === 'dark' ? 'light' : 'dark';
@@ -118,14 +180,42 @@ $('themeBtn').textContent = document.documentElement.getAttribute('data-theme') 
 
 aliasInput.value = safeLS.get(LSKey + 'alias') || '';
 
-/* Register */
+/* ========== Retry helper ========== */
+function isNonRetryable(e){
+  if (!e) return false;
+  var code = e.code || '';
+  var msg = String(e.message || '');
+  if (code === '23505') return true;
+  if (msg.indexOf('rate_limit_exceeded') > -1) return true;
+  if (msg.indexOf('invalid_participant') > -1) return true;
+  if (msg.indexOf('missing_parameters') > -1) return true;
+  return false;
+}
+async function retryAsync(fn, attempts){
+  attempts = attempts || 3;
+  var lastErr;
+  for (var i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch(e) {
+      lastErr = e;
+      if (isNonRetryable(e)) throw e;
+      if (i < attempts - 1) {
+        await new Promise(function(r){ setTimeout(r, 1000 * (i + 1)); });
+      }
+    }
+  }
+  throw lastErr;
+}
+
+/* ========== Register ========== */
 saveBtn.addEventListener('click', async function(){
   var v = aliasInput.value.trim();
   if (!v) { aliasInput.focus(); return; }
   saveBtn.disabled = true;
   saveBtn.textContent = 'در حال ثبت…';
   try {
-    await SB.registerParticipant(v);
+    await retryAsync(function(){ return SB.registerParticipant(v); });
     safeLS.set(LSKey + 'alias', v);
     await refreshScore();
     aliasCard.style.display = 'none';
@@ -141,7 +231,7 @@ saveBtn.addEventListener('click', async function(){
   }
 });
 
-async function refreshScore() {
+async function refreshScore(){
   try {
     var p = await SB.getMyParticipant();
     if (!p) return;
@@ -153,22 +243,34 @@ async function refreshScore() {
   } catch(e){}
 }
 
-async function refreshMyVotes() {
+async function refreshMyVotes(){
   try { myVotes = await SB.getMyVotes(); } catch(e){ myVotes = []; }
 }
 
-async function refreshCurrentWidget() {
+function updateProgress(){
+  var wids = {};
+  myVotes.forEach(function(v){ wids[v.widget_id] = true; });
+  var done = Object.keys(wids).length;
+  if (progressFill) progressFill.style.width = (done / TOTAL_STATIONS * 100) + '%';
+  if (progressText) progressText.textContent = 'شما در ' + toFa(done) + ' از ' + toFa(TOTAL_STATIONS) + ' ایستگاه شرکت کرده‌اید';
+}
+
+async function refreshCurrentWidget(){
   try {
     var ps = await SB.getPresenterState();
     var wid = SB.sectionToWidget(ps && ps.current_section);
-    if (wid === currentWidgetId) return;
+    if (wid === currentWidgetId) {
+      await refreshMyVotes();
+      updateProgress();
+      return;
+    }
     currentWidgetId = wid;
     await renderWidget(wid);
     await refreshScore();
-  } catch(e){ console.warn(e); }
+  } catch(e){ console.warn('refreshCurrentWidget', e); }
 }
 
-function startPolling() {
+function startPolling(){
   if (pollTimer) return;
   pollTimer = setInterval(async function(){
     await refreshCurrentWidget();
@@ -176,8 +278,8 @@ function startPolling() {
   }, 3000);
 }
 
-/* RPC helpers */
-async function rpcOrEdit(wid, values, pts) {
+/* ========== RPC helpers ========== */
+async function rpcOrEdit(wid, values, pts){
   pts = pts || 5;
   var pid = SB.getPid ? SB.getPid() : safeLS.get(LSKey + 'pid');
   if (!pid) throw new Error('شناسه کاربر پیدا نشد — دوباره وارد شوید');
@@ -189,7 +291,7 @@ async function rpcOrEdit(wid, values, pts) {
   return res.data;
 }
 
-async function rpcStatement(wid, statement, value, isCorrect, pts) {
+async function rpcStatement(wid, statement, value, isCorrect, pts){
   var pid = SB.getPid ? SB.getPid() : safeLS.get(LSKey + 'pid');
   if (!pid) throw new Error('شناسه کاربر پیدا نشد');
   var res = await SB.supabase.rpc('submit_statement_vote', {
@@ -201,31 +303,36 @@ async function rpcStatement(wid, statement, value, isCorrect, pts) {
   return res.data;
 }
 
-/* Dispatcher */
-async function renderWidget(wid) {
+/* ========== Dispatcher ========== */
+async function renderWidget(wid){
   widgetArea.innerHTML = '';
-  if (!wid) { widgetQ.textContent = ''; return; }
+  if (!wid) {
+    widgetQ.textContent = '';
+    await refreshMyVotes();
+    updateProgress();
+    return;
+  }
   var meta = SB.WIDGET_META[wid];
-  if (!meta) { widgetQ.textContent = ''; return; }
+  if (!meta) {
+    widgetQ.textContent = '';
+    await refreshMyVotes();
+    updateProgress();
+    return;
+  }
   widgetQ.textContent = meta.q;
   await refreshMyVotes();
+  updateProgress();
   var values = myVotes.filter(function(v){ return v.widget_id === wid; }).map(function(v){ return v.vote_value; });
 
-  if (meta.type === 'wordcloud') {
-    renderWC(wid, values[0] || '');
-  } else if (meta.type === 'single' || meta.type === 'quiz2') {
-    renderSingle(wid, meta, values);
-  } else if (meta.type === 'multi') {
-    renderMulti(wid, meta, values);
-  } else if (meta.type === 'quiz') {
-    renderQuiz(wid, meta);
-  } else if (meta.type === 'bestprompt') {
-    renderPrompt(wid, meta, values);
-  }
+  if (meta.type === 'wordcloud') renderWC(wid, values[0] || '');
+  else if (meta.type === 'single' || meta.type === 'quiz2') renderSingle(wid, meta, values);
+  else if (meta.type === 'multi') renderMulti(wid, meta, values);
+  else if (meta.type === 'quiz') renderQuiz(wid, meta);
+  else if (meta.type === 'bestprompt') renderPrompt(wid, meta, values);
 }
 
-/* Word cloud */
-function renderWC(wid, current) {
+/* ========== Word cloud ========== */
+function renderWC(wid, current){
   if (current) {
     widgetArea.innerHTML = '<div class="waiting">✓ کلمه شما: <strong style="color:var(--amber)">' + esc(current) + '</strong></div>';
     var eb = document.createElement('button');
@@ -246,33 +353,41 @@ function renderWC(wid, current) {
   b.textContent = 'ثبت';
   b.disabled = true;
   inp.oninput = function(){ b.disabled = !inp.value.trim(); };
+  inp.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!b.disabled) b.click();
+    }
+  });
   b.onclick = async function(){
     var w = inp.value.trim();
     if (!w) return;
     b.disabled = true;
     b.textContent = '…';
     try {
-      await rpcOrEdit(wid, [w], 5);
+      await retryAsync(function(){ return rpcOrEdit(wid, [w], 5); });
       await refreshScore();
       await refreshMyVotes();
       renderWidget(wid);
     } catch(e) {
       console.error(e);
-      b.textContent = 'خطا';
-      setTimeout(function(){ b.disabled = false; b.textContent = 'ثبت'; }, 2000);
+      b.textContent = 'خطا — دوباره';
+      setTimeout(function(){ b.disabled = false; b.textContent = 'ثبت'; }, 1500);
     }
   };
   row.appendChild(inp);
   row.appendChild(b);
   widgetArea.appendChild(row);
+  setTimeout(function(){ inp.focus(); }, 100);
 }
 
-/* Single choice */
-function renderSingle(wid, meta, values) {
+/* ========== Single choice ========== */
+function renderSingle(wid, meta, values){
   var editing = values.length === 0;
   var selected = values[0] || null;
 
-  function draw() {
+  function draw(){
     widgetArea.innerHTML = '';
     var grid = document.createElement('div');
     grid.className = 'opt-grid ' + (meta.options.length <= 2 ? 'g2' : 'g1');
@@ -295,15 +410,14 @@ function renderSingle(wid, meta, values) {
         ab.disabled = true;
         ab.textContent = '…';
         try {
-          await rpcOrEdit(wid, [selected], 5);
+          await retryAsync(function(){ return rpcOrEdit(wid, [selected], 5); });
           await refreshScore();
           await refreshMyVotes();
           editing = false;
           draw();
         } catch(e) {
-          console.error(e);
           ab.textContent = 'خطا — دوباره';
-          setTimeout(draw, 2000);
+          setTimeout(draw, 1500);
         }
       };
     } else {
@@ -316,47 +430,48 @@ function renderSingle(wid, meta, values) {
   draw();
 }
 
-/* Multi choice */
-function renderMulti(wid, meta, values) {
+/* ========== Multi choice ========== */
+function renderMulti(wid, meta, values){
   var editing = values.length === 0;
-  var selected = new Set(values);
+  var selected = {};
+  values.forEach(function(k){ selected[k] = true; });
 
-  function draw() {
+  function draw(){
     widgetArea.innerHTML = '';
     var grid = document.createElement('div');
     grid.className = 'opt-grid g2';
     meta.options.forEach(function(o){
       var btn = document.createElement('button');
       btn.className = 'opt';
-      if (selected.has(o.k)) btn.classList.add('voted');
-      btn.innerHTML = '<span>' + esc(o.l) + '</span>' + (selected.has(o.k) ? '<span style="font-weight:800">✓</span>' : '');
+      if (selected[o.k]) btn.classList.add('voted');
+      btn.innerHTML = '<span>' + esc(o.l) + '</span>' + (selected[o.k] ? '<span style="font-weight:800">✓</span>' : '');
       if (!editing) btn.disabled = true;
       else btn.onclick = function(){
-        if (selected.has(o.k)) selected.delete(o.k);
-        else selected.add(o.k);
+        if (selected[o.k]) delete selected[o.k];
+        else selected[o.k] = true;
         draw();
       };
       grid.appendChild(btn);
     });
     widgetArea.appendChild(grid);
+    var count = Object.keys(selected).length;
     var ab = document.createElement('button');
     ab.className = 'btn';
     if (editing) {
-      ab.textContent = selected.size ? 'ثبت (' + toFa(selected.size) + ')' : 'حداقل یک مورد';
-      ab.disabled = selected.size === 0;
+      ab.textContent = count > 0 ? 'ثبت (' + toFa(count) + ')' : 'حداقل یک مورد';
+      ab.disabled = count === 0;
       ab.onclick = async function(){
         ab.disabled = true;
         ab.textContent = '…';
         try {
-          await rpcOrEdit(wid, Array.from(selected), 5);
+          await retryAsync(function(){ return rpcOrEdit(wid, Object.keys(selected), 5); });
           await refreshScore();
           await refreshMyVotes();
           editing = false;
           draw();
         } catch(e) {
-          console.error(e);
           ab.textContent = 'خطا — دوباره';
-          setTimeout(draw, 2000);
+          setTimeout(draw, 1500);
         }
       };
     } else {
@@ -369,8 +484,8 @@ function renderMulti(wid, meta, values) {
   draw();
 }
 
-/* Quiz (statement) */
-function renderQuiz(wid, meta) {
+/* ========== Quiz ========== */
+function renderQuiz(wid, meta){
   meta.statements.forEach(function(st){
     var wrap = document.createElement('div');
     wrap.className = 'quiz-item';
@@ -401,7 +516,7 @@ function renderQuiz(wid, meta) {
     var errEl = document.createElement('div');
     errEl.style.cssText = 'display:none;margin-top:.5rem;padding:.6rem;background:var(--rose-soft);border:1px solid rgba(251,113,133,.4);border-radius:8px;color:var(--rose);font-size:.75rem;line-height:1.6;word-break:break-word';
 
-    function draw() {
+    function draw(){
       grid.innerHTML = '';
       var opts = [['t','واقعیت'],['f','افسانه'],['u','مطمئن نیستم']];
       opts.forEach(function(pair){
@@ -431,20 +546,22 @@ function renderQuiz(wid, meta) {
       errEl.style.display = 'none';
     }
 
-    editBtn.onclick = function() {
+    editBtn.onclick = function(){
       locked = false;
       tempSelected = votedVal;
       draw();
     };
 
-    submitBtn.onclick = async function() {
+    submitBtn.onclick = async function(){
       if (locked || !tempSelected) return;
       submitBtn.disabled = true;
       submitBtn.textContent = 'در حال ثبت…';
       errEl.style.display = 'none';
       var isCorrect = (tempSelected === 't' && st.correct) || (tempSelected === 'f' && !st.correct);
       try {
-        await rpcStatement(wid, st.id, tempSelected, isCorrect, isCorrect ? 15 : 3);
+        await retryAsync(function(){
+          return rpcStatement(wid, st.id, tempSelected, isCorrect, isCorrect ? 15 : 3);
+        });
         await refreshScore();
         await refreshMyVotes();
         renderWidget(wid);
@@ -466,12 +583,12 @@ function renderQuiz(wid, meta) {
   });
 }
 
-/* Best prompt */
-function renderPrompt(wid, meta, values) {
+/* ========== Best prompt ========== */
+function renderPrompt(wid, meta, values){
   var editing = values.length === 0;
   var selected = values[0] || null;
 
-  function draw() {
+  function draw(){
     widgetArea.innerHTML = '';
     var grid = document.createElement('div');
     grid.className = 'opt-grid g1';
@@ -495,15 +612,14 @@ function renderPrompt(wid, meta, values) {
         ab.disabled = true;
         ab.textContent = '…';
         try {
-          await rpcOrEdit(wid, [selected], 5);
+          await retryAsync(function(){ return rpcOrEdit(wid, [selected], 5); });
           await refreshScore();
           await refreshMyVotes();
           editing = false;
           draw();
         } catch(e) {
-          console.error(e);
           ab.textContent = 'خطا — دوباره';
-          setTimeout(draw, 2000);
+          setTimeout(draw, 1500);
         }
       };
     } else {
@@ -516,7 +632,7 @@ function renderPrompt(wid, meta, values) {
   draw();
 }
 
-/* Boot */
+/* ========== Boot ========== */
 (async function(){
   var savedName = safeLS.get(LSKey + 'alias');
   if (!savedName) return;
