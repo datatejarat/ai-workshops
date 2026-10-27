@@ -1106,9 +1106,18 @@ window.addEventListener('offline', function(){ setConnStatus('offline'); });
 window.addEventListener('online', function(){ setConnStatus('online'); });
 async function checkConnection(){
   try {
-    const res = await fetch(SUPABASE_CHECK_URL, { method: 'GET', cache: 'no-store' });
+    const res = await fetch(SUPABASE_CHECK_URL, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'apikey': 'sb_publishable_TMwkKkKQ5MwhuqVZSKgFcg_2YfGk-Pk',
+        'Authorization': 'Bearer sb_publishable_TMwkKkKQ5MwhuqVZSKgFcg_2YfGk-Pk'
+      }
+    });
     setConnStatus(res.ok ? 'online' : 'error');
-  } catch(e) { setConnStatus('offline'); }
+  } catch(e) {
+    setConnStatus('offline');
+  }
 }
 setInterval(checkConnection, 15000);
 setTimeout(checkConnection, 2000);
