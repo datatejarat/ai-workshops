@@ -7,23 +7,46 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 console.log('[SB] presenter.js loaded');
 
 function clearMockPreview() {
-  let count = 0;
   document.querySelectorAll('.widget[data-widget]').forEach(function(w){
     const wc = w.querySelector('.wordcloud');
     if (wc && wc.querySelector('span')) {
-      wc.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem;line-height:1.8">منتظر رأی شرکت‌کنندگان…<br><span style="font-size:.78rem;opacity:.7">نتایج زنده در صفحه results.html</span></div>';
-      count++;
+      wc.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem;line-height:1.8">منتظر رأی شرکت‌کنندگان…</div>';
     }
     w.querySelectorAll('.opt .pct').forEach(function(p){
-      if (p.textContent) { p.textContent = ''; p.style.opacity = '0'; count++; }
+      if (p.textContent) { p.textContent = ''; p.style.opacity = '0'; }
     });
     w.querySelectorAll('.prompt-card').forEach(function(card){
       card.querySelectorAll('div').forEach(function(d){
-        if (d.textContent.indexOf('%') > -1) { d.remove(); count++; }
+        if (d.textContent.indexOf('%') > -1) d.remove();
       });
     });
   });
-  if (count > 0) console.log('[SB] cleared ' + count + ' mock elements');
+}
+
+/* Live update for word cloud widget when station is wc1 */
+async function updateLiveWordcloud() {
+  try {
+    const ps = await SB.getPresenterState();
+    if (SB.sectionToWidget(ps?.current_section) !== 'wc1') return;
+    const wcEl = document.getElementById('wc1Cloud');
+    if (!wcEl) return;
+    const rows = await SB.getResults('wc1');
+    if (!rows || rows.length === 0) {
+      if (!wcEl.querySelector('.waiting-msg')) {
+        wcEl.innerHTML = '<div class="waiting-msg" style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:.92rem">منتظر اولین کلمه…</div>';
+      }
+      return;
+    }
+    const maxC = Math.max(...rows.map(r => Number(r.count)));
+    const sorted = rows.slice().sort((a, b) => Number(b.count) - Number(a.count));
+    let html = '';
+    sorted.forEach(r => {
+      const c = Number(r.count);
+      const size = 0.85 + (c / maxC) * 1.7;
+      html += `<span style="font-size:${size}rem">${esc(r.vote_value)} (${c})</span>`;
+    });
+    wcEl.innerHTML = html;
+  } catch(e) {}
 }
 
 async function init() {
@@ -33,10 +56,8 @@ async function init() {
       await new Promise(r => setTimeout(r, 50));
     }
     await new Promise(r => setTimeout(r, 200));
-
     console.log('[SB] starting overrides');
 
-    /* Override buildResults */
     const origBuildResults = window.buildResults;
     window.buildResults = async function(id) {
       try {
@@ -48,7 +69,6 @@ async function init() {
       }
     };
 
-    /* Override renderLB */
     const origRenderLB = window.renderLB;
     window.renderLB = async function(el) {
       if (!el) return;
@@ -73,7 +93,6 @@ async function init() {
     window.renderLB(document.getElementById('lbBreak'));
     window.renderLB(document.getElementById('lbFinal'));
 
-    /* Hook submitVote */
     document.addEventListener('click', async (e) => {
       const opt = e.target.closest('.opt');
       if (!opt) return;
@@ -88,7 +107,6 @@ async function init() {
       try { await SB.submitVote({ widgetId, voteValue: value, isCorrect, points }); } catch(err) {}
     }, true);
 
-    /* Sync section */
     if (typeof window.updateActive === 'function') {
       const origUpdateActive = window.updateActive;
       window.updateActive = function(idx) {
@@ -100,21 +118,19 @@ async function init() {
     const activeSec = document.querySelectorAll('.sec')[0];
     if (activeSec) SB.updatePresenterState({ current_section: activeSec.id }).catch(()=>{});
 
-    /* Live count */
     try {
       const count = await SB.getParticipantCount();
       const el = document.getElementById('liveCount');
       if (el) el.textContent = toFa(count);
     } catch(e) {}
 
-    console.log('[SB] overrides applied');
-
-    /* پاک‌سازی پیش‌نمایش ماک - چند بار برای اطمینان */
     clearMockPreview();
-    setTimeout(clearMockPreview, 300);
     setTimeout(clearMockPreview, 800);
-    setTimeout(clearMockPreview, 1500);
-    setTimeout(clearMockPreview, 3000);
+
+    setInterval(updateLiveWordcloud, 2000);
+    updateLiveWordcloud();
+
+    console.log('[SB] overrides applied');
   } catch(e) {
     console.error('[SB] init failed', e);
   }
