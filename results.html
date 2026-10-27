@@ -30,140 +30,84 @@ body::before{
     radial-gradient(ellipse 60% 40% at 85% 5%, rgba(251,191,36,.1), transparent 60%),
     radial-gradient(ellipse 50% 40% at 10% 95%, rgba(45,212,191,.06), transparent 60%);
 }
-.layout{
-  position:relative;z-index:1;height:100vh;
-  display:grid;grid-template-columns:340px 1fr;
-  gap:0;
-}
-.side{
-  padding:24px;display:flex;flex-direction:column;gap:18px;
+.layout{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:340px 1fr}
+.side{padding:24px;display:flex;flex-direction:column;gap:18px;
   background:linear-gradient(90deg, rgba(255,255,255,.02), transparent);
-  border-inline-end:1px solid var(--line);
-  overflow-y:auto;
-}
+  border-inline-end:1px solid var(--line);overflow-y:auto}
 .side-head{font-size:.72rem;letter-spacing:2.5px;color:var(--amber);font-weight:700}
-.qr-card{
-  background:var(--sur);border:1px solid var(--line);border-radius:20px;
-  padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px;
-}
-.qr-card img{width:100%;max-width:280px;border-radius:14px;background:#fff;padding:12px;display:block}
-.qr-card .qr-url{
-  font-family:monospace;font-size:.7rem;color:var(--mut);text-align:center;
-  word-break:break-all;line-height:1.6;
-}
-.qr-card .qr-hint{
-  font-size:.82rem;color:var(--amber);font-weight:700;text-align:center;
-  padding:.5rem 1rem;background:var(--amber-soft);border-radius:10px;width:100%;
-}
-.count-card{
-  background:linear-gradient(160deg, var(--amber-soft), rgba(251,191,36,.02));
-  border:1px solid rgba(251,191,36,.4);border-radius:20px;padding:20px;
-  text-align:center;
-}
-.count-card .num{
-  font-size:3.5rem;font-weight:800;color:var(--amber);line-height:1;
-  font-variant-numeric:tabular-nums;letter-spacing:-2px;
-}
+.qr-card{background:var(--sur);border:1px solid var(--line);border-radius:20px;
+  padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.qr-card img{width:100%;max-width:280px;border-radius:14px;background:#fff;padding:12px;display:block;aspect-ratio:1/1}
+.qr-card .qr-url{font-family:monospace;font-size:.7rem;color:var(--mut);text-align:center;
+  word-break:break-all;line-height:1.6}
+.qr-card .qr-hint{font-size:.82rem;color:var(--amber);font-weight:700;text-align:center;
+  padding:.5rem 1rem;background:var(--amber-soft);border-radius:10px;width:100%}
+.count-card{background:linear-gradient(160deg, var(--amber-soft), rgba(251,191,36,.02));
+  border:1px solid rgba(251,191,36,.4);border-radius:20px;padding:20px;text-align:center}
+.count-card .num{font-size:3.5rem;font-weight:800;color:var(--amber);line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-2px}
 .count-card .lbl{font-size:.85rem;color:var(--mut);margin-top:.4rem;font-weight:600}
-.lb-card{
-  background:var(--sur);border:1px solid var(--line);border-radius:20px;
-  padding:18px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;
-}
+.lb-card{background:var(--sur);border:1px solid var(--line);border-radius:20px;
+  padding:18px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:0}
 .lb-title{font-size:.85rem;color:var(--amber);font-weight:700;letter-spacing:1px}
-.lb-row{
-  display:grid;grid-template-columns:28px 1fr auto;gap:.6rem;align-items:center;
-  padding:.5rem .7rem;border-radius:10px;background:rgba(255,255,255,.03);
-  font-size:.88rem;
-}
+.lb-row{display:grid;grid-template-columns:28px 1fr auto;gap:.6rem;align-items:center;
+  padding:.5rem .7rem;border-radius:10px;background:rgba(255,255,255,.03);font-size:.88rem}
 .lb-row.top1{background:var(--amber-soft);border:1px solid rgba(251,191,36,.4)}
 .lb-rank{font-weight:800;color:var(--amber);text-align:center}
 .lb-name{color:var(--txt);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-score{color:var(--amber);font-weight:800;font-variant-numeric:tabular-nums}
-
-.main{
-  padding:30px 40px;display:flex;flex-direction:column;gap:24px;
-  overflow-y:auto;
-}
-.main-head{
-  display:flex;justify-content:space-between;align-items:center;
-  padding-bottom:20px;border-bottom:1px solid var(--line);
-}
-.live-dot{
-  display:inline-flex;align-items:center;gap:.6rem;font-size:.82rem;
-  color:var(--mint);font-weight:700;
-}
-.live-dot::before{
-  content:'';width:10px;height:10px;border-radius:50%;background:var(--mint);
-  box-shadow:0 0 12px var(--mint);animation:pulse 1.6s ease-in-out infinite;
-}
+.main{padding:30px 40px;display:flex;flex-direction:column;gap:24px;overflow-y:auto}
+.main-head{display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:20px;border-bottom:1px solid var(--line)}
+.live-dot{display:inline-flex;align-items:center;gap:.6rem;font-size:.82rem;
+  color:var(--mint);font-weight:700}
+.live-dot::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--mint);
+  box-shadow:0 0 12px var(--mint);animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 .session-info{font-size:.78rem;color:var(--mut);text-align:end;line-height:1.5}
-
-.widget-title{
-  font-size:clamp(1.5rem,2.6vw,2.4rem);font-weight:800;line-height:1.3;
-  letter-spacing:-.5px;color:var(--txt);
-}
+.widget-title{font-size:clamp(1.5rem,2.6vw,2.4rem);font-weight:800;line-height:1.3;
+  letter-spacing:-.5px;color:var(--txt)}
 .widget-title.empty{color:var(--mut);font-size:1.4rem;font-weight:600}
 .widget-area{flex:1;display:flex;flex-direction:column;gap:14px}
-.total-badge{
-  display:inline-flex;align-items:center;gap:.5rem;
+.total-badge{display:inline-flex;align-items:center;gap:.5rem;
   padding:.4rem .9rem;border-radius:999px;background:var(--sur);
-  border:1px solid var(--line);font-size:.8rem;color:var(--txt2);width:fit-content;
-}
-
-.wordcloud{
-  display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;justify-content:center;
+  border:1px solid var(--line);font-size:.8rem;color:var(--txt2);width:fit-content}
+.wordcloud{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;justify-content:center;
   padding:2rem;background:var(--sur);border-radius:20px;border:1px solid var(--line);
-  min-height:280px;flex:1;
-}
-.wordcloud span{
-  padding:.5rem 1.2rem;border-radius:999px;
+  min-height:280px;flex:1}
+.wordcloud span{padding:.5rem 1.2rem;border-radius:999px;
   background:linear-gradient(135deg, var(--amber-soft), rgba(251,191,36,.04));
-  border:1px solid rgba(251,191,36,.35);color:var(--txt);font-weight:700;
-}
-
+  border:1px solid rgba(251,191,36,.35);color:var(--txt);font-weight:700}
 .bars{display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center}
 .bar-row{display:flex;flex-direction:column;gap:.4rem}
 .bar-head{display:flex;justify-content:space-between;align-items:center;font-size:1rem}
 .bar-label{font-weight:700;color:var(--txt)}
 .bar-pct{font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
-.bar-track{
-  height:36px;border-radius:12px;background:rgba(255,255,255,.05);
-  overflow:hidden;position:relative;
-}
-.bar-fill{
-  height:100%;background:linear-gradient(90deg, var(--amber), var(--orange));
+.bar-track{height:36px;border-radius:12px;background:rgba(255,255,255,.05);
+  overflow:hidden;position:relative}
+.bar-fill{height:100%;background:linear-gradient(90deg, var(--amber), var(--orange));
   border-radius:12px;transition:width .8s cubic-bezier(.2,.7,.2,1);
   display:flex;align-items:center;justify-content:flex-end;padding-inline-end:12px;
-  min-width:50px;position:relative;
-  box-shadow:0 0 20px rgba(251,191,36,.3);
-}
-.bar-count{
-  color:#1a1206;font-weight:800;font-size:.85rem;font-variant-numeric:tabular-nums;
-}
+  min-width:50px;position:relative;box-shadow:0 0 20px rgba(251,191,36,.3)}
+.bar-count{color:#1a1206;font-weight:800;font-size:.85rem;font-variant-numeric:tabular-nums}
 .bar-fill.empty{background:rgba(255,255,255,.1);box-shadow:none}
 .bar-fill.empty .bar-count{color:var(--mut)}
-
-.quiz-block{
-  background:var(--sur);border:1px solid var(--line);border-radius:16px;
-  padding:16px 20px;margin-bottom:12px;
-}
+.quiz-block{background:var(--sur);border:1px solid var(--line);border-radius:16px;
+  padding:16px 20px;margin-bottom:12px}
 .quiz-block .q{font-weight:700;margin-bottom:10px;font-size:1rem;color:var(--txt)}
 .quiz-block .q-correct{color:var(--mint);font-size:.82rem;font-weight:600;margin-top:8px}
-
 .prompt-row{display:grid;grid-template-columns:60px 1fr 100px;gap:14px;align-items:center;
   padding:14px;background:var(--sur);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
 .prompt-tag{font-size:1.4rem;font-weight:800;color:var(--amber);text-align:center}
 .prompt-text{font-size:.88rem;color:var(--txt2);line-height:1.7}
 .prompt-pct{font-size:1.4rem;font-weight:800;color:var(--amber);text-align:center;font-variant-numeric:tabular-nums}
 .prompt-row.correct{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.08)}
-
-.empty-state{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  flex:1;gap:1rem;color:var(--mut);font-size:1.05rem;text-align:center;line-height:1.9;
-}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:1rem;color:var(--mut);font-size:1.05rem;text-align:center;line-height:1.9}
 .empty-state .icon{font-size:4rem;opacity:.4}
-
+.err-banner{padding:.6rem 1rem;background:rgba(251,113,133,.12);
+  border:1px solid rgba(251,113,133,.4);border-radius:10px;color:var(--rose);
+  font-size:.8rem;margin-bottom:12px}
 @media(max-width:900px){
   .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .side{flex-direction:row;overflow-x:auto;padding:16px;border-inline-end:none;border-bottom:1px solid var(--line)}
@@ -178,9 +122,9 @@ body::before{
   <aside class="side">
     <div class="side-head">ورود به کارگاه</div>
     <div class="qr-card">
-      <img id="qrImg" alt="QR" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+      <img id="qrImg" alt="QR" src="" style="background:#fff">
       <div class="qr-hint">دوربین موبایل را روی QR بگیرید</div>
-      <div class="qr-url" id="qrUrl">در حال بارگذاری…</div>
+      <div class="qr-url" id="qrUrl">—</div>
     </div>
     <div class="count-card">
       <div class="num" id="countNum">۰</div>
@@ -199,6 +143,7 @@ body::before{
         <span style="font-family:monospace">G1-1405-05-05</span>
       </div>
     </div>
+    <div id="errBox"></div>
     <div class="widget-title empty" id="widgetTitle">در انتظار شروع ایستگاه تعاملی…</div>
     <div class="total-badge" id="totalBadge" style="display:none"></div>
     <div class="widget-area" id="widgetArea">
@@ -210,74 +155,64 @@ body::before{
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+// QR را مستقیماً با API qrserver.com لود می‌کنیم — بدون وابستگی به هیچ کتابخانه
+(function(){
+  var joinUrl = new URL('join.html', location.href);
+  joinUrl.searchParams.set('session', 'G1-1405-05-05');
+  document.getElementById('qrUrl').textContent = joinUrl.toString();
+  var qrUrlStr = 'https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=' +
+    encodeURIComponent(joinUrl.toString()) + '&bgcolor=FFFFFF&color=0B1324&margin=1';
+  var img = document.getElementById('qrImg');
+  img.onerror = function(){
+    img.style.display = 'none';
+    var box = document.getElementById('qrUrl');
+    box.style.background = 'rgba(251,113,133,.12)';
+    box.style.border = '1px solid rgba(251,113,133,.4)';
+    box.style.color = 'var(--rose)';
+    box.style.padding = '12px';
+    box.textContent = 'QR بارگذاری نشد — این آدرس را در مرورگر باز کنید: ' + joinUrl.toString();
+  };
+  img.src = qrUrlStr;
+})();
+</script>
+
 <script type="module">
 import * as SB from './assets/js/supabase-client.js';
 
 const toFa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-const qrImg = document.getElementById('qrImg');
-const qrUrl = document.getElementById('qrUrl');
 const countNum = document.getElementById('countNum');
 const lbList = document.getElementById('lbList');
 const widgetTitle = document.getElementById('widgetTitle');
 const widgetArea = document.getElementById('widgetArea');
 const totalBadge = document.getElementById('totalBadge');
 const liveDot = document.getElementById('liveDot');
+const errBox = document.getElementById('errBox');
 
-/* QR code */
-const joinUrl = new URL('join.html', location.href);
-joinUrl.searchParams.set('session', SB.SESSION_CODE);
-qrUrl.textContent = joinUrl.toString();
-
-if (window.QRCode && window.QRCode.toDataURL) {
-  window.QRCode.toDataURL(joinUrl.toString(), {
-    width: 512, margin: 1,
-    color: { dark: '#0B1324', light: '#FFFFFF' },
-    errorCorrectionLevel: 'M'
-  }).then(function(url) {
-    qrImg.src = url;
-  }).catch(function(e){
-    console.warn('QR failed', e);
-    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=512x512&data='+encodeURIComponent(joinUrl.toString())+'&bgcolor=FFFFFF&color=0B1324';
-  });
-} else {
-  qrImg.src = 'https://api.qrserver.com/v1/create-qr-server.com/?size=512x512&data='+encodeURIComponent(joinUrl.toString());
-}
-
-/* State */
 let currentWidget = null;
-let currentWidgetMeta = null;
 let lastDataHash = '';
+let errCount = 0;
 
-/* Render helpers */
 function renderTitle(wid) {
   if (!wid) {
     widgetTitle.textContent = 'در انتظار شروع ایستگاه تعاملی…';
     widgetTitle.className = 'widget-title empty';
     totalBadge.style.display = 'none';
+    widgetArea.innerHTML = '<div class="empty-state"><div class="icon">⏳</div><div>وقتی مدرس به یک ایستگاه تعاملی برسد،<br>نتایج زنده همین‌جا نمایش داده می‌شود.</div></div>';
     return;
   }
   const meta = SB.WIDGET_META[wid];
-  if (!meta) {
-    widgetTitle.textContent = 'ایستگاه: ' + wid;
-    widgetTitle.className = 'widget-title';
-    return;
-  }
-  widgetTitle.textContent = meta.q;
+  widgetTitle.textContent = meta ? meta.q : ('ایستگاه: ' + wid);
   widgetTitle.className = 'widget-title';
   totalBadge.style.display = 'inline-flex';
 }
 
 function renderResults(wid, rows) {
   const meta = SB.WIDGET_META[wid];
-  if (!meta) {
-    widgetArea.innerHTML = '';
-    return;
-  }
+  if (!meta) return;
 
-  /* hash to avoid unnecessary re-renders */
   const hash = wid + '::' + JSON.stringify(rows);
   if (hash === lastDataHash) return;
   lastDataHash = hash;
@@ -287,7 +222,7 @@ function renderResults(wid, rows) {
 
   if (meta.type === 'wordcloud') {
     if (rows.length === 0) {
-      widgetArea.innerHTML = '<div class="empty-state"><div class="icon">💬</div><div>هنوز کلمه‌ای ارسال نشده…</div></div>';
+      widgetArea.innerHTML = '<div class="empty-state"><div class="icon">💬</div><div>هنوز کلمه‌ای ارسال نشده…<br><span style="font-size:.8rem;opacity:.7">شرکت‌کنندگان روی گوشی خود کلمه می‌فرستند</span></div></div>';
       return;
     }
     const maxC = Math.max(...rows.map(r => Number(r.count)));
@@ -311,18 +246,10 @@ function renderResults(wid, rows) {
         const r = stRows.find(x => x.vote_value === k);
         const c = r ? Number(r.count) : 0;
         const pct = stTotal ? Math.round(c / stTotal * 100) : 0;
-        html += `
-          <div class="bar-row" style="margin-bottom:8px">
-            <div class="bar-head">
-              <span class="bar-label">${l}</span>
-              <span class="bar-pct">${toFa(pct)}٪</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill ${c===0?'empty':''}" style="width:${Math.max(pct,4)}%">
-                <span class="bar-count">${toFa(c)}</span>
-              </div>
-            </div>
-          </div>`;
+        html += `<div class="bar-row" style="margin-bottom:8px">
+          <div class="bar-head"><span class="bar-label">${l}</span><span class="bar-pct">${toFa(pct)}٪</span></div>
+          <div class="bar-track"><div class="bar-fill ${c===0?'empty':''}" style="width:${Math.max(pct,4)}%"><span class="bar-count">${toFa(c)}</span></div></div>
+        </div>`;
       });
       html += `<div class="q-correct">✓ پاسخ صحیح: ${st.correct ? 'واقعیت' : 'افسانه'}</div></div>`;
     });
@@ -334,12 +261,11 @@ function renderResults(wid, rows) {
       const r = rows.find(x => x.vote_value === p.tag);
       const c = r ? Number(r.count) : 0;
       const pct = total ? Math.round(c / total * 100) : 0;
-      html += `
-        <div class="prompt-row ${p.correct?'correct':''}">
-          <div class="prompt-tag">${p.tag}</div>
-          <div class="prompt-text">${esc(p.text)}</div>
-          <div class="prompt-pct">${toFa(pct)}٪</div>
-        </div>`;
+      html += `<div class="prompt-row ${p.correct?'correct':''}">
+        <div class="prompt-tag">${p.tag}</div>
+        <div class="prompt-text">${esc(p.text)}</div>
+        <div class="prompt-pct">${toFa(pct)}٪</div>
+      </div>`;
     });
     html += '<div class="bar-head" style="margin-top:14px"><span class="bar-label" style="color:var(--mint)">✓ گزینه B بهترین است — پنج بخش Prompt را دارد</span></div>';
     widgetArea.innerHTML = html;
@@ -356,28 +282,16 @@ function renderResults(wid, rows) {
       const c = r ? Number(r.count) : 0;
       const pct = total ? Math.round(c / total * 100) : 0;
       const isCorrect = o.correct === true;
-      html += `
-        <div class="bar-row">
-          <div class="bar-head">
-            <span class="bar-label">${esc(o.l)}${isCorrect?' ✓':''}</span>
-            <span class="bar-pct">${toFa(pct)}٪ · ${toFa(c)}</span>
-          </div>
-          <div class="bar-track">
-            <div class="bar-fill ${c===0?'empty':''}" style="width:${Math.max(pct,4)}%">
-              <span class="bar-count">${toFa(c)}</span>
-            </div>
-          </div>
-        </div>`;
+      html += `<div class="bar-row">
+        <div class="bar-head"><span class="bar-label">${esc(o.l)}${isCorrect?' ✓':''}</span><span class="bar-pct">${toFa(pct)}٪ · ${toFa(c)}</span></div>
+        <div class="bar-track"><div class="bar-fill ${c===0?'empty':''}" style="width:${Math.max(pct,4)}%"><span class="bar-count">${toFa(c)}</span></div></div>
+      </div>`;
     });
     html += '</div>';
     widgetArea.innerHTML = html;
   }
-  else {
-    widgetArea.innerHTML = '';
-  }
 }
 
-/* Refresh loop */
 async function refresh() {
   try {
     const ps = await SB.getPresenterState();
@@ -385,7 +299,6 @@ async function refresh() {
 
     if (wid !== currentWidget) {
       currentWidget = wid;
-      currentWidgetMeta = wid ? SB.WIDGET_META[wid] : null;
       lastDataHash = '';
       renderTitle(wid);
     }
@@ -412,10 +325,17 @@ async function refresh() {
     }
 
     liveDot.textContent = 'دریافت زنده';
+    liveDot.style.color = 'var(--mint)';
+    errBox.innerHTML = '';
+    errCount = 0;
   } catch(e) {
+    errCount++;
+    console.warn('refresh failed', e);
     liveDot.textContent = 'قطع اتصال — تلاش مجدد…';
     liveDot.style.color = 'var(--rose)';
-    console.warn('refresh failed', e);
+    if (errCount >= 2 && !errBox.innerHTML) {
+      errBox.innerHTML = '<div class="err-banner">⚠ اتصال به Supabase برقرار نشد: ' + esc(e.message || String(e)) + '</div>';
+    }
   }
 }
 
